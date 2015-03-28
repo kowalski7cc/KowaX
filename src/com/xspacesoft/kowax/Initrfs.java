@@ -76,7 +76,7 @@ public class Initrfs {
 		logwolf.i("Started loading initrfs");
 		logwolf.v("Starting TaksManager");
 		taskManager = new TaskManager();
-		taskManager.newTask("root", "Initrfs");
+		taskManager.newTask("root", "KInit");
 		logwolf.i("Task manager started");
 		logwolf.v("Creating new TokenKey");
 		tokenKey = new TokenKey();
