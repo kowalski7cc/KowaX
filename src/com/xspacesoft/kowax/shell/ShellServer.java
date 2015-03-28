@@ -20,6 +20,7 @@ public class ShellServer extends Thread {
 	private CommandRunner commandrunner;
 	private TaskManager taskManager;
 	private Session session;
+	private int pid;
 	
 	public ShellServer(Socket socket, TokenKey tokenKey) throws IOException {
 		sockethelper = new Stdio(socket);
@@ -34,7 +35,8 @@ public class ShellServer extends Thread {
 	
 	@Override
 	public void run() {
-		taskManager.newTask("root", "Console (" + sockethelper.getRemoteAddress() + ")");
+		pid = taskManager.newTask("root", "Console (" + sockethelper.getRemoteAddress() + ")");
+		Initrfs.getLogwolf().i(sockethelper.getRemoteAddress() + " connected");
 		sockethelper.printTitle("Kowax Shell");
 		sockethelper.println();
 		session = new Session(sockethelper);
@@ -79,26 +81,39 @@ public class ShellServer extends Thread {
 		sockethelper.println("Welcome back, " + session.getUsername() + "!");
 		commandrunner = new CommandRunner(session, tokenKey, false);
 		while(session.isSessionActive()) {
-			if(session.isSudo())
-				sockethelper.print("root@kowax:-# ");
-			else
-				sockethelper.print(session.getUsername() + "@kowax:-$ ");
-			String userInput = sockethelper.scan();
-			try {
-				commandrunner.run(userInput);
-			} catch (CommandNotFoundException e) {
-				sockethelper.println("-shell: Command not found.");
-				sockethelper.println();
-			} catch (MissingPluginCodeException e) {
-				sockethelper.println("-shell: Error launching applet: " + e.toString());
-				sockethelper.println();
-			} catch (IllegalArgumentException e) {
-				// New line
+			if(!session.getSockethelper().isOpen()){
+				session.setSessionActive(false);
+			} else {
+				if(session.isSudo())
+					sockethelper.print("root@kowax:-# ");
+				else
+					sockethelper.print(session.getUsername() + "@kowax:-$ ");
+				String userInput = sockethelper.scan();
+				if(userInput==null) {
+					try {
+						session.getSockethelper().getSocket().close();
+					} catch (IOException e) { }
+					session.setSessionActive(false);
+				} else {
+					try {
+						commandrunner.run(userInput);
+					} catch (CommandNotFoundException e) {
+						sockethelper.println("-shell: Command not found.");
+						sockethelper.println();
+					} catch (MissingPluginCodeException e) {
+						sockethelper.println("-shell: Error launching applet: " + e.toString());
+						sockethelper.println();
+					} catch (IllegalArgumentException e) {
+						// New line
+					}
+				}
 			}
 		}
 		try {
 			sockethelper.getSocket().close();
 		} catch (IOException e) { }
+		taskManager.removeTask(pid);
+		Initrfs.getLogwolf().i(sockethelper.getRemoteAddress() + " disconnected");
 	}
 
 }
