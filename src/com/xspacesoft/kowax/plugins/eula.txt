@@ -1,0 +1,11 @@
+No warranty: you expressly acknowledge and agree that use of this application is at your. The current application is provided "as is" and "as available", 
+with all faults and without warranty of any kind, and the developer hereby disclaims all warranties and, 
+implied or statutory, including, but not limited to incorrect or unauthorized use of the application.
+
+Application provider does not warrant that the functions contained in, or services performed or provided by, the application will meet your 
+requirements, that the operation of the application or services will be uninterrupted or error-free, or that defects in the application or services will be corrected. 
+No oral or written information or advice given by developer or its authorized representative shall create a warranty.
+You assume the entire cost of all necessary repair or correction in case of incorrect or unauthorized use of the application.
+
+In no event shall the copyright holder or contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages.
+The application is released for personal testing of system you do own and for educational purposes only.

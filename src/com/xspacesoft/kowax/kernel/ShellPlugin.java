@@ -1,0 +1,58 @@
+package com.xspacesoft.kowax.kernel;
+
+import com.xspacesoft.kowax.shell.CommandRunner;
+
+public abstract class ShellPlugin {
+	
+	public enum Intent {
+		SYSTEM_BOOT,
+		SYSTEM_SHUTDOWN,
+		SYSTEM_SAVE,
+		SYSTEM_RELOAD,
+		SYSTEM_DEFAULTS,
+		ACCOUNT_LOGIN,
+		ACCOUNT_LOGOFF,
+	}
+	
+	/** Intent hooks for applications */
+	public interface IntentRunner {
+		/** Returns intents supported by app */
+		public Intent[] getIntents();
+		/** Runs specific intent for the app */
+		public void runIntent(Intent intent, CommandRunner commandRunner);
+	}
+	
+	public interface Deamon {
+		/** Returns if service is running in background */
+		public boolean isRunning();
+		/** Start or stops backgrounded service */
+		public void setRunning(boolean running);
+	}
+
+	/** Indicates applet name, called by CommandRUnner */
+	public abstract String getAppletName();
+	/** Indicates applet version */
+	public abstract String getAppletVersion();
+	/** Indicates applet author */
+	public abstract String getAppletAuthor();
+
+	/** Method called to start task */
+	public void start(String command, Stdio sockethelper, CommandRunner commandRunner) throws MissingPluginCodeException {
+		try {
+			runApplet(command, sockethelper, commandRunner);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new MissingPluginCodeException("Source not found");
+		}
+	}
+	
+	/** Code to be run */
+	protected abstract void runApplet(String command, Stdio stdio, CommandRunner commandRunner);
+	
+	/** Indicates applet description */
+	public abstract String getDescription();
+	
+	/** Indicates applet hint when no command is given (return null to disable) */
+	public abstract String getHint();
+	
+}
