@@ -4,9 +4,9 @@ import com.xspacesoft.kowax.kernel.ShellPlugin;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class ShellApp extends ShellPlugin {
+public class AppExample extends ShellPlugin {
 	
-	public ShellApp() {
+	public AppExample() {
 		
 	}
 	
