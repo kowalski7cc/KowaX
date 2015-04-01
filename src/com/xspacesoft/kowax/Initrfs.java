@@ -13,8 +13,7 @@ import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
-import com.xspacesoft.kowax.plugins.ShellApp;
-import com.xspacesoft.kowax.plugins.SystemPlugin;
+import com.xspacesoft.kowax.plugins.*;
 import com.xspacesoft.kowax.services.CronTab;
 import com.xspacesoft.kowax.shell.ShellServer;
 
@@ -37,8 +36,7 @@ public class Initrfs {
 		SystemPlugin.class,
 	};
 	private static final Object[] CORE_PLUGINS = {
-		ShellApp.class,
-//		DosAttackPlugin.class,
+		AppExample.class,
 	};
 	
 	public static void main(String[] args) {
