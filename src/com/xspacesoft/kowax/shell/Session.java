@@ -12,6 +12,7 @@ public class Session {
 	private boolean sudo;
 	private Locale locale;
 	private boolean sessionActive;
+	private Long lastSudo;
 	
 	public Session(Stdio stdio) {
 		this.stdio = stdio;
@@ -19,6 +20,7 @@ public class Session {
 		sudo = false;
 		sessionActive = true;
 		locale = Locale.ENGLISH;
+		lastSudo = null;
 	}
 
 	/**
@@ -63,6 +65,16 @@ public class Session {
 	 */
 	public void setSudo(boolean sudo) {
 		this.sudo = sudo;
+		if(sudo)
+			lastSudo = System.currentTimeMillis();
+	}
+	
+	public boolean isSudoExpired() {
+		if(lastSudo==null)
+			return true;
+		if(System.currentTimeMillis()-lastSudo>30000)
+			return true;
+		return false;
 	}
 
 	/**

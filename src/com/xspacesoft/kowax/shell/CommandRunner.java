@@ -178,19 +178,24 @@ public class CommandRunner {
 	public void sudo(String command) {
 		Stdio stdio = session.getSockethelper();
 		if(!session.isSudo()) {
-			stdio.print("[sudo] password for " + session.getUsername() +": ");
-			String response = session.getSockethelper().scan();
-			if ((response.equalsIgnoreCase(""))||(response.equalsIgnoreCase("c")))
-				return;
-			try {
-				if(usersManager.isPasswordValid(session.getUsername(), response)) {
-					session.setSudo(true);
-				} else {
-					stdio.println("sudo: incorrect password");
+			if(session.isSudoExpired()) {
+				stdio.print("[sudo] password for " + session.getUsername() +": ");
+				String response = session.getSockethelper().scan();
+				if ((response.equalsIgnoreCase(""))||(response.equalsIgnoreCase("c")))
 					return;
+				try {
+					if(usersManager.isPasswordValid(session.getUsername(), response)) {
+						session.setSudo(true);
+					} else {
+						stdio.println("sudo: incorrect password");
+						return;
+					}
+				} catch (InvalidUserException e) {
+					// Will never reach this part
+					e.printStackTrace();
 				}
-			} catch (InvalidUserException e) {
-				// Will never reach this part
+			} else {
+				session.setSudo(true);
 			}
 		}
 		if(command == null) {
