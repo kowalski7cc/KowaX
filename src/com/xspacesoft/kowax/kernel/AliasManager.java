@@ -68,7 +68,6 @@ public class AliasManager {
 	public void loadDefaults() {
 		aliases.add(new Alias("h", "system help"));
 		aliases.add(new Alias("help", "system help"));
-		aliases.add(new Alias("man", "system help"));
 		aliases.add(new Alias("alias", "system alias"));
 		aliases.add(new Alias("ps", "system ps"));
 		aliases.add(new Alias("hwinfo", "system hwinfo"));

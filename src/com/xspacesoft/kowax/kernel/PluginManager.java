@@ -23,6 +23,10 @@ public class PluginManager {
 	public void addPlugin(Class<? extends ShellPlugin> loadPlugin, TokenKey tokenKey)
 			throws InstantiationException, IllegalAccessException {
 		ShellPlugin newPlugin = loadPlugin.newInstance();
+		if(newPlugin.getAppletName() == null) {
+			Initrfs.getLogwolf().e("Invalid shell name in plugin " + newPlugin.toString());
+			return;
+		}
 		for (ShellPlugin shellPlugin : enabledPlugins) {
 			if(shellPlugin.getAppletName().equals(newPlugin.getAppletName())) {
 				throw new DuplicateElementException(newPlugin.getAppletName());
@@ -64,6 +68,18 @@ public class PluginManager {
 	
 	public List<ShellPlugin> getPlugins() {
 		return enabledPlugins;
+	}
+
+	public void stopServices() {
+		for(ShellPlugin shellPlugin : enabledPlugins) {
+			try {
+				Service service = (Service) shellPlugin;
+				service.stopService();
+				Initrfs.getLogwolf().d("Service " + service + " stopped");
+			} catch (Exception e){
+				// Plugin has not a service
+			}
+		}
 	}
 
 }

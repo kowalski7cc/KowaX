@@ -1,11 +1,13 @@
 package com.xspacesoft.kowax.plugins;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
 
 import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.ShellPlugin;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.KernelAccess;
@@ -19,7 +21,7 @@ public class SystemPlugin extends ShellPlugin implements KernelAccess {
 
 	@Override
 	public String getAppletName() {
-		return "system";
+		return "System";
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class SystemPlugin extends ShellPlugin implements KernelAccess {
 		} else if (job[0].equalsIgnoreCase("gc")) {
 			garbageCollector();
 		} else if (job[0].equalsIgnoreCase("shutdown")) {
-			shutdown();
+			shutdown(stdio, commandRunner);
 		} else if (job[0].equalsIgnoreCase("eula")) {
 			showEula(stdio);
 		} else if (job[0].equalsIgnoreCase("about")) {
@@ -75,6 +77,13 @@ public class SystemPlugin extends ShellPlugin implements KernelAccess {
 			stdio.clear();
 		} else if (job[0].equalsIgnoreCase("reverse")) {
 			stdio.reverse();
+		} else if (job[0].equalsIgnoreCase("help")) {
+			PluginManager pluginManager = Initrfs.getPluginManager(tokenKey);
+			List<ShellPlugin> shellPlugins = pluginManager.getPlugins();
+			for(ShellPlugin shellPlugin : shellPlugins) {
+				stdio.print(shellPlugin.getAppletName() + "\t");
+			}
+			stdio.println();
 		}
 	}
 
@@ -119,9 +128,27 @@ public class SystemPlugin extends ShellPlugin implements KernelAccess {
 		stdio.println();
 	}
 
-	private void shutdown() {
-		// TODO Auto-generated method stub
-		
+	private void shutdown(Stdio stdio, CommandRunner commandRunner) {
+		if(!commandRunner.isSudo()) {
+			stdio.println("Must be root");
+		} else {
+			stdio.println("Shuttding down");
+			Initrfs.getLogwolf().i("Stopping " + Initrfs.SHELLNAME);
+			Initrfs.getLogwolf().i("Stopping all services");
+			Initrfs.getPluginManager(tokenKey).stopServices();
+			Initrfs.getLogwolf().i("Closing server socket");
+			try {
+				stdio.getSocket(tokenKey).close();
+			} catch (IOException e) {
+				// WHO EVEN CARES?
+			}
+			Initrfs.halt();
+		}
+	}
+	
+	@SuppressWarnings("unused")
+	private void poweroff() {
+		Initrfs.halt();
 	}
 
 	private void garbageCollector() {

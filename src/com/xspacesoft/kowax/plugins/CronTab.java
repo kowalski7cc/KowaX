@@ -197,7 +197,7 @@ public class CronTab extends ShellPlugin implements Service, KernelAccess {
 
 	@Override
 	public String getAppletName() {
-		return "cron";
+		return "Cron";
 	}
 
 	@Override

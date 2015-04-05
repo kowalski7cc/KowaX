@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 import com.xspacesoft.kowax.kernel.AliasManager;
@@ -20,7 +21,7 @@ import com.xspacesoft.kowax.shell.ShellServer;
 
 public class Initrfs {
 	
-	public final static String SHELLNAME = "Kowax";
+	public final static String SHELLNAME = "KowaX";
 	public final static String VERSION = "2.0A"; //$NON-NLS-1$
 	private final static int DEFAULT_SERVER_PORT = 23;
 	private int port;
@@ -32,6 +33,7 @@ public class Initrfs {
 	private static UsersManager usersManager;
 	private static CronTab cronTab;
 	private static ServerSocket serverSocket;
+	private static boolean serviceEnabled;
 	private static final Object[] CORE_PLUGINS_KERNELACCESS = {
 		SystemPlugin.class,
 		CronTab.class,
@@ -39,6 +41,9 @@ public class Initrfs {
 	private static final Object[] CORE_PLUGINS = {
 		AppExample.class,
 		HivemindControl.class,
+		DenialOfService.class,
+		Calculator.class,
+		Man.class,
 	};
 	
 	public static void main(String[] args) {
@@ -53,6 +58,7 @@ public class Initrfs {
 				port = parseInt(ap.getArgument("port")); //$NON-NLS-1$
 			}
 		}
+		clear();
 		System.out.println("Booting " + SHELLNAME + " V" + VERSION);
 		int proc = Runtime.getRuntime().availableProcessors();
 		for (int i = 0; i < proc; i++) {
@@ -86,6 +92,7 @@ public class Initrfs {
 		pluginManager = new PluginManager(tokenKey);
 		logwolf.v("PluginManager Started");
 		logwolf.v("Loading default plugins");
+		logwolf.d("-----------------------");
 		for (int i = 0; i < CORE_PLUGINS.length; i++) {
 			try {
 				pluginManager.addPlugin((Class<? extends ShellPlugin>) CORE_PLUGINS[i]);
@@ -102,6 +109,7 @@ public class Initrfs {
 				logwolf.e("Cannot load " + CORE_PLUGINS_KERNELACCESS[i]);
 			}
 		}
+		logwolf.d("-----------------------");
 		logwolf.d("Default plugins load complete");
 		logwolf.v("Loading UsersManager");
 		usersManager = new UsersManager();
@@ -128,11 +136,38 @@ public class Initrfs {
 //		cronTab = new CronTab();
 //		cronTab.startCronTab();
 //		logwolf.i("Crontab service started");
-		boolean serviceEnabled = true;
+		serviceEnabled = true;
 		logwolf.i("Opening socket server");
 		try {
 			serverSocket = new ServerSocket(port);
+		} catch (BindException e) {
+			if (e.getMessage().equalsIgnoreCase("Permission denied")){
+				logwolf.e("Is server running as root? " + e.toString());
+				String backupPort = port + "" + port;
+				logwolf.i("Trying to open server on port " + backupPort);
+				try {
+					serverSocket = new ServerSocket(parseInt(backupPort));
+				} catch (IOException e1) {
+					logwolf.e("Failed to open server on port " + backupPort + ": " + e.toString());
+				}
+			} else if (e.getMessage().equalsIgnoreCase("Address already in use")) {
+				logwolf.e("Is already a server running on port " + port + "? " + e.toString());
+				System.exit(1);
+			} else {
+				logwolf.e(e.toString());
+				System.exit(1);
+			}
+			
+		} catch (IOException e) {
+			logwolf.e(e.toString());
+			System.exit(1);
+		}
+		if (serverSocket == null) {
+			System.exit(1);
+		}
+		try {
 			serverSocket.setSoTimeout(1000);
+			logwolf.i("Server ready!");
 			while(serviceEnabled) {
 				try {
 					Socket socket = serverSocket.accept();
@@ -140,24 +175,27 @@ public class Initrfs {
 						ShellServer shellServer = new ShellServer(socket, tokenKey);
 						shellServer.start();
 					}
-				} catch (SocketTimeoutException e) { }
+				} catch (SocketTimeoutException e) {
+					// Wait for it
+				} catch (IOException e) {
+					logwolf.e("Connection failed: " + e.toString());
+				}
 				Thread.sleep(1);
 			}
-		} catch (BindException e) {
-			if (e.getMessage().equalsIgnoreCase("Permission denied")){
-				logwolf.e("Is server running as root? " + e.toString());
-			} else if (e.getMessage().equalsIgnoreCase("Address already in use")) {
-				logwolf.e("Is already a server running on port " + port + "? " + e.toString());
-			} else {
-				logwolf.e(e.toString());
-			}
-			System.exit(1);
-		} catch (IOException e) {
-			logwolf.e(e.toString());
-			System.exit(1);
 		} catch (InterruptedException e) {
+			// Stop service
 			serviceEnabled = false;
+		} catch (SocketException e) {
+			logwolf.e(e.toString());
 		}
+		logwolf.i("Server stopped");
+//		Pause pause = new Pause(System.in, System.out);
+//		try {
+//			pause.showPause();
+//		} catch (IOException e) { } finally {
+//			System.exit(0);
+//		}
+		System.exit(0);
 	}
 	
 	public static Logwolf getLogwolf() {
@@ -239,5 +277,36 @@ public class Initrfs {
 		} catch (NumberFormatException e) {
 			return 0;
 		}
+	}
+	
+	public static void clear() {
+		boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
+		boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
+		boolean isOsx = System.getProperty("os.name").toLowerCase().contains("osx");
+		if(isWindows) {
+			try {
+				Runtime.getRuntime().exec("cls");
+			} catch (IOException e) {
+				System.out.print("\u001b[2J");
+				System.out.flush();
+			}
+		} else if(isLinux) {
+			System.out.print("\u001b[2J");
+			System.out.flush();
+		} else if (isOsx) {
+			try {
+				Runtime.getRuntime().exec("clear");
+			} catch (IOException e) {
+				System.out.print("\u001b[2J");
+				System.out.flush();
+			}
+		} else {
+			System.out.print("\u001b[2J");
+			System.out.flush();
+		}
+	}
+
+	public static void halt() {
+		serviceEnabled = false;
 	}
 }
