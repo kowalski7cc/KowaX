@@ -46,8 +46,6 @@ public class TaskManager {
 			this.applet = applet;
 		}
 		
-		
-		
 	}
 	
 	private List<Task> tasks;
