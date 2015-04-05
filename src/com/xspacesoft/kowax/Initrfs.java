@@ -15,7 +15,6 @@ import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
 import com.xspacesoft.kowax.plugins.*;
-import com.xspacesoft.kowax.services.CronTab;
 import com.xspacesoft.kowax.shell.ShellServer;
 
 
@@ -35,9 +34,11 @@ public class Initrfs {
 	private static ServerSocket serverSocket;
 	private static final Object[] CORE_PLUGINS_KERNELACCESS = {
 		SystemPlugin.class,
+		CronTab.class,
 	};
 	private static final Object[] CORE_PLUGINS = {
 		AppExample.class,
+		HivemindControl.class,
 	};
 	
 	public static void main(String[] args) {
@@ -82,7 +83,7 @@ public class Initrfs {
 		tokenKey.newKey();
 		logwolf.d("TokenKey: ==" + tokenKey.getKey() + "==");
 		logwolf.v("Starting PluginManager");
-		pluginManager = new PluginManager();
+		pluginManager = new PluginManager(tokenKey);
 		logwolf.v("PluginManager Started");
 		logwolf.v("Loading default plugins");
 		for (int i = 0; i < CORE_PLUGINS.length; i++) {
@@ -105,7 +106,7 @@ public class Initrfs {
 		logwolf.v("Loading UsersManager");
 		usersManager = new UsersManager();
 		File usersFile = new File("users.kls");
-		logwolf.i(usersFile.toURI().toString());
+		logwolf.i("Users file path: " + usersFile.toURI().toString());
 		try {
 			if((usersFile!=null)&&(usersFile.exists())) {
 				usersManager.loadFromFile(usersFile);
@@ -123,10 +124,10 @@ public class Initrfs {
 		logwolf.v("AliasManager loaded");
 		aliasManager.loadDefaults();
 		logwolf.i(aliasManager.getLoadedAliases() + " aliases loded");
-		logwolf.v("Starting Cron service");
-		cronTab = new CronTab(100, tokenKey);
-		cronTab.startCronTab();
-		logwolf.i("Crontab service started");
+//		logwolf.v("Starting Cron service");
+//		cronTab = new CronTab();
+//		cronTab.startCronTab();
+//		logwolf.i("Crontab service started");
 		boolean serviceEnabled = true;
 		logwolf.i("Opening socket server");
 		try {

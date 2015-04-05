@@ -8,9 +8,11 @@ import com.xspacesoft.kowax.Initrfs;
 public class PluginManager {
 
 	private List<ShellPlugin> enabledPlugins;
+	private TaskManager taskManager;
 	
-	public PluginManager() {
+	public PluginManager(TokenKey tokenKey) {
 		enabledPlugins = new ArrayList<ShellPlugin>();
+		taskManager = Initrfs.getTaskManager(tokenKey);
 	}
 	
 	public void addPlugin(Class<? extends ShellPlugin> loadPlugin)
@@ -30,7 +32,20 @@ public class PluginManager {
 			try {
 				KernelAccess sup = (KernelAccess) newPlugin;
 				sup.setTokenKey(tokenKey);
-			} catch (Exception e) { }
+				Initrfs.getLogwolf().d(loadPlugin.toString() + " loaded at kernel level");
+			} catch (Exception e) {
+				// Can't load at kernel level
+				Initrfs.getLogwolf().d("Can't load " + loadPlugin.toString() + " at kernel level.");
+			}
+		}
+		try {
+			Service service = (Service) newPlugin;
+			service.startService();
+			taskManager.newTask("root", service.getServiceName());
+			Initrfs.getLogwolf().d("Started " + service.toString() + " service.");
+		} catch (Exception e) {
+			// Can't load plugin as service
+			Initrfs.getLogwolf().d(loadPlugin.toString() + " has not a service to start");
 		}
 		enabledPlugins.add(newPlugin);
 	}
