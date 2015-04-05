@@ -1,5 +1,6 @@
 package com.xspacesoft.kowax;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -103,12 +104,18 @@ public class Initrfs {
 		logwolf.d("Default plugins load complete");
 		logwolf.v("Loading UsersManager");
 		usersManager = new UsersManager();
+		File usersFile = new File("users.kls");
+		logwolf.i(usersFile.toURI().toString());
 		try {
-			usersManager.loadDefaults();
+			if((usersFile!=null)&&(usersFile.exists())) {
+				usersManager.loadFromFile(usersFile);
+			} else {
+				usersManager.loadDefaults();
+			}
 			logwolf.d("UsersManager loaded");
 			logwolf.i("Registred users: " + usersManager.getLoadedUsers());
 		} catch (ExistingUserException e1) {
-			logwolf.e("Error in loading default users");
+			logwolf.e("Error in loading users");
 			System.exit(1);
 		}
 		logwolf.v("Loading AliasManager");
