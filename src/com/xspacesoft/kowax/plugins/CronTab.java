@@ -1,19 +1,20 @@
-package com.xspacesoft.kowax.services;
+package com.xspacesoft.kowax.plugins;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.kernel.KernelAccess;
 import com.xspacesoft.kowax.kernel.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.Service;
+import com.xspacesoft.kowax.kernel.ShellPlugin;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 import com.xspacesoft.kowax.shell.Session;
 
-public class CronTab implements Service {
+public class CronTab extends ShellPlugin implements Service, KernelAccess {
 	
 	public class Job implements Serializable {
 
@@ -141,42 +142,22 @@ public class CronTab implements Service {
 	
 	private Cron cron;
 	private CronTabJob job;
-	
-	public CronTab(Integer sleep, TokenKey tokenKey) {
-		if(!Initrfs.isTokenValid(tokenKey))
-			throw new TokenKey.InvalidTokenException();
-		CronTabJob job = new CronTabJob();
-		Stdio stdio = new Stdio();
-		Session session = new Session(stdio);
-		session.setAuthenticated(true);
-		session.setSudo(true);
-		session.setUsername("root");
-		CommandRunner commandRunner = new CommandRunner(tokenKey, true);
-		cron = new Cron(job, sleep, commandRunner, session);
-	}
+	private TokenKey tokenKey;
 
-	public void startCronTab() {
-		cron.start();
-	}
-	
-	public CronTabJob getJob() {
+	protected CronTabJob getJob() {
 		return job;
-	}	
-	
-	public void stopCronTab() {
-		cron.interrupt();
 	}
 	
-	public Integer getSleep() {
+	protected Integer getSleep() {
 		return job.getSleep();
 	}
 
-	public void setSleep(Integer sleep) {
+	protected void setSleep(Integer sleep) {
 		job.setSleep(sleep);
 	}
 
 	@Override
-	public Boolean isRunning() {
+	public Boolean isServiceRunning() {
 		if(cron != null)
 			return cron.isAlive();
 		return false;
@@ -184,8 +165,16 @@ public class CronTab implements Service {
 
 	@Override
 	public void startService() {
-		if (cron==null)
-			return;
+		if (cron==null){
+			CronTabJob job = new CronTabJob();
+			Stdio stdio = new Stdio();
+			Session session = new Session(stdio);
+			session.setAuthenticated(true);
+			session.setSudo(true);
+			session.setUsername("root");
+			CommandRunner commandRunner = new CommandRunner(tokenKey, true);
+			cron = new Cron(job, null, commandRunner, session);
+		}
 		if (!cron.isAlive())
 			cron.start();
 	}
@@ -194,6 +183,48 @@ public class CronTab implements Service {
 	public void stopService() {
 		if((cron!=null)&&(cron.isAlive()))
 			cron.interrupt();
+	}
+	
+	@Override
+	public String getServiceName() {
+		return "Cron";
+	}
+
+	@Override
+	public void setTokenKey(TokenKey tokenKey) {
+		this.tokenKey = tokenKey;
+	}
+
+	@Override
+	public String getAppletName() {
+		return "cron";
+	}
+
+	@Override
+	public String getAppletVersion() {
+		return "2.0A";
+	}
+
+	@Override
+	public String getAppletAuthor() {
+		return "Kowalski";
+	}
+
+	@Override
+	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
+		
+		
+	}
+
+	@Override
+	public String getDescription() {
+		return null;
+	}
+
+	@Override
+	public String getHint() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
