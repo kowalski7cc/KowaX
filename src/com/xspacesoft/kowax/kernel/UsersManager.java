@@ -1,13 +1,17 @@
 package com.xspacesoft.kowax.kernel;
 
+import java.io.File;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UsersManager {
-	
+public class UsersManager implements Serializable {
+
+	private static final long serialVersionUID = 4900265260339132855L;
+
 	public class ExistingUserException extends Exception {
 
 		public ExistingUserException(String username) {
@@ -28,8 +32,9 @@ public class UsersManager {
 
 	}
 
-	public class User {
-		
+	public class User implements Serializable {
+
+		private static final long serialVersionUID = 9120226704038657463L;
 		private String username;
 		private String password;
 		private Date creation;
@@ -144,5 +149,10 @@ public class UsersManager {
 
 	public int getLoadedUsers() {
 		return users.size();
+	}
+
+	public void loadFromFile(File usersFile) {
+		// TODO Auto-generated method stub
+		
 	}
 }
