@@ -4,8 +4,8 @@ public interface Service {
 	
 	public Boolean isRunning();
 	
-	public void init();
+	public void startService();
 	
-	public void halt();
+	public void stopService();
 	
 }

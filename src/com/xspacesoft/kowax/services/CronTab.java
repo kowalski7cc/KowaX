@@ -181,12 +181,12 @@ public class CronTab implements Service {
 	}
 
 	@Override
-	public void init() {
+	public void startService() {
 		cron.start();
 	}
 
 	@Override
-	public void halt() {
+	public void stopService() {
 		cron.interrupt();
 	}
 	
