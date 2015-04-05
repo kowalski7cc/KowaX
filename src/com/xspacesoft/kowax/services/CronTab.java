@@ -6,13 +6,14 @@ import java.util.List;
 
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.kernel.MissingPluginCodeException;
+import com.xspacesoft.kowax.kernel.Service;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 import com.xspacesoft.kowax.shell.Session;
 
-public class CronTab {
+public class CronTab implements Service {
 	
 	public class Job implements Serializable {
 
@@ -172,6 +173,21 @@ public class CronTab {
 
 	public void setSleep(Integer sleep) {
 		job.setSleep(sleep);
+	}
+
+	@Override
+	public Boolean isRunning() {
+		return cron.isAlive();
+	}
+
+	@Override
+	public void startService() {
+		cron.start();
+	}
+
+	@Override
+	public void stopService() {
+		cron.interrupt();
 	}
 	
 }
