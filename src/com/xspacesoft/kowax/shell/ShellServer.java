@@ -46,7 +46,7 @@ public class ShellServer extends Thread {
 			String username = sockethelper.scan();
 			if(username==null) {
 				try {
-					sockethelper.getSocket().close();
+					sockethelper.getSocket(tokenKey).close();
 				} catch (IOException e) { }
 				return;
 			}
@@ -54,7 +54,7 @@ public class ShellServer extends Thread {
 			String password = sockethelper.scan();
 			if(password==null) {
 				try {
-					sockethelper.getSocket().close();
+					sockethelper.getSocket(tokenKey).close();
 				} catch (IOException e) { }
 				return;
 			}
@@ -72,7 +72,7 @@ public class ShellServer extends Thread {
 			sockethelper.println();
 			if(attempts>2) {
 				try {
-					sockethelper.getSocket().close();
+					sockethelper.getSocket(tokenKey).close();
 				} catch (IOException e) { }
 				return;
 			}
@@ -91,7 +91,7 @@ public class ShellServer extends Thread {
 				String userInput = sockethelper.scan();
 				if(userInput==null) {
 					try {
-						session.getSockethelper().getSocket().close();
+						session.getSockethelper().getSocket(tokenKey).close();
 					} catch (IOException e) { }
 					session.setSessionActive(false);
 				} else {
@@ -110,7 +110,7 @@ public class ShellServer extends Thread {
 			}
 		}
 		try {
-			sockethelper.getSocket().close();
+			sockethelper.getSocket(tokenKey).close();
 		} catch (IOException e) { }
 		taskManager.removeTask(pid);
 		Initrfs.getLogwolf().i(sockethelper.getRemoteAddress() + " disconnected");
