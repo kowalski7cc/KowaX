@@ -38,6 +38,7 @@ public class Initrfs {
 	};
 	private static final Object[] CORE_PLUGINS = {
 		AppExample.class,
+		HivemindControl.class,
 	};
 	
 	public static void main(String[] args) {
@@ -105,7 +106,7 @@ public class Initrfs {
 		logwolf.v("Loading UsersManager");
 		usersManager = new UsersManager();
 		File usersFile = new File("users.kls");
-		logwolf.i(usersFile.toURI().toString());
+		logwolf.i("Users file path: " + usersFile.toURI().toString());
 		try {
 			if((usersFile!=null)&&(usersFile.exists())) {
 				usersManager.loadFromFile(usersFile);

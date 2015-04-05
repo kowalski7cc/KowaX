@@ -177,17 +177,23 @@ public class CronTab implements Service {
 
 	@Override
 	public Boolean isRunning() {
-		return cron.isAlive();
+		if(cron != null)
+			return cron.isAlive();
+		return false;
 	}
 
 	@Override
 	public void startService() {
-		cron.start();
+		if (cron==null)
+			return;
+		if (!cron.isAlive())
+			cron.start();
 	}
 
 	@Override
 	public void stopService() {
-		cron.interrupt();
+		if((cron!=null)&&(cron.isAlive()))
+			cron.interrupt();
 	}
 	
 }

@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.kernel.Service;
 import com.xspacesoft.kowax.kernel.ShellPlugin;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class HivemindControl extends ShellPlugin {
+public class HivemindControl extends ShellPlugin implements Service {
 	
-	public class HivemindHost {
+	protected class HivemindHost {
 		
 		private String address;
 		
@@ -48,7 +49,7 @@ public class HivemindControl extends ShellPlugin {
 		
 	}
 	
-	public class HivemindManager {
+	protected class HivemindManager {
 		
 		private List<HivemindHost> hivemindHosts;
 		private HivemindHost alpha;
@@ -142,7 +143,7 @@ public class HivemindControl extends ShellPlugin {
 		
 	}
 	
-	public class HivemindService extends Thread {
+	protected class HivemindService extends Thread {
 		
 		private HivemindManager hivemindManager;
 		private boolean running;
@@ -183,6 +184,7 @@ public class HivemindControl extends ShellPlugin {
 	}
 
 	private HivemindManager hivemindManager;
+	private HivemindService hivemindService;
 	
 	@Override
 	public String getAppletName() {
@@ -352,6 +354,31 @@ public class HivemindControl extends ShellPlugin {
 		case "gamma": return HostRole.GAMMA;
 		case "omega": return HostRole.OMEGA;
 		default: return null;
+		}
+	}
+
+	@Override
+	public Boolean isRunning() {
+		if (hivemindService!=null)
+			return hivemindService.isAlive();
+		else
+			return false;
+	}
+
+	@Override
+	public void startService() {
+		if(hivemindManager == null)
+			hivemindManager = new HivemindManager();
+		if (hivemindService==null)
+			hivemindService = new HivemindService(hivemindManager);		
+		if (!hivemindService.isAlive())
+			hivemindService.start();
+	}
+
+	@Override
+	public void stopService() {
+		if ((hivemindService!=null)&&(hivemindService.isAlive())) {
+			hivemindService.interrupt();
 		}
 	}
 }
