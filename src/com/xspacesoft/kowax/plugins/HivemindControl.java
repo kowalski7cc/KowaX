@@ -205,8 +205,8 @@ public class HivemindControl extends ShellPlugin implements Service {
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
 		if (hivemindManager == null)
 			hivemindManager = new HivemindManager();
-		if (command.length()<1) {
-			stdio.print(getHint());
+		if ((command == null)||(command.length()<1)) {
+			stdio.println(getHint());
 			return;
 		}
 		String[] commands = command.split(" ");
@@ -358,7 +358,7 @@ public class HivemindControl extends ShellPlugin implements Service {
 	}
 
 	@Override
-	public Boolean isRunning() {
+	public Boolean isServiceRunning() {
 		if (hivemindService!=null)
 			return hivemindService.isAlive();
 		else
@@ -380,5 +380,10 @@ public class HivemindControl extends ShellPlugin implements Service {
 		if ((hivemindService!=null)&&(hivemindService.isAlive())) {
 			hivemindService.interrupt();
 		}
+	}
+	
+	@Override
+	public String getServiceName() {
+		return "Hivemind Service";
 	}
 }
