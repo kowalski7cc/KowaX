@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Logwolf;
 
 public class PluginManager {
 
 	private List<ShellPlugin> enabledPlugins;
 	private TaskManager taskManager;
+	private Logwolf logwolf;
 	
 	public PluginManager(TokenKey tokenKey) {
 		enabledPlugins = new ArrayList<ShellPlugin>();
 		taskManager = Initrfs.getTaskManager(tokenKey);
+		logwolf = Initrfs.getLogwolf();
 	}
 	
 	public void addPlugin(Class<? extends ShellPlugin> loadPlugin)
@@ -23,8 +26,9 @@ public class PluginManager {
 	public void addPlugin(Class<? extends ShellPlugin> loadPlugin, TokenKey tokenKey)
 			throws InstantiationException, IllegalAccessException {
 		ShellPlugin newPlugin = loadPlugin.newInstance();
+		String pluginName = loadPlugin.getSimpleName();
 		if(newPlugin.getAppletName() == null) {
-			Initrfs.getLogwolf().e("Invalid shell name in plugin " + newPlugin.toString());
+			logwolf.e("Invalid shell name in plugin " + pluginName);
 			return;
 		}
 		for (ShellPlugin shellPlugin : enabledPlugins) {
@@ -36,22 +40,23 @@ public class PluginManager {
 			try {
 				KernelAccess sup = (KernelAccess) newPlugin;
 				sup.setTokenKey(tokenKey);
-				Initrfs.getLogwolf().d(loadPlugin.toString() + " loaded at kernel level");
+				logwolf.d("Plugin " + pluginName + " loaded at kernel level");
 			} catch (Exception e) {
 				// Can't load at kernel level
-				Initrfs.getLogwolf().d("Can't load " + loadPlugin.toString() + " at kernel level.");
+				logwolf.d("Can't load " + pluginName + " at kernel level.");
 			}
 		}
 		try {
 			Service service = (Service) newPlugin;
 			service.startService();
 			taskManager.newTask("root", service.getServiceName());
-			Initrfs.getLogwolf().d("Started " + service.toString() + " service.");
+			Initrfs.getLogwolf().d("Started " + pluginName + " service @" + service.toString().split("@")[1]);
 		} catch (Exception e) {
 			// Can't load plugin as service
-			Initrfs.getLogwolf().d(loadPlugin.toString() + " has not a service to start");
+			logwolf.d("Plugin " + pluginName + " has not a service to start");
 		}
 		enabledPlugins.add(newPlugin);
+		logwolf.d("Plugin " + pluginName + " load complete");
 	}
 	
 	public String[] getPluginsName() {
