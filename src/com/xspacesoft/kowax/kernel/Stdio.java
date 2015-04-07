@@ -158,6 +158,13 @@ public class Stdio {
 		pause.showPause();
 	}
 	
+	public static boolean isNumber(char character) {
+		if((character>='0')&&(character<='9')) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static boolean isNumber(String string) {
 		try {
 			Integer.parseInt(string);

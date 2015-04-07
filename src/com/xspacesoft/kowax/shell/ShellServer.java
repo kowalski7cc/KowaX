@@ -78,6 +78,7 @@ public class ShellServer extends Thread {
 			}
 		}
 		sockethelper.clear();
+		Initrfs.getLogwolf().i(session.getUsername() + " logged in");;
 		sockethelper.println("Welcome back, " + session.getUsername() + "!");
 		commandrunner = new CommandRunner(session, tokenKey, false);
 		while(session.isSessionActive()) {

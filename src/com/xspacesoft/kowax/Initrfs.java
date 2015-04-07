@@ -80,14 +80,14 @@ public class Initrfs {
 		logwolf.setDebug(true);
 		logwolf.setVerbose(true);
 		logwolf.i("Started loading initrfs");
-		logwolf.v("Starting TaksManager");
-		taskManager = new TaskManager();
-		taskManager.newTask("root", "KInit");
-		logwolf.i("Task manager started");
 		logwolf.v("Creating new TokenKey");
 		tokenKey = new TokenKey();
 		tokenKey.newKey();
 		logwolf.d("TokenKey: ==" + tokenKey.getKey() + "==");
+		logwolf.v("Starting TaksManager");
+		taskManager = new TaskManager();
+		taskManager.newTask("root", "KInit");
+		logwolf.i("Task manager started");
 		logwolf.v("Starting PluginManager");
 		pluginManager = new PluginManager(tokenKey);
 		logwolf.v("PluginManager Started");
@@ -96,15 +96,13 @@ public class Initrfs {
 		for (int i = 0; i < CORE_PLUGINS.length; i++) {
 			try {
 				pluginManager.addPlugin((Class<? extends ShellPlugin>) CORE_PLUGINS[i]);
-				logwolf.d(CORE_PLUGINS[i] + " loaded");
 			} catch (InstantiationException | IllegalAccessException e) {
-				logwolf.e("Cannot load " + CORE_PLUGINS[i]);
+				logwolf.e("Cannot load " + CORE_PLUGINS[i].toString());
 			}
 		}
 		for (int i = 0; i < CORE_PLUGINS_KERNELACCESS.length; i++) {
 			try {
 				pluginManager.addPlugin((Class<? extends ShellPlugin>) CORE_PLUGINS_KERNELACCESS[i], tokenKey);
-				logwolf.d(CORE_PLUGINS_KERNELACCESS[i] + " loaded");
 			} catch (InstantiationException | IllegalAccessException e) {
 				logwolf.e("Cannot load " + CORE_PLUGINS_KERNELACCESS[i]);
 			}
