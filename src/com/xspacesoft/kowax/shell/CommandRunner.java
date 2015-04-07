@@ -152,6 +152,8 @@ public class CommandRunner {
 			session.getSockethelper().println("Failed to load applet: " + e.toString());
 		} catch (MissingPluginCodeException e) {
 			session.getSockethelper().println("Failed to load applet: " + e.toString());
+		} catch (Exception e) {
+			session.getSockethelper().println("Unhandled exception in applet: " + e.toString());
 		}
 	}
 	
