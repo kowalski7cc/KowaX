@@ -1,10 +1,18 @@
 package com.xspacesoft.kowax.kernel;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.Logwolf;
+import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.Service;
+import com.xspacesoft.kowax.exceptions.DuplicateElementException;
 
 public class PluginManager {
 
@@ -16,6 +24,54 @@ public class PluginManager {
 		enabledPlugins = new ArrayList<ShellPlugin>();
 		taskManager = Initrfs.getTaskManager(tokenKey);
 		logwolf = Initrfs.getLogwolf();
+	}
+	
+	public boolean modprobe(File file) {
+		URL[] urls = null;
+		URL url;
+		try {
+			url = file.toURI().toURL();
+		} catch (MalformedURLException e1) {
+			return false;
+		}
+        urls = new URL[] { url };
+        URLClassLoader ucl = new URLClassLoader(urls);
+        try {
+			@SuppressWarnings("unchecked")
+			Class<? extends ShellPlugin> load = (Class<? extends ShellPlugin>) ucl.loadClass(file.getName());
+			ShellPlugin plugin = load.newInstance();
+			if (plugin.getAppletName() == null)
+				return false;
+			return true;
+		} catch (Exception e) {
+			return false;
+		} finally {
+			try {
+				ucl.close();
+			} catch (IOException e) {
+				logwolf.e(e);
+			}
+		}
+	}
+	
+	public void addPlugin(File file) throws MalformedURLException, ClassNotFoundException, ClassCastException {
+		URL[] urls = null;
+		URL url = file.toURI().toURL();
+        urls = new URL[] { url };
+        URLClassLoader ucl = new URLClassLoader(urls);
+        try {
+			@SuppressWarnings("unchecked")
+			Class<? extends ShellPlugin> load = (Class<? extends ShellPlugin>) ucl.loadClass(file.getName());
+			addPlugin(load);
+		} catch (Exception e) {
+			throw new ClassCastException();
+		} finally {
+			try {
+				ucl.close();
+			} catch (IOException e) {
+				logwolf.e(e);
+			}
+		}
 	}
 	
 	public void addPlugin(Class<? extends ShellPlugin> loadPlugin)

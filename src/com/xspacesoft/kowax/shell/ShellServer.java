@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import com.xspacesoft.kowax.Initrfs;
-import com.xspacesoft.kowax.kernel.MissingPluginCodeException;
+import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;

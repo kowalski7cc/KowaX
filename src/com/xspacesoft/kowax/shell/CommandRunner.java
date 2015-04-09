@@ -3,9 +3,9 @@ package com.xspacesoft.kowax.shell;
 import java.io.IOException;
 
 import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.exceptions.DuplicateElementException;
+import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.AliasManager;
-import com.xspacesoft.kowax.kernel.DuplicateElementException;
-import com.xspacesoft.kowax.kernel.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.ShellPlugin;
 import com.xspacesoft.kowax.kernel.Stdio;

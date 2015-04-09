@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.ShellPlugin;
 import com.xspacesoft.kowax.kernel.Stdio;
-import com.xspacesoft.kowax.kernel.KernelAccess;
 import com.xspacesoft.kowax.kernel.TaskManager.Task;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class SystemPlugin extends ShellPlugin implements KernelAccess {
+public class BusyBox extends ShellPlugin implements KernelAccess {
 	
 	private TokenKey tokenKey;
 
@@ -61,9 +61,10 @@ public class SystemPlugin extends ShellPlugin implements KernelAccess {
 			else
 				commandRunner.sudo(null);
 		} else if (job[0].equalsIgnoreCase("alias")) {
-			if(job.length>1)
+			if(job.length>1) {
+				Initrfs.getLogwolf().i(command);
 				makeAlias(command.substring(job[0].length()+1), commandRunner);
-			else
+			} else
 				stdio.println("Usage: alias alias=command");
 		} else if (job[0].equalsIgnoreCase("run")) {
 			runExternalClass(command.substring(job[0].length()+1), commandRunner);
@@ -81,9 +82,12 @@ public class SystemPlugin extends ShellPlugin implements KernelAccess {
 			PluginManager pluginManager = Initrfs.getPluginManager(tokenKey);
 			List<ShellPlugin> shellPlugins = pluginManager.getPlugins();
 			for(ShellPlugin shellPlugin : shellPlugins) {
-				stdio.print(shellPlugin.getAppletName() + "\t");
+				stdio.print(shellPlugin.getAppletName().substring(0, 1).toUpperCase() + 
+						shellPlugin.getAppletName().substring(1) + "   ");
 			}
 			stdio.println();
+		} else if (job[0].equalsIgnoreCase("echo")) {
+			stdio.println(command.substring(job[0].length()+1));
 		}
 	}
 
@@ -98,7 +102,8 @@ public class SystemPlugin extends ShellPlugin implements KernelAccess {
 	private void makeAlias(String substring, CommandRunner commandRunner) {
 		if((substring.split("=").length<2)||(substring.split("=").length>3)) {
 			String[] a = substring.split("=");
-			Initrfs.getAliasManager(tokenKey).newAlias(a[0], a[1]);
+			Initrfs.getLogwolf().i(substring);
+			Initrfs.getAliasManager(tokenKey).newAlias(a[1], a[0]);
 			commandRunner.getSocketHelper().println("Alias created");
 		}
 	}
@@ -116,7 +121,7 @@ public class SystemPlugin extends ShellPlugin implements KernelAccess {
 	private void showEula(Stdio stdio) {
 		stdio.println("End-User License Agreement for Project Security");
 		try {
-			InputStream is = this.getClass().getResourceAsStream("eula.txt");
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream("eula.txt");
 			Scanner scn = new Scanner(is);
 			while(scn.hasNext()) {
 				stdio.println(scn.nextLine() + "");
@@ -167,11 +172,14 @@ public class SystemPlugin extends ShellPlugin implements KernelAccess {
 
 	private void printTasks(CommandRunner commandRunner, Stdio stdio) {
 		stdio.println("Running processes:");
-		stdio.println("User      Pid       Start      Task Name");
+		stdio.println("User" + "\t" + "Pid" + "\t" +"Start" + "\t" + "Task Name");
 		SimpleDateFormat ft = new SimpleDateFormat ("HH:mm");
 		List<Task> tasks = Initrfs.getTaskManager(tokenKey).getRunningTasks();
 		for(Task task : tasks) {
-			stdio.println(task.getUser() + "      " + task.getPid() + "      " + ft.format(task.getDate()) + "      " + task.getAppletName());
+			stdio.println(task.getUser() + "\t" + 
+					task.getPid() + "\t" + 
+					ft.format(task.getDate()) + "\t" 
+					+ task.getAppletName());
 		}
 		stdio.println();
 	}

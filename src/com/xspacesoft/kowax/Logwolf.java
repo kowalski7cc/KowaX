@@ -50,6 +50,10 @@ public class Logwolf {
 		log(message, "ERRO");
 	}
 	
+	public void e(Exception e) {
+		e(e.toString());
+	}
+	
 	private void log(String message, String logType) {
 		if(!enableLogging)
 			return;
