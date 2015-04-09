@@ -11,6 +11,7 @@ import java.net.SocketTimeoutException;
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
@@ -22,72 +23,92 @@ import com.xspacesoft.kowax.shell.ShellServer;
 public class Initrfs {
 	
 	public final static String SHELLNAME = "KowaX";
-	public final static String VERSION = "2.0A"; //$NON-NLS-1$
-	private final static int DEFAULT_SERVER_PORT = 23;
+	public final static String VERSION = "Tecnical Preview"; //$NON-NLS-1$
+//	private static File currentDirectory;
 	private int port;
+	private boolean debug;
+	private boolean verbose;
 	private static TokenKey tokenKey;
 	private static Logwolf logwolf;
 	private static AliasManager aliasManager;
 	private static PluginManager pluginManager;
 	private static TaskManager taskManager;
 	private static UsersManager usersManager;
-	private static CronTab cronTab;
 	private static ServerSocket serverSocket;
 	private static boolean serviceEnabled;
+	
 	private static final Object[] CORE_PLUGINS_KERNELACCESS = {
-		SystemPlugin.class,
+		BusyBox.class,
 		CronTab.class,
 	};
 	private static final Object[] CORE_PLUGINS = {
 		AppExample.class,
 		HivemindControl.class,
-		DenialOfService.class,
-		Calculator.class,
+		DenialService.class,
+		Kalculator.class,
+		Kalendar.class,
 		Man.class,
 	};
 	
-	public static void main(String[] args) {
-		OptionsParser ap = new OptionsParser(args);
-		if(ap.getTag("h")||ap.getTag("help")) { //$NON-NLS-1$ //$NON-NLS-2$
-			printHelp();
-			System.exit(0);
-		}
-		int port = DEFAULT_SERVER_PORT;
-		if(ap.getArgument("port")!=null) { //$NON-NLS-1$
-			if(isNumber(ap.getArgument("port"))) { //$NON-NLS-1$
-				port = parseInt(ap.getArgument("port")); //$NON-NLS-1$
-			}
-		}
-		clear();
-		System.out.println("Booting " + SHELLNAME + " V" + VERSION);
-		int proc = Runtime.getRuntime().availableProcessors();
-		for (int i = 0; i < proc; i++) {
-			System.out.print("K ");
-		}
-		System.out.println();
-		System.out.println("----------------");
-		Initrfs init = new Initrfs(port);
-		init.start();
-	}
+//	public static void main(String[] args) {
+//		OptionsParser ap = new OptionsParser(args);
+//		if(ap.getTag("h")||ap.getTag("help")) { //$NON-NLS-1$ //$NON-NLS-2$
+////			printHelp();
+//			System.exit(0);
+//		}
+//		int port = DEFAULT_SERVER_PORT;
+//		if(ap.getArgument("port")!=null) { //$NON-NLS-1$
+//			if(isNumber(ap.getArgument("port"))) { //$NON-NLS-1$
+//				port = parseInt(ap.getArgument("port")); //$NON-NLS-1$
+//			}
+//		}
+//		clear();
+//		System.out.println("Booting " + SHELLNAME + " V" + VERSION);
+//		int proc = Runtime.getRuntime().availableProcessors();
+//		for (int i = 0; i < proc; i++) {
+//			System.out.print("K ");
+//		}
+//		System.out.println();
+//		System.out.println("----------------");
+//		Initrfs init = new Initrfs(port);
+//		init.start();
+//	}
 	
-	public Initrfs(int port) {
+	public Initrfs(int port, boolean debug, boolean verbose) {
 		this.port = port;
+		this.debug = debug;
+		this.verbose = verbose;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void start() {
 		logwolf = new Logwolf();
-		logwolf.setDebug(true);
-		logwolf.setVerbose(true);
+		logwolf.setDebug(debug);
+		logwolf.setVerbose(verbose);
 		logwolf.i("Started loading initrfs");
+		
+		// TOKEN KEY GENERATION
 		logwolf.v("Creating new TokenKey");
 		tokenKey = new TokenKey();
 		tokenKey.newKey();
 		logwolf.d("TokenKey: ==" + tokenKey.getKey() + "==");
+		
+		// TASK MANAGER LOAD-UP
 		logwolf.v("Starting TaksManager");
 		taskManager = new TaskManager();
 		taskManager.newTask("root", "KInit");
 		logwolf.i("Task manager started");
+		
+		// GET CURRENT WORK FOLDER AND FILE VARS
+//		currentDirectory = new File("");
+		if (!new File("bin").exists())
+			new File("bin").mkdir();
+		if (!new File("etc").exists())
+			new File("etc").mkdir();
+		if (!new File("home").exists())
+			new File("home").mkdir();
+		
+		// START PLUGIN MANAGER AND LOAD PLUGINS
 		logwolf.v("Starting PluginManager");
 		pluginManager = new PluginManager(tokenKey);
 		logwolf.v("PluginManager Started");
@@ -109,6 +130,8 @@ public class Initrfs {
 		}
 		logwolf.d("-----------------------");
 		logwolf.d("Default plugins load complete");
+		
+		// User Manager
 		logwolf.v("Loading UsersManager");
 		usersManager = new UsersManager();
 		File usersFile = new File("users.kls");
@@ -125,15 +148,15 @@ public class Initrfs {
 			logwolf.e("Error in loading users");
 			System.exit(1);
 		}
+		
+		// Alias Manager
 		logwolf.v("Loading AliasManager");
 		aliasManager = new AliasManager();
 		logwolf.v("AliasManager loaded");
 		aliasManager.loadDefaults();
 		logwolf.i(aliasManager.getLoadedAliases() + " aliases loded");
-//		logwolf.v("Starting Cron service");
-//		cronTab = new CronTab();
-//		cronTab.startCronTab();
-//		logwolf.i("Crontab service started");
+		
+		// Server open
 		serviceEnabled = true;
 		logwolf.i("Opening socket server");
 		try {
@@ -144,7 +167,7 @@ public class Initrfs {
 				String backupPort = port + "" + port;
 				logwolf.i("Trying to open server on port " + backupPort);
 				try {
-					serverSocket = new ServerSocket(parseInt(backupPort));
+					serverSocket = new ServerSocket(Stdio.parseInt(backupPort));
 				} catch (IOException e1) {
 					logwolf.e("Failed to open server on port " + backupPort + ": " + e.toString());
 				}
@@ -231,14 +254,6 @@ public class Initrfs {
 			return usersManager;
 		return null;
 	}
-
-	public static CronTab getCronTab(TokenKey token) {
-		if(token==null)
-			return null;
-		if(tokenKey.equals(token))
-			return cronTab;
-		return null;
-	}
 	
 	public static boolean isTokenValid(TokenKey token) {
 		if(token==null)
@@ -246,35 +261,6 @@ public class Initrfs {
 		if(tokenKey.equals(token))
 			return true;
 		return false;
-	}
-	
-	private static void printHelp() {
-		System.out.println("Kowax shell V" + VERSION); //$NON-NLS-1$
-		System.out.println();
-		System.out.println("Aviable options: "); //$NON-NLS-1$
-		System.out.println("-nogui"); //$NON-NLS-1$
-		System.out.println("-h -help"); //$NON-NLS-1$
-		System.out.println("-password"); //$NON-NLS-1$
-		System.out.println("-port"); //$NON-NLS-1$
-		System.out.println(""); //$NON-NLS-1$
-	}
-	
-	public static boolean isNumber(String string) {
-		try {
-			Integer.parseInt(string);
-			return true;
-		} catch (NumberFormatException e) {
-			return false;
-		}
-	}
-
-	public static int parseInt(String string) {
-		try {
-			int i = Integer.parseInt(string);
-			return i;
-		} catch (NumberFormatException e) {
-			return 0;
-		}
 	}
 	
 	public static void clear() {

@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.xspacesoft.kowax.kernel.KernelAccess;
-import com.xspacesoft.kowax.kernel.MissingPluginCodeException;
-import com.xspacesoft.kowax.kernel.Service;
+import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.Service;
+import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.ShellPlugin;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.TokenKey;

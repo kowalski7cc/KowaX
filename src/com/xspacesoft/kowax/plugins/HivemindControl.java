@@ -5,8 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.xspacesoft.kowax.Initrfs;
-import com.xspacesoft.kowax.kernel.Service;
+import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.kernel.ShellPlugin;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
@@ -241,8 +240,8 @@ public class HivemindControl extends ShellPlugin implements Service {
 					return;
 				stdio.print("Insert host port: ");
 				String bufferPort = stdio.scan();
-				if(Initrfs.isNumber(bufferPort))
-					port3 = Initrfs.parseInt(bufferPort);
+				if(Stdio.isNumber(bufferPort))
+					port3 = Stdio.parseInt(bufferPort);
 				else {
 					stdio.println("Invalid port. Usage 'hive add address port (alpha|beta|gamma|omega)'");
 					return;
@@ -259,8 +258,8 @@ public class HivemindControl extends ShellPlugin implements Service {
 				}
 			} else if (commands.length == 4) {
 				address3 = commands[1];
-				if(Initrfs.isNumber(commands[2])) {
-					port3 = Initrfs.parseInt(commands[2]);
+				if(Stdio.isNumber(commands[2])) {
+					port3 = Stdio.parseInt(commands[2]);
 				} else {
 					stdio.println("Invalid port. Usage 'hive add address port (alpha|beta|gamma|omega)'");
 					return;

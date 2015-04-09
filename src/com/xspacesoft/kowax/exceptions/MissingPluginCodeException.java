@@ -1,4 +1,4 @@
-package com.xspacesoft.kowax.kernel;
+package com.xspacesoft.kowax.exceptions;
 
 public class MissingPluginCodeException extends Exception {
 

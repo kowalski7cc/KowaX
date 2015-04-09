@@ -82,6 +82,7 @@ public class AliasManager {
 		aliases.add(new Alias("whoami", "system whoami"));
 		aliases.add(new Alias("version", "system version"));
 		aliases.add(new Alias("clear", "system clear"));
+		aliases.add(new Alias("echo", "system echo"));
 	}
 
 	/**

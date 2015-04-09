@@ -1,5 +1,6 @@
 package com.xspacesoft.kowax.kernel;
 
+import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
 public abstract class ShellPlugin {
@@ -12,21 +13,6 @@ public abstract class ShellPlugin {
 		SYSTEM_DEFAULTS,
 		ACCOUNT_LOGIN,
 		ACCOUNT_LOGOFF,
-	}
-	
-	/** Intent hooks for applications */
-	public interface IntentRunner {
-		/** Returns intents supported by app */
-		public Intent[] getIntents();
-		/** Runs specific intent for the app */
-		public void runIntent(Intent intent, CommandRunner commandRunner);
-	}
-	
-	public interface Deamon {
-		/** Returns if service is running in background */
-		public boolean isRunning();
-		/** Start or stops backgrounded service */
-		public void setRunning(boolean running);
 	}
 
 	/** Indicates applet name, called by CommandRUnner */
