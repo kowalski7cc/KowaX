@@ -35,7 +35,7 @@ public class Main {
 		if(ap.getTag("verbose")) {
 			verbose = true;
 		}
-		Initrfs.clear();
+		Initrfs.clear(DEFAULT_SYSTEM_OUT);
 		System.out.println("Booting " + Initrfs.SHELLNAME + " V" + Initrfs.VERSION);
 		int proc = Runtime.getRuntime().availableProcessors();
 		for (int i = 0; i < proc; i++) {
@@ -43,7 +43,7 @@ public class Main {
 		}
 		System.out.println();
 		System.out.println("----------------");
-		Initrfs init = new Initrfs(port, debug, verbose);
+		Initrfs init = new Initrfs(port, debug, verbose, DEFALUT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
 		init.start();
 	}
 

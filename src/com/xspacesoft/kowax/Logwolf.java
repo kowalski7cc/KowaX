@@ -2,6 +2,8 @@ package com.xspacesoft.kowax;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -12,18 +14,30 @@ public class Logwolf {
 	private boolean debug = false;
 	private boolean verbose = false;
 	private boolean enableLogging = true;
-	private PrintWriter writer;
-
-	public Logwolf(File file) throws FileNotFoundException, UnsupportedEncodingException {
-		writer = new PrintWriter("the-file-name.txt", "UTF-8");
-	}
+	private PrintWriter shellOutput;
+	private PrintWriter fileOutput;
 	
-	public Logwolf(boolean enableLogging) {
-		this.enableLogging = enableLogging;
+	
+
+	public Logwolf(PrintStream output, File file) throws FileNotFoundException, 
+		UnsupportedEncodingException, IOException {
+		if(!file.exists())
+			file.createNewFile();
+		fileOutput = new PrintWriter(file, "UTF-16");
+		shellOutput = new PrintWriter(output, true);
 	}
 	
 	public Logwolf() {
-		
+		shellOutput = null;
+	}
+	
+	public Logwolf(PrintStream output) {
+		shellOutput = new PrintWriter(output, true);
+		shellOutput.flush();
+	}
+
+	public void message(String message) {
+		log(message, null);
 	}
 	
 	public void i(String message) {
@@ -57,15 +71,25 @@ public class Logwolf {
 	private void log(String message, String logType) {
 		if(!enableLogging)
 			return;
-		String output = getCurrentTime() + " [" + logType + "]: " + message;
-		System.out.println(output);
-		if(writer!=null) {
-			writer.println(output);
+		String output;
+		if(logType!=null)
+			output = getCurrentTime() + " [" + logType + "]: " + message;
+		else
+			output = getCurrentTime() + "         " + message;
+		if (fileOutput!=null) {
+			fileOutput.println(output);
+		}
+		if (shellOutput!=null) {
+			shellOutput.println(output);
 		}
 	}
 	
 	public void close() {
-		writer.close();
+		if(fileOutput!=null) {
+			fileOutput.close();
+			fileOutput = null;
+		}
+		shellOutput = null;
 	}
 	
 	private static String getCurrentTime() {
