@@ -2,6 +2,8 @@ package com.xspacesoft.kowax;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,7 +18,14 @@ import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
-import com.xspacesoft.kowax.plugins.*;
+import com.xspacesoft.kowax.plugins.AppExample;
+import com.xspacesoft.kowax.plugins.BusyBox;
+import com.xspacesoft.kowax.plugins.CronTab;
+import com.xspacesoft.kowax.plugins.DenialService;
+import com.xspacesoft.kowax.plugins.HivemindControl;
+import com.xspacesoft.kowax.plugins.Kalculator;
+import com.xspacesoft.kowax.plugins.Kalendar;
+import com.xspacesoft.kowax.plugins.Man;
 import com.xspacesoft.kowax.shell.ShellServer;
 
 
@@ -28,6 +37,9 @@ public class Initrfs {
 	private int port;
 	private boolean debug;
 	private boolean verbose;
+	@SuppressWarnings("unused")
+	private static InputStream shellInput;
+	private static PrintStream shellOutput;
 	private static TokenKey tokenKey;
 	private static Logwolf logwolf;
 	private static AliasManager aliasManager;
@@ -50,29 +62,13 @@ public class Initrfs {
 		Man.class,
 	};
 	
-//	public static void main(String[] args) {
-//		OptionsParser ap = new OptionsParser(args);
-//		if(ap.getTag("h")||ap.getTag("help")) { //$NON-NLS-1$ //$NON-NLS-2$
-////			printHelp();
-//			System.exit(0);
-//		}
-//		int port = DEFAULT_SERVER_PORT;
-//		if(ap.getArgument("port")!=null) { //$NON-NLS-1$
-//			if(isNumber(ap.getArgument("port"))) { //$NON-NLS-1$
-//				port = parseInt(ap.getArgument("port")); //$NON-NLS-1$
-//			}
-//		}
-//		clear();
-//		System.out.println("Booting " + SHELLNAME + " V" + VERSION);
-//		int proc = Runtime.getRuntime().availableProcessors();
-//		for (int i = 0; i < proc; i++) {
-//			System.out.print("K ");
-//		}
-//		System.out.println();
-//		System.out.println("----------------");
-//		Initrfs init = new Initrfs(port);
-//		init.start();
-//	}
+	public Initrfs(int port, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
+		this.port = port;
+		this.debug = debug;
+		this.verbose = verbose;
+		shellInput = defalutSystemIn;
+		shellOutput = defaultSystemOut;
+	}
 	
 	public Initrfs(int port, boolean debug, boolean verbose) {
 		this.port = port;
@@ -82,7 +78,7 @@ public class Initrfs {
 	
 	@SuppressWarnings("unchecked")
 	public void start() {
-		logwolf = new Logwolf();
+		logwolf = new Logwolf(System.out);
 		logwolf.setDebug(debug);
 		logwolf.setVerbose(verbose);
 		logwolf.i("Started loading initrfs");
@@ -169,7 +165,7 @@ public class Initrfs {
 				try {
 					serverSocket = new ServerSocket(Stdio.parseInt(backupPort));
 				} catch (IOException e1) {
-					logwolf.e("Failed to open server on port " + backupPort + ": " + e.toString());
+					logwolf.e("Failed to open server on port " + backupPort + ": " + e1.toString());
 				}
 			} else if (e.getMessage().equalsIgnoreCase("Address already in use")) {
 				logwolf.e("Is already a server running on port " + port + "? " + e.toString());
@@ -264,6 +260,11 @@ public class Initrfs {
 	}
 	
 	public static void clear() {
+		if(shellOutput!=null)
+			clear(shellOutput);
+	}
+	
+	public static void clear(PrintStream printStream) {
 		boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 		boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
 		boolean isOsx = System.getProperty("os.name").toLowerCase().contains("osx");
@@ -271,22 +272,22 @@ public class Initrfs {
 			try {
 				Runtime.getRuntime().exec("cls");
 			} catch (IOException e) {
-				System.out.print("\u001b[2J");
-				System.out.flush();
+				printStream.print("\u001b[2J");
+				printStream.flush();
 			}
 		} else if(isLinux) {
-			System.out.print("\u001b[2J");
-			System.out.flush();
+			printStream.print("\u001b[2J");
+			printStream.flush();
 		} else if (isOsx) {
 			try {
 				Runtime.getRuntime().exec("clear");
 			} catch (IOException e) {
-				System.out.print("\u001b[2J");
-				System.out.flush();
+				printStream.print("\u001b[2J");
+				printStream.flush();
 			}
 		} else {
-			System.out.print("\u001b[2J");
-			System.out.flush();
+			printStream.print("\u001b[2J");
+			shellOutput.flush();
 		}
 	}
 
