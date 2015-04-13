@@ -20,8 +20,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<!-- Maven Shade Plugin -->
@@ -70,7 +70,7 @@
 							</classPath>
 							<icon>src/com/xspacesoft/kowax/application.ico</icon>
 							<jre>
-								<minVersion>1.8.0</minVersion>
+								<minVersion>1.7.0</minVersion>
 								<jdkPreference>preferJre</jdkPreference>
 							</jre>
 							<versionInfo>
