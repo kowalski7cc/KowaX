@@ -14,6 +14,13 @@ public class Main {
 	private final static boolean DEFAULT_OUTPUT_VERBOSE = true;
 	private final static InputStream DEFALUT_SYSTEM_IN = System.in;
 	private final static PrintStream DEFAULT_SYSTEM_OUT = System.out;
+	private final static String[] TITLE = {
+		"         ___  __    __   _   __  __",
+		"  /\\ /\\ /___\\/ / /\\ \\ \\ /_\\  \\ \\/ /",
+		" / //_///  //\\ \\/  \\/ ///_\\\\  \\  / ",
+		"/ __ \\/ \\_//  \\  /\\  //  _  \\ /  \\ ",
+		"\\/  \\/\\___/    \\/  \\/ \\_/ \\_//_/\\_\\",
+	};
 
 	public static void main(String[] args) {
 		OptionsParser ap = new OptionsParser(args);
@@ -35,8 +42,17 @@ public class Main {
 		if(ap.getTag("verbose")) {
 			verbose = true;
 		}
-		Initrfs.clear(DEFAULT_SYSTEM_OUT);
-		System.out.println("Booting " + Initrfs.SHELLNAME + " V" + Initrfs.VERSION);
+		if(!debug)
+			Initrfs.clear(DEFAULT_SYSTEM_OUT);
+		System.out.println();
+		for (String String : TITLE) {
+			System.out.println(String);
+		}
+		System.out.println();
+		if(Stdio.isNumber(Initrfs.VERSION.charAt(0)))
+			System.out.println("Welcome to " + Initrfs.SHELLNAME + " Version " + Initrfs.VERSION + "!");
+		else
+			System.out.println("Welcome to " + Initrfs.SHELLNAME + " \"" + Initrfs.VERSION + "\" release!");
 		int proc = Runtime.getRuntime().availableProcessors();
 		for (int i = 0; i < proc; i++) {
 			System.out.print("K ");
