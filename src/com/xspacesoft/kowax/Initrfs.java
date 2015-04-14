@@ -22,6 +22,7 @@ import com.xspacesoft.kowax.plugins.AppExample;
 import com.xspacesoft.kowax.plugins.BusyBox;
 import com.xspacesoft.kowax.plugins.CronTab;
 import com.xspacesoft.kowax.plugins.DenialService;
+import com.xspacesoft.kowax.plugins.Fortune;
 import com.xspacesoft.kowax.plugins.HivemindControl;
 import com.xspacesoft.kowax.plugins.Kalculator;
 import com.xspacesoft.kowax.plugins.Kalendar;
@@ -60,6 +61,7 @@ public class Initrfs {
 		Kalculator.class,
 		Kalendar.class,
 		Man.class,
+		Fortune.class,
 	};
 	
 	public Initrfs(int port, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {

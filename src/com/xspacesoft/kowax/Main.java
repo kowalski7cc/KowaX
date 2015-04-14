@@ -42,22 +42,23 @@ public class Main {
 		if(ap.getTag("verbose")) {
 			verbose = true;
 		}
-		if(!debug)
+		if(!debug) {
 			Initrfs.clear(DEFAULT_SYSTEM_OUT);
-		System.out.println();
+			System.out.println();
+		}
 		for (String String : TITLE) {
 			System.out.println(String);
+		}
+		int proc = Runtime.getRuntime().availableProcessors();
+		System.out.println();
+		for (int i = 0; i < proc; i++) {
+			System.out.print("K ");
 		}
 		System.out.println();
 		if(Stdio.isNumber(Initrfs.VERSION.charAt(0)))
 			System.out.println("Welcome to " + Initrfs.SHELLNAME + " Version " + Initrfs.VERSION + "!");
 		else
-			System.out.println("Welcome to " + Initrfs.SHELLNAME + " \"" + Initrfs.VERSION + "\" release!");
-		int proc = Runtime.getRuntime().availableProcessors();
-		for (int i = 0; i < proc; i++) {
-			System.out.print("K ");
-		}
-		System.out.println();
+			System.out.println("Welcome to " + Initrfs.SHELLNAME + " \"" + Initrfs.VERSION + "\" release!");		
 		System.out.println("----------------");
 		Initrfs init = new Initrfs(port, debug, verbose, DEFALUT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
 		init.start();

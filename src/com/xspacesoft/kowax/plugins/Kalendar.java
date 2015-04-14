@@ -1,5 +1,8 @@
 package com.xspacesoft.kowax.plugins;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import com.xspacesoft.kowax.kernel.ShellPlugin;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
@@ -8,7 +11,7 @@ public class Kalendar extends ShellPlugin {
 
 	@Override
 	public String getAppletName() {
-		return "cal";
+		return "Cal";
 	}
 
 	@Override
@@ -23,8 +26,10 @@ public class Kalendar extends ShellPlugin {
 
 	@Override
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
-		// TODO Auto-generated method stub
-
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 1);
+		SimpleDateFormat format1 = new SimpleDateFormat("EEE, d MMM yyyy hh 'o''clock' a, zzzz");
+		stdio.println("Today is " + format1.format(cal.getTime()));
 	}
 
 	@Override

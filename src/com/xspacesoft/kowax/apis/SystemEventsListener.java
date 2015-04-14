@@ -1,14 +1,13 @@
 package com.xspacesoft.kowax.apis;
 
-import com.xspacesoft.kowax.kernel.ShellPlugin.Intent;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
 /** Intent hooks for applications */
-public interface IntentListener {
+public interface SystemEventsListener {
 
 	/** Returns intents supported by app */
-	public Intent[] getIntents();
+	public SystemEvent[] getEvents();
 	/** Runs specific intent for the app */
-	public void runIntent(Intent intent, CommandRunner commandRunner);
+	public void runIntent(SystemEvent event, String extraValue, CommandRunner commandRunner);
 	
 }
