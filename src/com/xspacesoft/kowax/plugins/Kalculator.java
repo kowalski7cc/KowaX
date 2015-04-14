@@ -25,6 +25,10 @@ public class Kalculator extends ShellPlugin {
 
 	@Override
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
+		if(command==null) {
+			stdio.println(getHint());
+			return;
+		}
 		try {
 			stdio.println(String.valueOf(solve(command, stdio)));
 		} catch (ArithmeticException e) {

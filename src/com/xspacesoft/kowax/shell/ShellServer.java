@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.apis.SystemEvent;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.TaskManager;
@@ -77,10 +78,14 @@ public class ShellServer extends Thread {
 				return;
 			}
 		}
+		
+		// USER LOGGED IN!!!
 		sockethelper.clear();
 		Initrfs.getLogwolf().i(session.getUsername() + " logged in");;
 		sockethelper.println("Welcome back, " + session.getUsername() + "!");
 		commandrunner = new CommandRunner(session, tokenKey, false);
+		// Send SystemEvent.USER_LOGIN to apps
+		commandrunner.sendSystemEvent(SystemEvent.USER_LOGIN, session.getUsername(), tokenKey, false);
 		while(session.isSessionActive()) {
 			if(!session.getSockethelper().isOpen()){
 				session.setSessionActive(false);
@@ -112,9 +117,11 @@ public class ShellServer extends Thread {
 		}
 		try {
 			sockethelper.getSocket(tokenKey).close();
-		} catch (IOException e) { }
-		taskManager.removeTask(pid);
-		Initrfs.getLogwolf().i(sockethelper.getRemoteAddress() + " disconnected");
+		} catch (IOException e) { } finally {
+			taskManager.removeTask(pid);
+			commandrunner.sendSystemEvent(SystemEvent.USER_LOGOUT, session.getUsername(), tokenKey, false);
+			Initrfs.getLogwolf().i(sockethelper.getRemoteAddress() + " disconnected");
+		}
 	}
 
 }

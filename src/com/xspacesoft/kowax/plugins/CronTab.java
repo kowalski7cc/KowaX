@@ -212,19 +212,18 @@ public class CronTab extends ShellPlugin implements Service, KernelAccess {
 
 	@Override
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
-		
+		stdio.println(getHint());
 		
 	}
 
 	@Override
 	public String getDescription() {
-		return null;
+		return "Daemon to execute scheduled commands";
 	}
 
 	@Override
 	public String getHint() {
-		// TODO Auto-generated method stub
-		return null;
+		return "No arguments yet";
 	}
 	
 }

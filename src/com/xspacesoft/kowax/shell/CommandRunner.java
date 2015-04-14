@@ -3,7 +3,9 @@ package com.xspacesoft.kowax.shell;
 import java.io.IOException;
 
 import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.apis.SystemEvent;
 import com.xspacesoft.kowax.exceptions.DuplicateElementException;
+import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
@@ -238,5 +240,12 @@ public class CommandRunner {
 	
 	public Stdio getSocketHelper() {
 		return session.getSockethelper();
+	}
+	
+	public void sendSystemEvent(SystemEvent event, String extraValue, TokenKey tokenKey, boolean sudo) {
+		if(!Initrfs.isTokenValid(tokenKey))
+			throw new InsufficientPermissionsException();
+		pluginmanager.sendSystemEvent(event, extraValue, this);
+		
 	}
 }

@@ -5,16 +5,6 @@ import com.xspacesoft.kowax.shell.CommandRunner;
 
 public abstract class ShellPlugin {
 	
-	public enum Intent {
-		SYSTEM_BOOT,
-		SYSTEM_SHUTDOWN,
-		SYSTEM_SAVE,
-		SYSTEM_RELOAD,
-		SYSTEM_DEFAULTS,
-		ACCOUNT_LOGIN,
-		ACCOUNT_LOGOFF,
-	}
-
 	/** Indicates applet name, called by CommandRUnner */
 	public abstract String getAppletName();
 	/** Indicates applet version */

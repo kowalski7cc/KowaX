@@ -68,7 +68,7 @@
 								<mainClass>com.xspacesoft.kowax.Main</mainClass>
 								<preCp>anything</preCp>
 							</classPath>
-							<icon>src/com/xspacesoft/kowax/application.ico</icon>
+							<icon>${basedir}/src/com/xspacesoft/kowax/application.ico</icon>
 							<jre>
 								<minVersion>1.7.0</minVersion>
 								<jdkPreference>preferJre</jdkPreference>
@@ -89,6 +89,25 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Mac OSX Bundle
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>osxappbundle-maven-plugin</artifactId>
+				<version>1.0-alpha-1</version>
+				<configuration>
+					<mainClass>com.xspacesoft.kowax.Main</mainClass>
+					<iconFile>${basedir}/src/com/xspacesoft/kowax/application.icns</iconFile>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			-->
 		</plugins>
 	</build>
 	<name>KowaX</name>

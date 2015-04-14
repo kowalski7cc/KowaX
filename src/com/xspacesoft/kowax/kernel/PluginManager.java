@@ -6,26 +6,30 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.Logwolf;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.Service;
+import com.xspacesoft.kowax.apis.SystemEvent;
+import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.exceptions.DuplicateElementException;
+import com.xspacesoft.kowax.shell.CommandRunner;
 
 public class PluginManager {
 
 	private List<ShellPlugin> enabledPlugins;
 	private TaskManager taskManager;
 	private Logwolf logwolf;
-	
+
 	public PluginManager(TokenKey tokenKey) {
 		enabledPlugins = new ArrayList<ShellPlugin>();
 		taskManager = Initrfs.getTaskManager(tokenKey);
 		logwolf = Initrfs.getLogwolf();
 	}
-	
+
 	public boolean modprobe(File file) {
 		URL[] urls = null;
 		URL url;
@@ -34,9 +38,9 @@ public class PluginManager {
 		} catch (MalformedURLException e1) {
 			return false;
 		}
-        urls = new URL[] { url };
-        URLClassLoader ucl = new URLClassLoader(urls);
-        try {
+		urls = new URL[] { url };
+		URLClassLoader ucl = new URLClassLoader(urls);
+		try {
 			@SuppressWarnings("unchecked")
 			Class<? extends ShellPlugin> load = (Class<? extends ShellPlugin>) ucl.loadClass(file.getName());
 			ShellPlugin plugin = load.newInstance();
@@ -53,13 +57,13 @@ public class PluginManager {
 			}
 		}
 	}
-	
+
 	public void addPlugin(File file) throws MalformedURLException, ClassNotFoundException, ClassCastException {
 		URL[] urls = null;
 		URL url = file.toURI().toURL();
-        urls = new URL[] { url };
-        URLClassLoader ucl = new URLClassLoader(urls);
-        try {
+		urls = new URL[] { url };
+		URLClassLoader ucl = new URLClassLoader(urls);
+		try {
 			@SuppressWarnings("unchecked")
 			Class<? extends ShellPlugin> load = (Class<? extends ShellPlugin>) ucl.loadClass(file.getName());
 			addPlugin(load);
@@ -73,7 +77,7 @@ public class PluginManager {
 			}
 		}
 	}
-	
+
 	public void addPlugin(Class<? extends ShellPlugin> loadPlugin)
 			throws InstantiationException, IllegalAccessException {
 		addPlugin(loadPlugin, null);
@@ -114,7 +118,7 @@ public class PluginManager {
 		enabledPlugins.add(newPlugin);
 		logwolf.d("Plugin " + pluginName + " load complete");
 	}
-	
+
 	public String[] getPluginsName() {
 		String[] plugins = new String[enabledPlugins.size()];
 		for (int i = 0; i < plugins.length; i++) {
@@ -122,11 +126,11 @@ public class PluginManager {
 		}
 		return plugins;
 	}
-	
+
 	public int getPluginsNumber() {
 		return enabledPlugins.size();
 	}
-	
+
 	public List<ShellPlugin> getPlugins() {
 		return enabledPlugins;
 	}
@@ -140,6 +144,16 @@ public class PluginManager {
 			} catch (Exception e){
 				// Plugin has not a service
 			}
+		}
+	}
+
+	public void sendSystemEvent(SystemEvent event, String extraValue, CommandRunner commandRunner) {
+		for (ShellPlugin thisPlugin : enabledPlugins) {
+			try {
+				SystemEventsListener listeners = (SystemEventsListener) thisPlugin;
+				if (new ArrayList<SystemEvent>(Arrays.asList(listeners.getEvents())).contains(event))
+					listeners.runIntent(event, extraValue, commandRunner);
+			} catch (Exception e) { }
 		}
 	}
 
