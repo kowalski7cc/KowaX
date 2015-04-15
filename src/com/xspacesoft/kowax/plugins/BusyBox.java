@@ -114,7 +114,7 @@ public class BusyBox extends ShellPlugin implements KernelAccess {
 	}
 
 	private void showAbout(Stdio stdio) {
-		stdio.println("Project Security by Kowalski7cc. Copyright XSpaceSoft 2009-2015.");
+		stdio.println(Initrfs.SHELLNAME + " by Kowalski7cc. Copyright XSpaceSoft 2009-2015.");
 		stdio.println();
 	}
 
@@ -137,7 +137,7 @@ public class BusyBox extends ShellPlugin implements KernelAccess {
 		if(!commandRunner.isSudo()) {
 			stdio.println("Must be root");
 		} else {
-			stdio.println("Shuttding down");
+			stdio.println("Shutting down");
 			Initrfs.getLogwolf().i("Stopping " + Initrfs.SHELLNAME);
 			Initrfs.getLogwolf().i("Stopping all services");
 			Initrfs.getPluginManager(tokenKey).stopServices();
@@ -157,8 +157,7 @@ public class BusyBox extends ShellPlugin implements KernelAccess {
 	}
 
 	private void garbageCollector() {
-		// TODO Auto-generated method stub
-		
+		System.gc();
 	}
 
 	private void hwInfo(Stdio stdio) {		

@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
+import com.xspacesoft.kowax.apis.SystemEvent;
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.ShellPlugin;
@@ -18,15 +19,7 @@ import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
-import com.xspacesoft.kowax.plugins.AppExample;
-import com.xspacesoft.kowax.plugins.BusyBox;
-import com.xspacesoft.kowax.plugins.CronTab;
-import com.xspacesoft.kowax.plugins.DenialService;
-import com.xspacesoft.kowax.plugins.Fortune;
-import com.xspacesoft.kowax.plugins.HivemindControl;
-import com.xspacesoft.kowax.plugins.Kalculator;
-import com.xspacesoft.kowax.plugins.Kalendar;
-import com.xspacesoft.kowax.plugins.Man;
+import com.xspacesoft.kowax.plugins.*;
 import com.xspacesoft.kowax.shell.ShellServer;
 
 
@@ -52,6 +45,8 @@ public class Initrfs {
 	
 	private static final Object[] CORE_PLUGINS_KERNELACCESS = {
 		BusyBox.class,
+		Authenticator.class,
+		KWindowManager.class,
 		CronTab.class,
 	};
 	private static final Object[] CORE_PLUGINS = {
@@ -184,6 +179,7 @@ public class Initrfs {
 		if (serverSocket == null) {
 			System.exit(1);
 		}
+		pluginManager.sendSystemEvent(SystemEvent.SYSTEM_START, null, tokenKey);
 		try {
 			serverSocket.setSoTimeout(1000);
 			logwolf.i("Server ready!");
