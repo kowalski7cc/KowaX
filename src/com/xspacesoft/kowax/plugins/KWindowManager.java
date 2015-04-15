@@ -36,7 +36,7 @@ public class KWindowManager extends ShellPlugin implements SystemEventsListener,
 	private TokenKey tokenKey;
 	private static KOrg kOrg;
 	private final static int DEFAULT_PORT = 4096;
-	
+
 	@Override
 	public void setTokenKey(TokenKey tokenKey) {
 		this.tokenKey = tokenKey;
@@ -46,7 +46,7 @@ public class KWindowManager extends ShellPlugin implements SystemEventsListener,
 		kOrg = new KOrg(DEFAULT_PORT, tokenKey);
 	}
 
-	
+
 	@Override
 	public Boolean isServiceRunning() {
 		if(kOrg==null)
@@ -79,7 +79,7 @@ public class KWindowManager extends ShellPlugin implements SystemEventsListener,
 
 	@Override
 	public void runIntent(SystemEvent event, String extraValue, CommandRunner commandRunner) {
-		
+
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class KWindowManager extends ShellPlugin implements SystemEventsListener,
 
 	@Override
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
-		
+
 	}
 
 	@Override

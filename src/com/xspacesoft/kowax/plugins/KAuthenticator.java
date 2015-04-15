@@ -16,15 +16,15 @@ import com.xspacesoft.kowax.shell.CommandRunner;
 public class KAuthenticator extends ShellPlugin implements KernelAccess, SystemEventsListener {
 
 	private TokenKey tokenKey;
-	
+
 	private class UserConfig implements Serializable {
 		private static final long serialVersionUID = -6383648922397913049L;
 		private String username;
 		private String salt;
 	}
-	
+
 	private List<UserConfig> users;
-	
+
 	@Override
 	public SystemEvent[] getEvents() {
 		return new SystemEvent[] {SystemEvent.SYSTEM_START, SystemEvent.USER_LOGIN };
@@ -52,7 +52,7 @@ public class KAuthenticator extends ShellPlugin implements KernelAccess, SystemE
 			break;
 		default:
 			break;
-		
+
 		}
 	}
 
@@ -104,7 +104,7 @@ public class KAuthenticator extends ShellPlugin implements KernelAccess, SystemE
 			setup(stdio);
 			break;
 		case "enable":
-			
+
 			break;
 		case "disable":
 			break;
@@ -114,7 +114,7 @@ public class KAuthenticator extends ShellPlugin implements KernelAccess, SystemE
 	}
 
 	private void setup(Stdio stdio) {
-		
+
 	}
 
 	@Override
