@@ -45,8 +45,8 @@ public class Initrfs {
 	
 	private static final Object[] CORE_PLUGINS_KERNELACCESS = {
 		BusyBox.class,
-		Authenticator.class,
-		KWindowManager.class,
+//		KAuthenticator.class,
+//		KWindowManager.class,
 		CronTab.class,
 	};
 	private static final Object[] CORE_PLUGINS = {
