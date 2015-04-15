@@ -238,6 +238,12 @@ public class CommandRunner {
 		return session.getUsername();
 	}
 	
+	public Session getSession(TokenKey tokenKey) {
+		if(Initrfs.isTokenValid(tokenKey))
+			return session;
+		return null;
+	}
+	
 	public Stdio getSocketHelper() {
 		return session.getSockethelper();
 	}

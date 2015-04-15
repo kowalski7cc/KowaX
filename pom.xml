@@ -89,27 +89,57 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Mac OSX Bundle
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>osxappbundle-maven-plugin</artifactId>
-				<version>1.0-alpha-1</version>
-				<configuration>
-					<mainClass>com.xspacesoft.kowax.Main</mainClass>
-					<iconFile>${basedir}/src/com/xspacesoft/kowax/application.icns</iconFile>
-				</configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<id>attach-sources</id>
 						<goals>
-							<goal>bundle</goal>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- JavaDoc generation plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<name>KowaX</name>
 	<url>https://bitbucket.org/xspacesoft/kowax</url>
+	<organization>
+		<name>XSpaceSoft Informatics</name>
+		<url>www.xspacesoft.com</url>
+	</organization>
+	<issueManagement>
+		<system>BitBucket</system>
+		<url>https://bitbucket.org/xspacesoft/kowax/issues?status=new&amp;status=open</url>
+	</issueManagement>
+	<ciManagement>
+		<system>drone.io</system>
+		<url>https://drone.io/bitbucket.org/xspacesoft/kowax</url>
+	</ciManagement>
 </project>

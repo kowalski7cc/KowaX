@@ -2,6 +2,7 @@ package com.xspacesoft.kowax;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.xspacesoft.kowax.kernel.Stdio;
 
@@ -23,6 +24,8 @@ public class Main {
 	};
 
 	public static void main(String[] args) {
+		PrintWriter out = new PrintWriter(DEFAULT_SYSTEM_OUT, true);
+//		out.flush();
 		OptionsParser ap = new OptionsParser(args);
 		if(ap.getTag("h")||ap.getTag("help")) {
 //			Initrfs.printHelp();
@@ -49,19 +52,39 @@ public class Main {
 		for (String String : TITLE) {
 			System.out.println(String);
 		}
-		int proc = Runtime.getRuntime().availableProcessors();
-		System.out.println();
-		for (int i = 0; i < proc; i++) {
-			System.out.print("K ");
+		try {
+			Thread.sleep(1000);
+			int proc = Runtime.getRuntime().availableProcessors();
+			System.out.println();
+			for (int i = 0; i < proc; i++) {
+				System.out.print("K ");
+				Thread.sleep(150);
+			}
+			System.out.println();
+			if(Stdio.isNumber(Initrfs.VERSION.charAt(0)))
+				printScroll(out, "Welcome to " + Initrfs.SHELLNAME + " Version " + Initrfs.VERSION + "!", 20);
+			else
+				printScroll(out, "Welcome to " + Initrfs.SHELLNAME + " \"" + Initrfs.VERSION + "\" release!", 20);
+			Thread.sleep(600);
+			System.out.println("----------------");
+			Thread.sleep(10);
+			Initrfs init = new Initrfs(port, debug, verbose, DEFALUT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
+			out.flush();
+			init.start();
+		} catch (InterruptedException e) {
+			
 		}
-		System.out.println();
-		if(Stdio.isNumber(Initrfs.VERSION.charAt(0)))
-			System.out.println("Welcome to " + Initrfs.SHELLNAME + " Version " + Initrfs.VERSION + "!");
-		else
-			System.out.println("Welcome to " + Initrfs.SHELLNAME + " \"" + Initrfs.VERSION + "\" release!");		
-		System.out.println("----------------");
-		Initrfs init = new Initrfs(port, debug, verbose, DEFALUT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
-		init.start();
+	}
+	
+	private static void printScroll(PrintWriter out, String string, int pause) throws InterruptedException {
+		char[] output = string.toCharArray();
+		out.flush();
+		for (int i = 0; i < output.length; i++) {
+			System.out.print(output[i]);
+			Thread.sleep(pause);
+		}
+		out.flush();
+		out.println();
 	}
 
 }

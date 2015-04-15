@@ -96,7 +96,7 @@ public class PluginManager {
 				throw new DuplicateElementException(newPlugin.getAppletName());
 			}
 		}
-		if((tokenKey!=null)&&Initrfs.isTokenValid(tokenKey)) {
+		if((tokenKey!=null)&&(Initrfs.isTokenValid(tokenKey))) {
 			try {
 				KernelAccess sup = (KernelAccess) newPlugin;
 				sup.setTokenKey(tokenKey);
@@ -108,9 +108,14 @@ public class PluginManager {
 		}
 		try {
 			Service service = (Service) newPlugin;
-			service.startService();
-			taskManager.newTask("root", service.getServiceName());
-			Initrfs.getLogwolf().d("Started " + pluginName + " service @" + service.toString().split("@")[1]);
+			if(service.getServiceName()!=null) {
+				service.startService();
+				taskManager.newTask("root", service.getServiceName());
+				Initrfs.getLogwolf().d("Started " + pluginName + " service @" + service.toString().split("@")[1]);
+			} else {
+				Initrfs.getLogwolf().d("Can't start " + pluginName + ", invalid service name.");
+			}
+			
 		} catch (Exception e) {
 			// Can't load plugin as service
 			logwolf.d("Plugin " + pluginName + " has not a service to start");
@@ -155,6 +160,11 @@ public class PluginManager {
 					listeners.runIntent(event, extraValue, commandRunner);
 			} catch (Exception e) { }
 		}
+	}
+
+	public void sendSystemEvent(SystemEvent event, String extraValue, TokenKey tokenKey) {
+		CommandRunner commandRunner = new CommandRunner(tokenKey, false);
+		sendSystemEvent(event, extraValue, commandRunner);
 	}
 
 }

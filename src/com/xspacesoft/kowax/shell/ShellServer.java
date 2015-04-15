@@ -115,6 +115,8 @@ public class ShellServer extends Thread {
 				}
 			}
 		}
+		
+		// User disconnect
 		try {
 			sockethelper.getSocket(tokenKey).close();
 		} catch (IOException e) { } finally {
