@@ -9,11 +9,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Random;
 
-import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class DenialService extends ShellPlugin {
+public class DenialService extends PluginBase {
 	
 	protected enum DosProtcol {
 		TCP,
@@ -288,6 +288,7 @@ public class DenialService extends ShellPlugin {
 				return new String(buffer);
 			}
 
+			@Override
 			public void run() {
 				Boolean running = true;
 				while(running) {

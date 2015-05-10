@@ -5,29 +5,32 @@ import java.util.List;
 
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.apis.KernelAccess;
-import com.xspacesoft.kowax.apis.SystemEvent;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
-import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class KAuthenticator extends ShellPlugin implements KernelAccess, SystemEventsListener {
+public class KAuthenticator extends PluginBase implements KernelAccess, SystemEventsListener {
 
 	private TokenKey tokenKey;
 
 	private class UserConfig implements Serializable {
 		private static final long serialVersionUID = -6383648922397913049L;
+		@SuppressWarnings("unused")
 		private String username;
+		@SuppressWarnings("unused")
 		private String salt;
 	}
 
+	@SuppressWarnings("unused")
 	private List<UserConfig> users;
 
 	@Override
 	public SystemEvent[] getEvents() {
-		return new SystemEvent[] {SystemEvent.SYSTEM_START, SystemEvent.USER_LOGIN };
+		return new SystemEvent[] {SystemEvent.SYSTEM_START, SystemEvent.USER_LOGIN_SUCCESS };
 	}
 
 	@Override
@@ -42,7 +45,7 @@ public class KAuthenticator extends ShellPlugin implements KernelAccess, SystemE
 			}
 			loadSettings();
 			break;
-		case USER_LOGIN:
+		case USER_LOGIN_SUCCESS:
 			if(!Initrfs.isTokenValid(tokenKey)) {
 				stdio.println("Plugin not correctly configured, please contact system admin.");
 				stdio.println(new InsufficientPermissionsException().toString());

@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.xspacesoft.kowax.apis.Service;
-import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class HivemindControl extends ShellPlugin implements Service {
+public class HivemindControl extends PluginBase implements Service {
 	
 	protected class HivemindHost {
 		
@@ -154,6 +154,7 @@ public class HivemindControl extends ShellPlugin implements Service {
 			this.setName("Hivemind service");
 		}
 		
+		@Override
 		public void run() {
 			running = true;
 			while (running) {

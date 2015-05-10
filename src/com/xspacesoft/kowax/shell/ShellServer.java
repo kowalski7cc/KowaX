@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 import com.xspacesoft.kowax.Initrfs;
-import com.xspacesoft.kowax.apis.SystemEvent;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
@@ -85,7 +85,7 @@ public class ShellServer extends Thread {
 		sockethelper.println("Welcome back, " + session.getUsername() + "!");
 		commandrunner = new CommandRunner(session, tokenKey, false);
 		// Send SystemEvent.USER_LOGIN to apps
-		commandrunner.sendSystemEvent(SystemEvent.USER_LOGIN, session.getUsername(), tokenKey, false);
+		commandrunner.sendSystemEvent(SystemEvent.USER_LOGIN_SUCCESS, session.getUsername(), tokenKey, false);
 		while(session.isSessionActive()) {
 			if(!session.getSockethelper().isOpen()){
 				session.setSessionActive(false);

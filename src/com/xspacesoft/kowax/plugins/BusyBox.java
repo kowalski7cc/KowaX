@@ -9,13 +9,13 @@ import java.util.Scanner;
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.kernel.PluginManager;
-import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.TaskManager.Task;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class BusyBox extends ShellPlugin implements KernelAccess {
+public class BusyBox extends PluginBase implements KernelAccess {
 	
 	private TokenKey tokenKey;
 
@@ -80,8 +80,8 @@ public class BusyBox extends ShellPlugin implements KernelAccess {
 			stdio.reverse();
 		} else if (job[0].equalsIgnoreCase("help")) {
 			PluginManager pluginManager = Initrfs.getPluginManager(tokenKey);
-			List<ShellPlugin> shellPlugins = pluginManager.getPlugins();
-			for(ShellPlugin shellPlugin : shellPlugins) {
+			List<PluginBase> shellPlugins = pluginManager.getPlugins();
+			for(PluginBase shellPlugin : shellPlugins) {
 				stdio.print(shellPlugin.getAppletName().substring(0, 1).toUpperCase() + 
 						shellPlugin.getAppletName().substring(1) + "   ");
 			}

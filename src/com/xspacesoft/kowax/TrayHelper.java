@@ -33,7 +33,8 @@ public class TrayHelper {
         trayIcon = new TrayIcon(img);
         MenuItem modeHint = new MenuItem("Project security");
         modeHint.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+			public void actionPerformed(ActionEvent e) {
                 // TODO add window
               }
             });
@@ -48,6 +49,7 @@ public class TrayHelper {
 		String passwordHint = new String("Password:");
 		MenuItem exit = new MenuItem("Exit");
 		exit.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				removeTray();
 				System.exit(0);

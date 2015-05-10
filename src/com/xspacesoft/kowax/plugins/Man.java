@@ -1,10 +1,10 @@
 package com.xspacesoft.kowax.plugins;
 
-import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class Man extends ShellPlugin {
+public class Man extends PluginBase {
 
 	@Override
 	public String getAppletName() {

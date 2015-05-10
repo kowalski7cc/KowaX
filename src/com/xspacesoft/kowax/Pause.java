@@ -49,8 +49,6 @@ public class Pause {
 			break;
 		case "pl": output = "Naciśnij klawisz Enter, aby kontynuować";
 			break;
-		case "ru": output = "Нажмите клавишу ВВОД для продолжения";
-			break;
 		default: output = "Press enter to continue...";
 		}
 		printWriter.printf(output);
