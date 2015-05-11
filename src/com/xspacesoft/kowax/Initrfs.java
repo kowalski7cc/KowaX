@@ -10,7 +10,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-import com.xspacesoft.kowax.WindowSystem.KDirectDraw;
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.PluginBase;
@@ -22,6 +21,7 @@ import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
 import com.xspacesoft.kowax.plugins.*;
 import com.xspacesoft.kowax.shell.ShellServer;
+import com.xspacesoft.kowax.windowsystem.KDirectDraw;
 
 
 public class Initrfs {
