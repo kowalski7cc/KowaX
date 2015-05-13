@@ -15,6 +15,9 @@ import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 
 public class ShellServer extends Thread {
 	
+	private final static boolean LOCALHOST_FORCE_LOGIN_ADMIN = true;
+	private final static String LOCALHOST_FORCE_LOGIN_USERNAME = "admin";
+	private final static String LOCALHOST_FORCE_LOGIN_PASSWORD = "password";
 	private Stdio sockethelper;
 	private TokenKey tokenKey;
 	private UsersManager usersManager;
@@ -41,43 +44,58 @@ public class ShellServer extends Thread {
 		sockethelper.printTitle("Kowax Shell");
 		sockethelper.println();
 		session = new Session(sockethelper);
-		int attempts = 0;
-		while(!session.isAuthenticated()) {
-			sockethelper.print("Username: ");
-			String username = sockethelper.scan();
-			if(username==null) {
-				try {
-					sockethelper.getSocket(tokenKey).close();
-				} catch (IOException e) { }
-				return;
+		if(LOCALHOST_FORCE_LOGIN_ADMIN && sockethelper.getSocket(tokenKey).getInetAddress().isLoopbackAddress()) {
+			try {
+				if(usersManager.isPasswordValid(LOCALHOST_FORCE_LOGIN_USERNAME, LOCALHOST_FORCE_LOGIN_PASSWORD)) {
+					session.setAuthenticated(true);
+					session.setUsername(LOCALHOST_FORCE_LOGIN_USERNAME);
+					session.setSessionActive(true);
+				} else {
+					Initrfs.getLogwolf().e("Wrong LOCALHOST_FORCE_LOGIN config");
+				}
+			} catch (InvalidUserException e) {
+				Initrfs.getLogwolf().e("Wrong LOCALHOST_FORCE_LOGIN config");
 			}
-			sockethelper.print("Password: ");
-			String password = sockethelper.scan();
-			if(password==null) {
-				try {
-					sockethelper.getSocket(tokenKey).close();
-				} catch (IOException e) { }
-				return;
-			}
-			if (usersManager.existsUser(username)) {
-				try {
-					if(usersManager.isPasswordValid(username, password)) {
-						session.setAuthenticated(true);
-						session.setUsername(username);
-						session.setSessionActive(true);
-						break;
-					}
-				} catch (InvalidUserException e) { }
-			}
-			sockethelper.println("Invalid username or password. " + ++attempts + " of 3 attempts.");
-			sockethelper.println();
-			if(attempts>2) {
-				try {
-					sockethelper.getSocket(tokenKey).close();
-				} catch (IOException e) { }
-				return;
+		} else {
+			int attempts = 0;
+			while(!session.isAuthenticated()) {
+				sockethelper.print("Username: ");
+				String username = sockethelper.scan();
+				if(username==null) {
+					try {
+						sockethelper.getSocket(tokenKey).close();
+					} catch (IOException e) { }
+					return;
+				}
+				sockethelper.print("Password: ");
+				String password = sockethelper.scan();
+				if(password==null) {
+					try {
+						sockethelper.getSocket(tokenKey).close();
+					} catch (IOException e) { }
+					return;
+				}
+				if (usersManager.existsUser(username)) {
+					try {
+						if(usersManager.isPasswordValid(username, password)) {
+							session.setAuthenticated(true);
+							session.setUsername(username);
+							session.setSessionActive(true);
+							break;
+						}
+					} catch (InvalidUserException e) { }
+				}
+				sockethelper.println("Invalid username or password. " + ++attempts + " of 3 attempts.");
+				sockethelper.println();
+				if(attempts>2) {
+					try {
+						sockethelper.getSocket(tokenKey).close();
+					} catch (IOException e) { }
+					return;
+				}
 			}
 		}
+		
 		
 		// USER LOGGED IN!!!
 		sockethelper.clear();

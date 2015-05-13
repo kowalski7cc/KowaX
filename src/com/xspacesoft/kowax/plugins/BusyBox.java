@@ -53,6 +53,10 @@ public class BusyBox extends PluginBase implements KernelAccess {
 			showEula(stdio);
 		} else if (job[0].equalsIgnoreCase("about")) {
 			showAbout(stdio);
+		} else if (job[0].equalsIgnoreCase("startx")) {
+			if(Initrfs.getKowaxDirectDraw(tokenKey).isRunning())
+				Initrfs.getKowaxDirectDraw(tokenKey).stopServer();
+			Initrfs.getKowaxDirectDraw(tokenKey).startServer();
 		} else if (job[0].equalsIgnoreCase("ls")) {
 			listApplets();
 		} else if (job[0].equalsIgnoreCase("sudo")) {

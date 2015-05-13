@@ -1,6 +1,8 @@
 package com.xspacesoft.kowax.windowsystem;
 
-public interface DisplayManager {
+import com.xspacesoft.kowax.apis.KernelAccess;
+
+public interface DisplayManager extends KernelAccess{
 
 	public void setWindowManager(WindowManager windowManager);
 	

@@ -21,7 +21,8 @@ import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
 import com.xspacesoft.kowax.plugins.*;
 import com.xspacesoft.kowax.shell.ShellServer;
-import com.xspacesoft.kowax.windowsystem.KDirectDraw;
+import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
+import com.xspacesoft.kowax.windowsystem.kenvironment.KowaxDisplayManager;
 
 
 public class Initrfs {
@@ -44,7 +45,8 @@ public class Initrfs {
 	private static TaskManager taskManager;
 	private static UsersManager usersManager;
 	private static ServerSocket serverSocket;
-	private static KDirectDraw kDirectDraw;
+	private static KowaxDirectDraw kowaxDirectDraw;
+
 	private static boolean serviceEnabled;
 	
 	private static final Object[][] CORE_PLUGINS_DATA = {
@@ -58,6 +60,7 @@ public class Initrfs {
 		{Kalendar.class, false},
 		{Man.class, false},
 		{Fortune.class, false},
+		{KowaxDisplayManager.class, true},
 	};
 	
 	public Initrfs(int port, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
@@ -142,10 +145,10 @@ public class Initrfs {
 		logwolf.i(aliasManager.getLoadedAliases() + " aliases loded");
 		
 		// Start KWindowSystem
-		logwolf.v("Starting KDirectDraw Server");
-		kDirectDraw = new KDirectDraw(80, tokenKey);
-		kDirectDraw.startServer();
-		logwolf.i("KDirectDraw server is now up");
+		logwolf.v("Starting KowaxDirectDraw Server");
+		kowaxDirectDraw = new KowaxDirectDraw(80, tokenKey, null);
+		kowaxDirectDraw.startServer();
+		logwolf.i("KowaxDirectDraw server is now up");
 		
 		// Server open
 		serviceEnabled = true;
@@ -238,6 +241,14 @@ public class Initrfs {
 			return null;
 		if(tokenKey.equals(token))
 			return pluginManager;
+		return null;
+	}
+	
+	public static KowaxDirectDraw getKowaxDirectDraw(TokenKey token) {
+		if(token==null)
+			return null;
+		if(tokenKey.equals(token))
+			return kowaxDirectDraw;
 		return null;
 	}
 
