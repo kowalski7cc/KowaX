@@ -145,10 +145,16 @@ public class Initrfs {
 		logwolf.i(aliasManager.getLoadedAliases() + " aliases loded");
 		
 		// Start KWindowSystem
-		logwolf.v("Starting KowaxDirectDraw Server");
-		kowaxDirectDraw = new KowaxDirectDraw(80, tokenKey, null);
-		kowaxDirectDraw.startServer();
-		logwolf.i("KowaxDirectDraw server is now up");
+		try {
+			logwolf.v("Starting KowaxDirectDraw Server");
+			kowaxDirectDraw = new KowaxDirectDraw(80, tokenKey, null);
+			kowaxDirectDraw.startServer();
+			logwolf.i("KowaxDirectDraw server is now up");
+		} catch (Exception e) {
+			logwolf.e("Error in KDD: "+ e.getMessage());
+			logwolf.e("Continuing without GUI...");
+		}
+		
 		
 		// Server open
 		serviceEnabled = true;

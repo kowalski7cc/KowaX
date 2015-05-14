@@ -56,6 +56,7 @@ public class PluginManager {
 
 	public void addPlugin(Class<? extends PluginBase> loadPlugin, TokenKey tokenKey)
 			throws InstantiationException, IllegalAccessException {
+		Initrfs.getLogwolf().d("Trying to load class " + loadPlugin.getName() +".");
 		PluginBase newPlugin = loadPlugin.newInstance();
 		String pluginName = loadPlugin.getSimpleName();
 		if(newPlugin.getAppletName() == null) {

@@ -173,6 +173,7 @@ public class DenialService extends PluginBase {
 		this.targetPort = port;
 		this.dosProtcol = stringToProtocol(protocol);
 		this.threads = Stdio.parseInt(threadsBuffer);
+		this.pause = 0;
 		stdio.clear();
 		stdio.println("Dos: Setup complete");
 		if(createCannon()!=null) {

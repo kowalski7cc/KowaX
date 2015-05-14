@@ -15,11 +15,14 @@ import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.shell.Session;
 import com.xspacesoft.kowax.kernel.TokenKey;
 
+
 public class KowaxTestDisplayManager implements DisplayManager, HttpHandler {
 	
 	private TokenKey tokenKey;
 	private int pid;
+	@SuppressWarnings("unused")
 	private WindowManager windowManager;
+	@SuppressWarnings("unused")
 	private List<DisplaySession> sessions;
 	
 	public class DisplaySession {
@@ -43,11 +46,6 @@ public class KowaxTestDisplayManager implements DisplayManager, HttpHandler {
 		sessions = new ArrayList<DisplaySession>();
 		Initrfs.getLogwolf().i("KDesktopManager loaded");
 		pid = Initrfs.getTaskManager(tokenKey).newTask("root", "KDesktopManager");
-	}
-
-	@Override
-	public void setWindowManager(WindowManager windowManager) {
-		this.setWindowManager(windowManager);
 	}
 
 	@Override
@@ -130,5 +128,11 @@ public class KowaxTestDisplayManager implements DisplayManager, HttpHandler {
 	public void setTokenKey(TokenKey tokenKey) {
 		if(Initrfs.isTokenValid(tokenKey))
 			this.tokenKey = tokenKey;
+	}
+
+	@Override
+	public void setDisplayManager() {
+		// TODO Auto-generated method stub
+		
 	}
 }
