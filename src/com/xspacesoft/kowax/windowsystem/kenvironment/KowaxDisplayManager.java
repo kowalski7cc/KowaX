@@ -9,7 +9,9 @@ import com.sun.net.httpserver.HttpHandler;
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
+import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.Stdio;
@@ -20,7 +22,7 @@ import com.xspacesoft.kowax.windowsystem.DisplayManager;
 import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
 import com.xspacesoft.kowax.windowsystem.WindowManager;
 
-public class KowaxDisplayManager extends PluginBase implements DisplayManager, HttpHandler, KernelAccess, SystemEventsListener {
+public class KowaxDisplayManager extends PluginBase implements DisplayManager, HttpHandler, KernelAccess, SystemEventsListener, Service {
 
 	class InterfaceSession {
 		private String username;
@@ -53,7 +55,7 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 	public KowaxDisplayManager() {
 		sessions = new ArrayList<InterfaceSession>();
 		guiApplications = new ArrayList<KWindow>();
-		pluginManager = Initrfs.getPluginManager(tokenKey);
+		
 	}
 
 	@Override
@@ -75,16 +77,17 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 		code.append("<h1>" + Initrfs.SHELLNAME + " " + Initrfs.VERSION + "</h1>");
 		code.append("<h2>Welcome back, " + principal + "!</h2>");
 		code.append("<hr/>");
-		code.append("Aviable applications: ");
+		code.append("Aviable applications: <br/>");
 		for(KWindow window : guiApplications)
-			code.append(window.getAppletName());
+			code.append("<button>" + window.getAppletName() + "</button><br/>");
 		code.append("</body></html>");
 		KowaxDirectDraw.writeResponse(httpExchange, code.toString());
-		loadPlugins();
+		
 	}
 
 	private void loadPlugins() {
 		List<PluginBase> plugins = pluginManager.getPlugins();
+		guiApplications = new ArrayList<KWindow>();
 		for(PluginBase plugin : plugins) {
 			try {
 				guiApplications.add((KWindow) plugin);
@@ -162,5 +165,32 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 				return interfaceSession;
 		}
 		return null;
+	}
+
+	@Override
+	public Boolean isServiceRunning() {
+		// No service exist, we just return false
+		return false;
+	}
+
+	@Override
+	public void startService() {
+		// The service implementation is a workaround for load thing @ startup
+		// With elevated permissions
+		if(Initrfs.isTokenValid(tokenKey))
+			pluginManager = Initrfs.getPluginManager(tokenKey);
+		else
+			throw new InsufficientPermissionsException();
+		loadPlugins();
+	}
+
+	@Override
+	public void stopService() {
+		
+	}
+
+	@Override
+	public String getServiceName() {
+		return "KDM";
 	}
 }
