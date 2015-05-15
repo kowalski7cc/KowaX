@@ -76,7 +76,7 @@ public class Main {
 		}
 	}
 	
-	private static void printScroll(PrintWriter out, String string, int pause) throws InterruptedException {
+	public static void printScroll(PrintWriter out, String string, int pause) throws InterruptedException {
 		char[] output = string.toCharArray();
 		out.flush();
 		for (int i = 0; i < output.length; i++) {

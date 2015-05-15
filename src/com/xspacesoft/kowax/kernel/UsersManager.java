@@ -153,6 +153,14 @@ public class UsersManager implements Serializable {
 
 	public void loadFromFile(File usersFile) {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	public String[] getUsersName() {
+		String[] allusers = new String[users.size()];
+		int i=0;
+		for (User user : users) {
+			allusers[i++] = user.getUsername();
+		}
+		return allusers;
 	}
 }

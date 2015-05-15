@@ -3,14 +3,14 @@ package com.xspacesoft.kowax.shell;
 import java.io.IOException;
 
 import com.xspacesoft.kowax.Initrfs;
-import com.xspacesoft.kowax.apis.SystemEvent;
 import com.xspacesoft.kowax.exceptions.DuplicateElementException;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
-import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
@@ -105,7 +105,7 @@ public class CommandRunner {
 			}
 		}
 		String[] userCommand = command.split(" ");
-		for (ShellPlugin plugin : pluginmanager.getPlugins()) {
+		for (PluginBase plugin : pluginmanager.getPlugins()) {
 			if (plugin.getAppletName().equalsIgnoreCase(userCommand[0])) {
 				if(userCommand.length>1)
 					startProcess(plugin, command.substring(userCommand[0].length() +1));
@@ -124,7 +124,7 @@ public class CommandRunner {
 	 * @param command the command
 	 * @throws MissingPluginCodeException 
 	 */
-	private void startProcess(ShellPlugin plugin, String command) throws MissingPluginCodeException {
+	private void startProcess(PluginBase plugin, String command) throws MissingPluginCodeException {
 		int pid = 0;
 		String pName;
 		if(command==null||command.equals("")) {
@@ -144,7 +144,7 @@ public class CommandRunner {
 			return;
 		}
 		try {
-			ShellPlugin obj = (ShellPlugin) ClassLoader.getSystemClassLoader().loadClass(path).newInstance();
+			PluginBase obj = (PluginBase) ClassLoader.getSystemClassLoader().loadClass(path).newInstance();
 			obj.start(command, session.getSockethelper(), this);
 		} catch (InstantiationException e) {
 			session.getSockethelper().println("Failed to load applet: " + e.toString());
@@ -166,7 +166,7 @@ public class CommandRunner {
 			return;
 		}
 		try {
-			pluginmanager.addPlugin((Class<? extends ShellPlugin>) ClassLoader.getSystemClassLoader().loadClass(path));
+			pluginmanager.addPlugin((Class<? extends PluginBase>) ClassLoader.getSystemClassLoader().loadClass(path));
 			session.getSockethelper().println("Applet " + ClassLoader.getSystemClassLoader().loadClass(path) + " loaded");
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			session.getSockethelper().println("Failed to load applet: " + e.toString());

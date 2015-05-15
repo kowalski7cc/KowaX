@@ -1,10 +1,14 @@
-package com.xspacesoft.kowax.plugins;
+package com.xspacesoft.kowax.windowsystem.kenvironment;
 
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class Man extends PluginBase {
+public class KowaxDesktopEnvironment extends PluginBase{
+
+	public KowaxDesktopEnvironment() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public String getAppletName() {
@@ -14,29 +18,32 @@ public class Man extends PluginBase {
 
 	@Override
 	public String getAppletVersion() {
-		return "1.0A";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public String getAppletAuthor() {
-		return "Kowalski";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
-		if((command==null)||(command.length()<1)) {
-			stdio.print(getHint());
-		}
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public String getDescription() {
-		return "Get help about plugins";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public String getHint() {
-		return "man (page)";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

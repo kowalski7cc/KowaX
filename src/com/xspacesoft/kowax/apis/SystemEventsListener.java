@@ -1,5 +1,6 @@
 package com.xspacesoft.kowax.apis;
 
+import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
 /** Intent hooks for applications */

@@ -10,23 +10,27 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-import com.xspacesoft.kowax.apis.SystemEvent;
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
-import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
 import com.xspacesoft.kowax.plugins.*;
 import com.xspacesoft.kowax.shell.ShellServer;
+import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
+import com.xspacesoft.kowax.windowsystem.kenvironment.KowaxDisplayManager;
 
 
 public class Initrfs {
 	
 	public final static String SHELLNAME = "KowaX";
-	public final static String VERSION = "Tecnical Preview"; //$NON-NLS-1$
+	public final static String VERSION = "Alpha 1"; //$NON-NLS-1$
+	// Indicates api level
+	public final static int API = 1;
 //	private static File currentDirectory;
 	private int port;
 	private boolean debug;
@@ -41,22 +45,22 @@ public class Initrfs {
 	private static TaskManager taskManager;
 	private static UsersManager usersManager;
 	private static ServerSocket serverSocket;
+	private static KowaxDirectDraw kowaxDirectDraw;
+
 	private static boolean serviceEnabled;
 	
-	private static final Object[] CORE_PLUGINS_KERNELACCESS = {
-		BusyBox.class,
-//		KAuthenticator.class,
-//		KWindowManager.class,
-		CronTab.class,
-	};
-	private static final Object[] CORE_PLUGINS = {
-		AppExample.class,
-		HivemindControl.class,
-		DenialService.class,
-		Kalculator.class,
-		Kalendar.class,
-		Man.class,
-		Fortune.class,
+	private static final Object[][] CORE_PLUGINS_DATA = {
+		// ClassName, RootAccess
+		{BusyBox.class, true},
+		{CronTab.class, true},
+		{AppExample.class, false},
+		{HivemindControl.class, false},
+		{DenialService.class, false},
+		{Kalculator.class, false},
+		{Kalendar.class, false},
+		{Man.class, false},
+		{Fortune.class, false},
+		{KowaxDisplayManager.class, true},
 	};
 	
 	public Initrfs(int port, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
@@ -93,13 +97,7 @@ public class Initrfs {
 		logwolf.i("Task manager started");
 		
 		// GET CURRENT WORK FOLDER AND FILE VARS
-//		currentDirectory = new File("");
-		if (!new File("bin").exists())
-			new File("bin").mkdir();
-		if (!new File("etc").exists())
-			new File("etc").mkdir();
-		if (!new File("home").exists())
-			new File("home").mkdir();
+		checkFolderTree();
 		
 		// START PLUGIN MANAGER AND LOAD PLUGINS
 		logwolf.v("Starting PluginManager");
@@ -107,18 +105,15 @@ public class Initrfs {
 		logwolf.v("PluginManager Started");
 		logwolf.v("Loading default plugins");
 		logwolf.d("-----------------------");
-		for (int i = 0; i < CORE_PLUGINS.length; i++) {
+		
+		for (int i = 0; i < CORE_PLUGINS_DATA.length; i++) {
 			try {
-				pluginManager.addPlugin((Class<? extends ShellPlugin>) CORE_PLUGINS[i]);
+				if((boolean)CORE_PLUGINS_DATA[i][1]==true)
+					pluginManager.addPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0], tokenKey);
+				else
+					pluginManager.addPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0]);
 			} catch (InstantiationException | IllegalAccessException e) {
-				logwolf.e("Cannot load " + CORE_PLUGINS[i].toString());
-			}
-		}
-		for (int i = 0; i < CORE_PLUGINS_KERNELACCESS.length; i++) {
-			try {
-				pluginManager.addPlugin((Class<? extends ShellPlugin>) CORE_PLUGINS_KERNELACCESS[i], tokenKey);
-			} catch (InstantiationException | IllegalAccessException e) {
-				logwolf.e("Cannot load " + CORE_PLUGINS_KERNELACCESS[i]);
+				logwolf.e("Cannot load " + CORE_PLUGINS_DATA[i][0].toString());
 			}
 		}
 		logwolf.d("-----------------------");
@@ -148,6 +143,18 @@ public class Initrfs {
 		logwolf.v("AliasManager loaded");
 		aliasManager.loadDefaults();
 		logwolf.i(aliasManager.getLoadedAliases() + " aliases loded");
+		
+		// Start KWindowSystem
+		try {
+			logwolf.v("Starting KowaxDirectDraw Server");
+			kowaxDirectDraw = new KowaxDirectDraw(80, tokenKey, null);
+			kowaxDirectDraw.startServer();
+			logwolf.i("KowaxDirectDraw server is now up");
+		} catch (Exception e) {
+			logwolf.e("Error in KDD: "+ e.getMessage());
+			logwolf.e("Continuing without GUI...");
+		}
+		
 		
 		// Server open
 		serviceEnabled = true;
@@ -213,8 +220,18 @@ public class Initrfs {
 		System.exit(0);
 	}
 	
+	private void checkFolderTree() {
+//		currentDirectory = new File("");
+		if (!new File("bin").exists())
+			new File("bin").mkdir();
+		if (!new File("etc").exists())
+			new File("etc").mkdir();
+		if (!new File("home").exists())
+			new File("home").mkdir();
+	}
+
 	public static Logwolf getLogwolf() {
-			return logwolf;
+		return logwolf;
 	}
 
 	public static AliasManager getAliasManager(TokenKey token) {
@@ -230,6 +247,14 @@ public class Initrfs {
 			return null;
 		if(tokenKey.equals(token))
 			return pluginManager;
+		return null;
+	}
+	
+	public static KowaxDirectDraw getKowaxDirectDraw(TokenKey token) {
+		if(token==null)
+			return null;
+		if(tokenKey.equals(token))
+			return kowaxDirectDraw;
 		return null;
 	}
 

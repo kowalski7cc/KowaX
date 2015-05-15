@@ -2,18 +2,20 @@ package com.xspacesoft.kowax.plugins;
 
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.Service;
-import com.xspacesoft.kowax.apis.SystemEvent;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
-import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class KWindowManager extends ShellPlugin implements SystemEventsListener, Service, KernelAccess {
+public class KWindowManager extends PluginBase implements SystemEventsListener, Service, KernelAccess {
 
 	private class KOrg extends Thread {
 
+		@SuppressWarnings("unused")
 		private int port;
+		@SuppressWarnings("unused")
 		private TokenKey tokenKey;
 		private boolean running;
 
@@ -22,6 +24,7 @@ public class KWindowManager extends ShellPlugin implements SystemEventsListener,
 			this.tokenKey = tokenKey;
 		}
 
+		@Override
 		public void run() {
 			while(running) {
 				try {
@@ -74,7 +77,7 @@ public class KWindowManager extends ShellPlugin implements SystemEventsListener,
 
 	@Override
 	public SystemEvent[] getEvents() {
-		return new SystemEvent[] { SystemEvent.SYSTEM_START, SystemEvent.USER_LOGIN, SystemEvent.USER_LOGOUT};
+		return new SystemEvent[] { SystemEvent.SYSTEM_START, SystemEvent.USER_LOGIN_SUCCESS, SystemEvent.USER_LOGOUT};
 	}
 
 	@Override

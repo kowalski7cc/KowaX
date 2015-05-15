@@ -7,14 +7,14 @@ import java.util.List;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
-import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 import com.xspacesoft.kowax.shell.Session;
 
-public class CronTab extends ShellPlugin implements Service, KernelAccess {
+public class CronTab extends PluginBase implements Service, KernelAccess {
 	
 	public class Job implements Serializable {
 
@@ -105,6 +105,7 @@ public class CronTab extends ShellPlugin implements Service, KernelAccess {
 			job.setSleep(sleep);
 		}
 		
+		@Override
 		public void run() {
 			while(running) {
 				this.sleep = job.getSleep();

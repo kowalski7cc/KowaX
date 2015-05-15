@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.xspacesoft.kowax.apis.SystemEvent;
+import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
-import com.xspacesoft.kowax.kernel.ShellPlugin;
+import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.windowsystem.Window;
 
-public class Fortune extends ShellPlugin implements SystemEventsListener {
+public class Fortune extends PluginBase implements SystemEventsListener , KWindow{
 	
 	private final static String[] PHRASES = {
 		"All diseases run into one, old age. --Ralph Waldo Emerson",
@@ -37,7 +39,7 @@ public class Fortune extends ShellPlugin implements SystemEventsListener {
 
 	@Override
 	public SystemEvent[] getEvents() {
-		return new SystemEvent[] {SystemEvent.USER_LOGIN};
+		return new SystemEvent[] {SystemEvent.USER_LOGIN_SUCCESS};
 	}
 
 	@Override
@@ -47,7 +49,7 @@ public class Fortune extends ShellPlugin implements SystemEventsListener {
 			usersBlacklist = new ArrayList<String>();
 		}
 		switch(event) {
-		case USER_LOGIN:
+		case USER_LOGIN_SUCCESS:
 			if((extraValue==null)||(!usersBlacklist.contains(extraValue)))
 				showFortune(commandRunner.getSocketHelper());
 		default: return;
@@ -114,5 +116,22 @@ public class Fortune extends ShellPlugin implements SystemEventsListener {
 		lastRand = new Integer(newRandom);
 		stdio.println(randomSentence);
 		stdio.println();
+	}
+
+	@Override
+	public void onCreateWindow(Window window) {
+		
+	}
+
+	@Override
+	public void onDestroyWindow(Window window) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onWindowHidden(Window window) {
+		// TODO Auto-generated method stub
+		
 	}
 }
