@@ -38,10 +38,12 @@ public class CommandRunner {
 		}		
 		
 	}
+	
 	/**
 	 * Instantiates a new command runner.
-	 *
-	 * @param applets the applets
+	 * @param session User session
+	 * @param tokenKey token
+	 * @param sudo Launch command runner as sudo
 	 */
 	public CommandRunner(Session session, TokenKey tokenKey, boolean sudo) {
 		this.session = session;
@@ -73,8 +75,8 @@ public class CommandRunner {
 	 * Runs the applet with commands
 	 *
 	 * @param command the command
-	 * @throws CommandNotFoundException 
-	 * @throws MissingPluginCodeException 
+	 * @throws CommandNotFoundException When command is not found
+	 * @throws MissingPluginCodeException When plugin is missing code
 	 */
 	public void run(String command)
 			throws CommandNotFoundException, MissingPluginCodeException, IllegalArgumentException {
@@ -120,9 +122,9 @@ public class CommandRunner {
 	/**
 	 * Start process.
 	 *
-	 * @param hiveApplet the hive applet
+	 * @param plugin plugin to run
 	 * @param command the command
-	 * @throws MissingPluginCodeException 
+	 * @throws MissingPluginCodeException When plugin is missing code
 	 */
 	private void startProcess(PluginBase plugin, String command) throws MissingPluginCodeException {
 		int pid = 0;

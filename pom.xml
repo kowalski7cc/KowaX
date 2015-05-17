@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.xspacesoft.kowax</groupId>
 	<artifactId>KowaX</artifactId>
-	<version>TecnicalPreview</version>
+	<version>AlphaPreview</version>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
