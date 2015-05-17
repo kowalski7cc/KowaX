@@ -28,7 +28,7 @@ import com.xspacesoft.kowax.windowsystem.kenvironment.KowaxDisplayManager;
 public class Initrfs {
 	
 	public final static String SHELLNAME = "KowaX";
-	public final static String VERSION = "Alpha 1"; //$NON-NLS-1$
+	public final static String VERSION = "Alpha Preview"; //$NON-NLS-1$
 	// Indicates api level
 	public final static int API = 1;
 //	private static File currentDirectory;

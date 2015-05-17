@@ -166,4 +166,8 @@ public class KowaxDirectDraw {
 		return running;
 	}
 
+	public DisplayManager getDisplayManger() {
+		return (DisplayManager) displayManager;
+	}
+
 }

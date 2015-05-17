@@ -38,10 +38,12 @@ public class CommandRunner {
 		}		
 		
 	}
+	
 	/**
 	 * Instantiates a new command runner.
-	 *
-	 * @param applets the applets
+	 * @param session User session
+	 * @param tokenKey
+	 * @param sudo Launch command runner as sudo
 	 */
 	public CommandRunner(Session session, TokenKey tokenKey, boolean sudo) {
 		this.session = session;

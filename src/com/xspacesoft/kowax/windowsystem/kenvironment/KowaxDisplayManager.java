@@ -2,7 +2,9 @@ package com.xspacesoft.kowax.windowsystem.kenvironment;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -16,21 +18,23 @@ import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.SystemEvent;
+import com.xspacesoft.kowax.kernel.TaskManager.Task;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.DisplayManager;
 import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
+import com.xspacesoft.kowax.windowsystem.Window;
 import com.xspacesoft.kowax.windowsystem.WindowManager;
 
 public class KowaxDisplayManager extends PluginBase implements DisplayManager, HttpHandler, KernelAccess, SystemEventsListener, Service {
 
 	class InterfaceSession {
 		private String username;
-		private KowaxDisplayManager windowManager;
-		public InterfaceSession(String username, KowaxDisplayManager kowaxDisplayManager) {
+		private WindowManager windowManager;
+		public InterfaceSession(String username, WindowManager windowManager) {
 			super();
 			this.username = username;
-			this.windowManager = kowaxDisplayManager;
+			this.windowManager = windowManager;
 		}
 		public String getUsername() {
 			return username;
@@ -39,10 +43,10 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 			this.username = username;
 		}
 		public WindowManager getWindowManager() {
-			return (WindowManager) windowManager;
+			return windowManager;
 		}
 		public void setWindowManager(WindowManager windowManager) {
-			this.windowManager = (KowaxDisplayManager) windowManager;
+			this.windowManager = windowManager;
 		}
 	}
 
@@ -66,20 +70,94 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 		String principal = httpExchange.getPrincipal().toString();
 		InterfaceSession mySession = getSession(httpExchange.getPrincipal().toString());
 		if(mySession==null) {
-			mySession = new InterfaceSession(principal, new KowaxDisplayManager());
+			mySession = new InterfaceSession(principal, new KowaxWindowManager(tokenKey));
 			sessions.add(mySession);
-		}
-//		Map <String,String> params = KowaxDirectDraw.queryToMap(httpExchange.getRequestURI().getQuery());
+		}		
 		code.append("<html>");
 		code.append("<head>");
 		code.append("<title>" + principal + "@" + Initrfs.SHELLNAME + "</title>");
+		code.append("<style>");
+		code.append("table, th, td { border: 1px solid black; border-collapse: collapse; } th, td { padding: 15px;  vertical-align: top;}");
+		code.append("</style>");
 		code.append("</head><body>");
 		code.append("<h1>" + Initrfs.SHELLNAME + " " + Initrfs.VERSION + "</h1>");
 		code.append("<h2>Welcome back, " + principal + "!</h2>");
 		code.append("<hr/>");
-		code.append("Aviable applications: <br/>");
-		for(KWindow window : guiApplications)
-			code.append("<button>" + window.getAppletName() + "</button><br/>");
+		try {
+			if(httpExchange.getRequestURI().getQuery()!=null) {
+				Map <String,String> params = queryToMap(httpExchange.getRequestURI().getQuery());
+				if(params.containsKey("application")) {
+					String appName = params.get("application");
+					Window myWindow = null;
+					WindowManager winManager = mySession.getWindowManager();
+					myWindow = winManager.getApplication(appName);
+					if(myWindow==null) {
+						myWindow = winManager.runApplication(appName);
+					}
+					code.append("<fieldset>");
+					code.append("<legend>");
+					// Check if app really opened
+					if(myWindow!=null) {
+						code.append("<fieldset>" + myWindow.getTitle() + "  ");
+						if(myWindow.isMinimizeSupported())
+							code.append("<button onClick='window.location.assign(\"desktop\")'>-</button>" + "   ");
+						code.append("<button onClick='window.location.assign(\"desktop?closeApp="
+							+ myWindow.getTitle() + "\")'>X</button>" + "</fieldset>");
+					} else {
+						code.append("<fieldset>" + "Error" + "  ");
+						code.append("<button onClick='window.location.assign(\"desktop\")'>X</button>" + "</fieldset>");
+						
+					}
+					code.append("</legend>");
+					if(myWindow!=null)
+						if(myWindow.getContent()!=null)
+							code.append(myWindow.getContent().toString());
+						else
+							code.append("<h2>Error showing content</h2>");
+					else
+						code.append("</h2>Error launching application</h2>");
+					code.append("</fieldset>");
+				} else if (params.containsKey("closeApp")) {
+					String appName = params.get("closeApp");
+					Window myWindow = null;
+					WindowManager winManager = mySession.getWindowManager();
+					myWindow = winManager.getApplication(appName);
+					if(myWindow==null) {
+						code.append("Application not found");
+					} else {
+						winManager.closeApplication(myWindow);
+						code.append("Application cosed");
+					}
+					code.append("<br/><button onClick='window.location.assign(\"desktop\")'>Return to desktop</button>");
+				}
+			} else {
+				code.append("<fieldset><legend><fieldset>Dashboard</fieldset></legend><table border=1><tr><td>");
+				code.append("<h3>Aviable applications</h3>");
+				code.append("<form action='desktop' method='get'>");
+				for(KWindow window : guiApplications)
+					code.append("<input type='submit' name='application' value='" + window.getAppletName() + "'/><br/>");
+				code.append("</form></td>");
+				code.append("<td><h3>Running processes</h3>");
+				code.append("<ul>");
+				List<Task> tasks = Initrfs.getTaskManager(tokenKey).getRunningTasks();
+				for(Task task : tasks) {
+					code.append("<li>" + task.getUser() + " - " + task.getPid() + " - " + task.getAppletName()  +"</li>");
+				}
+				code.append("</ul></td><td><h3>System users</h3><ul>");
+				String[] sysUsers = Initrfs.getUsersManager(tokenKey).getUsersName();
+				for(String usr : sysUsers) {
+					code.append("<li>" + usr + "</li>");
+				}
+				code.append("</td></tr></table><br>");
+				code.append("<h3>System actions</h3><ul>");
+				code.append("<li><button>Change password</button></li>");
+				code.append("<li><button onClick='window.location.assign(\"logout\")'>Log out</button></li>");
+				code.append("<li><button onClick='window.location.assign(\"sysapi?shutdown\")'>Shutdown</button></li>");
+				code.append("</ul><br>Copyright XSpaceSoft 2008-2015</fieldset>");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		code.append("</body></html>");
 		KowaxDirectDraw.writeResponse(httpExchange, code.toString());
 		
@@ -193,4 +271,28 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 	public String getServiceName() {
 		return "KDM";
 	}
+	
+	/**
+	 * Returns the URL parameters in a map
+	 * @param query
+	 * @return map
+	 */
+	public static Map<String, String> queryToMap(String query){
+		Map<String, String> result = new HashMap<String, String>();
+		for (String param : query.split("&")) {
+			String pair[] = param.split("=");
+			if (pair.length>1) {
+				result.put(pair[0], pair[1]);
+			}else{
+				result.put(pair[0], "");
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public List<KWindow> getSupportedApps() {
+		return guiApplications;
+	}
+
 }

@@ -105,6 +105,11 @@ public class Fortune extends PluginBase implements SystemEventsListener , KWindo
 	}
 	
 	private void showFortune(Stdio stdio) {
+		stdio.println(getRandomSentence());
+		stdio.println();
+	}
+	
+	private String getRandomSentence() {
 		Random random = new Random();
 		int newRandom = random.nextInt(PHRASES.length);
 		if(lastRand!=null) {
@@ -114,13 +119,12 @@ public class Fortune extends PluginBase implements SystemEventsListener , KWindo
 		}
 		String randomSentence = PHRASES[newRandom];
 		lastRand = new Integer(newRandom);
-		stdio.println(randomSentence);
-		stdio.println();
+		return randomSentence;
 	}
 
 	@Override
 	public void onCreateWindow(Window window) {
-		
+		window.getContent().append(getRandomSentence());
 	}
 
 	@Override
