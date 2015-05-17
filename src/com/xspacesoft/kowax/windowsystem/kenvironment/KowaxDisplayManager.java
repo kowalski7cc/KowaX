@@ -126,13 +126,13 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 						code.append("Application not found");
 					} else {
 						winManager.closeApplication(myWindow);
-						code.append("Application cosed");
+						code.append("Application closed");
 					}
 					code.append("<br/><button onClick='window.location.assign(\"desktop\")'>Return to desktop</button>");
 				}
 			} else {
 				code.append("<fieldset><legend><fieldset>Dashboard</fieldset></legend><table border=1><tr><td>");
-				code.append("<h3>Aviable applications</h3>");
+				code.append("<h3>All applications</h3>");
 				code.append("<form action='desktop' method='get'>");
 				for(KWindow window : guiApplications)
 					code.append("<input type='submit' name='application' value='" + window.getAppletName() + "'/><br/>");
