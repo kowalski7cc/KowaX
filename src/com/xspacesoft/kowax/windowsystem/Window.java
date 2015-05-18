@@ -1,6 +1,8 @@
 package com.xspacesoft.kowax.windowsystem;
 
+import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.apis.KWindow;
+import com.xspacesoft.kowax.kernel.TokenKey;
 
 public class Window {
 	
@@ -8,6 +10,7 @@ public class Window {
 	private StringBuilder content;
 	private boolean minimizeSupported;
 	private KWindow associatedApp;
+	private int pid;
 
 	public Window(String title, boolean minimizeSupported, KWindow associatedApp) {
 		this.title = title;
@@ -55,5 +58,14 @@ public class Window {
 
 	public void setAssociatedApp(KWindow associatedApp) {
 		this.associatedApp = associatedApp;
+	}
+
+	public int getPid() {
+		return pid;
+	}
+
+	public void setPid(int pid, TokenKey tokenKey) {
+		if(Initrfs.isTokenValid(tokenKey))
+			this.pid = pid;
 	}
 }
