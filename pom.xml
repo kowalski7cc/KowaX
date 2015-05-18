@@ -13,6 +13,10 @@
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
+			<resource>
+				<directory>src</directory>
+				<filtering>true</filtering>
+			</resource>
 		</resources>
 		<plugins>
 			<!-- Build with Java 8 -->
@@ -24,6 +28,21 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
+			<!-- Maven Build number Plugin -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>useLastCommittedRevision</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- Maven Shade Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -48,6 +67,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Windows exe wrapper -->
 			<plugin>
 				<groupId>com.akathist.maven.plugins.launch4j</groupId>
 				<artifactId>launch4j-maven-plugin</artifactId>
@@ -73,6 +93,7 @@
 								<minVersion>1.7.0</minVersion>
 								<jdkPreference>preferJre</jdkPreference>
 							</jre>
+							<!-- Exe Metadata -->
 							<versionInfo>
 								<fileVersion>1.0.0.0</fileVersion>
 								<txtFileVersion>${project.version}</txtFileVersion>
@@ -89,24 +110,13 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Attach sources.jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
 						<goals>
 							<goal>jar</goal>
 						</goals>
@@ -128,6 +138,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	<!-- Other data -->
 	<name>KowaX</name>
 	<url>https://bitbucket.org/xspacesoft/kowax</url>
 	<organization>
@@ -142,4 +153,9 @@
 		<system>drone.io</system>
 		<url>https://drone.io/bitbucket.org/xspacesoft/kowax</url>
 	</ciManagement>
+	<scm>
+		<url>https://bitbucket.org/xspacesoft/kowax</url>
+		<connection>scm:git:git@bitbucket.org:xspacesoft/kowax.git</connection>
+		<developerConnection>scm:git:git@bitbucket.org:xspacesoft/kowax.git</developerConnection>
+	</scm>
 </project>

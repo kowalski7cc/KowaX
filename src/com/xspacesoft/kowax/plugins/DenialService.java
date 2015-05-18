@@ -355,9 +355,9 @@ public class DenialService extends PluginBase implements KWindow {
 			}
 		}
 	}
-
-	@Override
-	public void onCreateWindow(Window window) {
+	
+	private void updateWindow(Window window) {
+		window.setContent(new StringBuilder());
 		if(flooder!=null&&flooder.isRunning()) {
 			window.getContent().append("<h4>Flooder is running</h4>");
 			window.getContent().append("Target address: " + this.targetAddress + "<br/>");
@@ -369,6 +369,11 @@ public class DenialService extends PluginBase implements KWindow {
 		} else {
 			window.getContent().append("<h4>No flooder is configured</h4>");
 		}
+	}
+
+	@Override
+	public void onCreateWindow(Window window) {
+		updateWindow(window);
 	}
 
 	@Override
@@ -385,7 +390,6 @@ public class DenialService extends PluginBase implements KWindow {
 
 	@Override
 	public void onWindowResume(Window window) {
-		// TODO Auto-generated method stub
-		
+		updateWindow(window);
 	}	
 }
