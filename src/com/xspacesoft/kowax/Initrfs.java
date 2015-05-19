@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.ResourceBundle;
 
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
@@ -26,9 +27,14 @@ import com.xspacesoft.kowax.windowsystem.kenvironment.KowaxDisplayManager;
 
 
 public class Initrfs {
-	
-	public final static String SHELLNAME = "KowaX";
-	public final static String VERSION = "Alpha Preview"; //$NON-NLS-1$
+	private final static String BUILD_DATA = "com.xspacesoft.kowax.build"; //$NON-NLS-1$
+	public final static ResourceBundle BUILD_RESOURCE = ResourceBundle.getBundle(BUILD_DATA);
+	public final static String SHELLNAME = BUILD_RESOURCE.getString("build.artifact").startsWith("$") ?
+			"KowaX" : BUILD_RESOURCE.getString("build.artifact"); //$NON-NLS-1$
+	public final static String VERSION = BUILD_RESOURCE.getString("build.version").startsWith("$") ?
+			"Test build" : BUILD_RESOURCE.getString("build.version"); //$NON-NLS-1$
+	public final static String BUILD = BUILD_RESOURCE.getString("build.number").startsWith("$") ? 
+			"NA" : BUILD_RESOURCE.getString("build.number"); //$NON-NLS-1$
 	// Indicates api level
 	public final static int API = 1;
 //	private static File currentDirectory;
@@ -61,6 +67,7 @@ public class Initrfs {
 		{Man.class, false},
 		{Fortune.class, false},
 		{KowaxDisplayManager.class, true},
+		{KowaxUpdater.class, true},
 	};
 	
 	public Initrfs(int port, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {

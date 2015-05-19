@@ -9,11 +9,13 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Random;
 
+import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.windowsystem.Window;
 
-public class DenialService extends PluginBase {
+public class DenialService extends PluginBase implements KWindow {
 	
 	protected enum DosProtcol {
 		TCP,
@@ -67,6 +69,8 @@ public class DenialService extends PluginBase {
 					stdio.println("You need to set a target first");
 				}
 			}
+			break;
+		case "clear": clearAll();
 			break;
 		case "stop":
 			if((this.flooder==null)||(this.flooder.isRunning())) {
@@ -132,6 +136,15 @@ public class DenialService extends PluginBase {
 		default: stdio.println(getHint());
 			break;
 		}
+	}
+
+	private void clearAll() {
+		this.flooder = null;
+		this.targetAddress = null;
+		this.targetPort = null;
+		this.dosProtcol = null;
+		this.threads = null;
+		this.pause = null;
 	}
 
 	private void wizard(Stdio stdio, CommandRunner commandRunner) {
@@ -341,5 +354,42 @@ public class DenialService extends PluginBase {
 				datagramSocket.close();
 			}
 		}
+	}
+	
+	private void updateWindow(Window window) {
+		window.setContent(new StringBuilder());
+		if(flooder!=null&&flooder.isRunning()) {
+			window.getContent().append("<h4>Flooder is running</h4>");
+			window.getContent().append("Target address: " + this.targetAddress + "<br/>");
+			window.getContent().append("Target port: " + this.targetPort + "<br/>");
+			window.getContent().append("Target protocol: " + this.dosProtcol + "<br/>");
+			window.getContent().append("Running treads: " + this.threads + "<br/>");
+		} else if(flooder!=null) {
+			window.getContent().append("<h4>No flooder is running</h4>");
+		} else {
+			window.getContent().append("<h4>No flooder is configured</h4>");
+		}
+	}
+
+	@Override
+	public void onCreateWindow(Window window) {
+		updateWindow(window);
+	}
+
+	@Override
+	public void onDestroyWindow(Window window) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onWindowHidden(Window window) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onWindowResume(Window window) {
+		updateWindow(window);
 	}	
 }

@@ -138,4 +138,10 @@ public class Fortune extends PluginBase implements SystemEventsListener , KWindo
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void onWindowResume(Window window) {
+		// TODO Auto-generated method stub
+		
+	}
 }

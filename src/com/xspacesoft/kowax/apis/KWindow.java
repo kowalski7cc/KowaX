@@ -10,6 +10,8 @@ public interface KWindow {
 	
 	public void onWindowHidden(Window window);
 	
+	public void onWindowResume(Window window);
+	
 	public String getAppletName();
 	
 }

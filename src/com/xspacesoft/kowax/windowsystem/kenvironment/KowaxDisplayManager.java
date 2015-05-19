@@ -77,7 +77,15 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 		code.append("<head>");
 		code.append("<title>" + principal + "@" + Initrfs.SHELLNAME + "</title>");
 		code.append("<style>");
-		code.append("table, th, td { border: 1px solid black; border-collapse: collapse; } th, td { padding: 15px;  vertical-align: top;}");
+		code.append("table, th, td { border: 0px solid black; border-collapse: collapse; } th, td { padding: 15px;  vertical-align: top;}");
+		code.append("table { width: 100%; } input.apps { width: 100%; } button.system { width: 200px; ");
+		code.append("button, input.apps { -webkit-appearance: none; height: 150px; }");
+		code.append("fieldset.dash { height: 100%; margin: 5px; }");
+		code.append("fieldset.app { height: 90%; margin: 5px; }");
+		code.append(".divContainer{ width: 100%; height: 100%; }");
+		code.append(".divColumn { display: table-cell; }");
+		code.append(".divRow { display: table-row; height: auto; }");
+		code.append(".containerColumna{ height: 100%; }");
 		code.append("</style>");
 		code.append("</head><body>");
 		code.append("<h1>" + Initrfs.SHELLNAME + " " + Initrfs.VERSION + "</h1>");
@@ -94,7 +102,7 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 					if(myWindow==null) {
 						myWindow = winManager.runApplication(appName);
 					}
-					code.append("<fieldset>");
+					code.append("<fieldset class=app>");
 					code.append("<legend>");
 					// Check if app really opened
 					if(myWindow!=null) {
@@ -129,31 +137,34 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 						code.append("Application closed");
 					}
 					code.append("<br/><button onClick='window.location.assign(\"desktop\")'>Return to desktop</button>");
+					code.append("<script> window.location.assign(\"desktop\"); </script>");
 				}
 			} else {
-				code.append("<fieldset><legend><fieldset>Dashboard</fieldset></legend><table border=1><tr><td>");
-				code.append("<h3>All applications</h3>");
+				code.append("<div class='divContainer'><div class=divRow><div class=divColumn>");
+				code.append("<fieldset class='dash'><legend><fieldset><b>Dashboard</b></fieldset></legend><table border=0><tr><td>");
+				code.append("<fieldset class='dash'><legend><fieldset>All applications</fieldset></legend>");
 				code.append("<form action='desktop' method='get'>");
 				for(KWindow window : guiApplications)
-					code.append("<input type='submit' name='application' value='" + window.getAppletName() + "'/><br/>");
-				code.append("</form></td>");
-				code.append("<td><h3>Running processes</h3>");
+					code.append("<input class=apps type='submit' name='application' value='" + window.getAppletName() + "'/><br/>");
+				code.append("</form></fieldset></td>");
+				code.append("<td><fieldset class='dash'><legend><fieldset>Running processes</fieldset></legend>");
 				code.append("<ul>");
 				List<Task> tasks = Initrfs.getTaskManager(tokenKey).getRunningTasks();
 				for(Task task : tasks) {
 					code.append("<li>" + task.getUser() + " - " + task.getPid() + " - " + task.getAppletName()  +"</li>");
 				}
-				code.append("</ul></td><td><h3>System users</h3><ul>");
+				code.append("</ul></td></fieldset><td><fieldset class='dash'><legend><fieldset>System users</fieldset></legend><ul>");
 				String[] sysUsers = Initrfs.getUsersManager(tokenKey).getUsersName();
 				for(String usr : sysUsers) {
 					code.append("<li>" + usr + "</li>");
 				}
-				code.append("</td></tr></table><br>");
-				code.append("<h3>System actions</h3><ul>");
-				code.append("<li><button>Change password</button></li>");
-				code.append("<li><button onClick='window.location.assign(\"logout\")'>Log out</button></li>");
-				code.append("<li><button onClick='window.location.assign(\"sysapi?shutdown\")'>Shutdown</button></li>");
-				code.append("</ul><br>Copyright XSpaceSoft 2008-2015</fieldset>");
+				code.append("</fieldset></td></tr></table><br>");
+				code.append("<fieldset><legend><fieldset><b>System actions</b></fieldset></legend><ul>");
+				code.append("<li><button class=system>Change password</button></li>");
+				code.append("<li><button class=system onClick='window.location.assign(\"logout\")'>Log out</button></li>");
+				code.append("<li><button class=system onClick='window.location.assign(\"sysapi?shutdown\")'>Shutdown</button></li>");
+				code.append("</ul></fieldset><br/>Copyright XSpaceSoft 2008-2015</fieldset>");
+				code.append("</div></div></div>");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

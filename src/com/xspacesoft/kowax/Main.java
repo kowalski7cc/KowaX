@@ -62,9 +62,11 @@ public class Main {
 			}
 			System.out.println();
 			if(Stdio.isNumber(Initrfs.VERSION.charAt(0)))
-				printScroll(out, "Welcome to " + Initrfs.SHELLNAME + " Version " + Initrfs.VERSION + "!", 20);
+				printScroll(out, "Welcome to " + Initrfs.SHELLNAME + " Version " + Initrfs.VERSION + "!" + 
+			(Initrfs.BUILD.equals("NA") ? "" : (" (" + Initrfs.BUILD.substring(0,8) + "...)" )) , 20);
 			else
-				printScroll(out, "Welcome to " + Initrfs.SHELLNAME + " \"" + Initrfs.VERSION + "\" release!", 20);
+				printScroll(out, "Welcome to " + Initrfs.SHELLNAME + " \"" + Initrfs.VERSION + "\" release!" + 
+						(Initrfs.BUILD.equals("NA") ? "" : (" (" + Initrfs.BUILD.substring(0, 8) + "...)" )) , 20);
 			Thread.sleep(600);
 			System.out.println("----------------");
 			Thread.sleep(10);
