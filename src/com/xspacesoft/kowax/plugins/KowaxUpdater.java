@@ -1,11 +1,15 @@
 package com.xspacesoft.kowax.plugins;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Arrays;
 
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.apis.KWindow;
@@ -19,9 +23,10 @@ import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.Window;
 
 public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEventsListener, KWindow {
-	
+
 	@SuppressWarnings("unused")
 	private TokenKey tokenKey;
+	private final static String COMMITURL = "https://bitbucket.org/api/2.0/repositories/xspacesoft/kowax/commits";
 
 	public KowaxUpdater() {
 		// TODO Auto-generated constructor stub
@@ -35,17 +40,48 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 	@Override
 	public void runIntent(SystemEvent event, String extraValue, CommandRunner commandRunner) {
 		if(event==SystemEvent.SYSTEM_START) {
-			checkUpdates();
+			if(isUpdateAvailable())
+				Initrfs.getLogwolf().i("[KowaxUpdater] - Update available!");
 		}
 	}
 
-	private void checkUpdates() {
-		if(isUpdateAvailable())
-			Initrfs.getLogwolf().i("[KowaxUpdater] - Update available!");
+	private String downloadCommits() {
+		URL url;
+		try {
+			url = new URL(COMMITURL);
+			HttpURLConnection hConnection = (HttpURLConnection) url
+					.openConnection();
+			HttpURLConnection.setFollowRedirects(true);
+			if (HttpURLConnection.HTTP_OK == hConnection.getResponseCode()) {
+				BufferedReader is = new BufferedReader(new
+						InputStreamReader(hConnection.getInputStream()));
+				String response = is.readLine();
+				return response;
+			} else {
+				return null;
+			}
+		} catch(IOException e) {
+			return null;
+		}
 	}
-	
+
+	private String[] getCommits() {
+		String result = downloadCommits();
+		String[] splitted = result.split("hash");
+		return splitted;
+	}
+
 	private boolean isUpdateAvailable() {
-		return false;
+		String[] commits = getCommits();
+		if(commits==null)
+			return false;
+		else if(!Arrays.asList(commits).contains(Initrfs.BUILD)) {
+			return false;
+		} else if (Arrays.asList(commits).get(1).contains(Initrfs.BUILD)) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	@Override
@@ -70,8 +106,26 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 
 	@Override
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
-		// TODO Auto-generated method stub
+		if(command==null) {
+			if(isUpdateAvailable())
+				stdio.println("There is an update ready for download!");
+			else
+				stdio.println("No update is available.");
+			return;
+		}
+		switch(command.split(" ")[0]) {
+		case "update":
+			if(isUpdateAvailable())
+				downloadUpdate();
+			break;
+		default:
+			
+		}
+	}
 
+	private void downloadUpdate() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -96,17 +150,17 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 
 	@Override
 	public void onDestroyWindow(Window window) {
-		
+
 	}
 
 	@Override
 	public void onWindowHidden(Window window) {
-		
+
 	}
 
 	@Override
 	public void onWindowResume(Window window) {
-		
+
 	}
 
 	@SuppressWarnings("unused")
