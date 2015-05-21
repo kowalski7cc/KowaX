@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Arrays;
+import java.util.List;
 
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.apis.KWindow;
@@ -26,6 +27,7 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 
 	@SuppressWarnings("unused")
 	private TokenKey tokenKey;
+	private final static String BUILD = "77b272edf73ca4490831253d0da7349bbd7f7328";
 	private final static String COMMITURL = "https://bitbucket.org/api/2.0/repositories/xspacesoft/kowax/commits";
 
 	public KowaxUpdater() {
@@ -56,6 +58,8 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 				BufferedReader is = new BufferedReader(new
 						InputStreamReader(hConnection.getInputStream()));
 				String response = is.readLine();
+//				System.of.a.Down();
+//				System.out.println(response);
 				return response;
 			} else {
 				return null;
@@ -65,19 +69,24 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 		}
 	}
 
-	private String[] getCommits() {
+	private List<String> getCommits() {
 		String result = downloadCommits();
-		String[] splitted = result.split("hash");
-		return splitted;
+		return Arrays.asList(result.split("hash")).subList(0, result.split("hash").length);
 	}
 
 	private boolean isUpdateAvailable() {
-		String[] commits = getCommits();
+		System.out.println("My BUILD: "+ BUILD);
+		List<String> commits = getCommits();
+		for(String commit : commits)
+			System.out.println(commit);
 		if(commits==null)
 			return false;
-		else if(!Arrays.asList(commits).contains(Initrfs.BUILD)) {
+		else if(!Arrays.asList(commits).contains(BUILD)) {
+			System.out.println("Build found");
 			return false;
-		} else if (Arrays.asList(commits).get(1).contains(Initrfs.BUILD)) {
+		}
+		if (Arrays.asList(commits).get(1).contains(BUILD)) {
+			
 			return false;
 		} else {
 			return true;
