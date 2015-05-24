@@ -138,8 +138,7 @@ public class UsersManager implements Serializable {
 			}
 			return sb.toString();
 		} catch (NoSuchAlgorithmException e) { }
-		return null;
-		
+		return null;	
 	}
 
 	public void loadDefaults() throws ExistingUserException {

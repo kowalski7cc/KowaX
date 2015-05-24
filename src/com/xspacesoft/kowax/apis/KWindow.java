@@ -14,4 +14,9 @@ public interface KWindow {
 	
 	public String getAppletName();
 	
+	public String getAppletAuthor();
+	
+	public String getAppletVersion();
+	
+	public String getDescription();
 }

@@ -11,4 +11,5 @@ public interface DisplayManager extends KernelAccess{
 
 	public List<KWindow> getSupportedApps();
 	
+	public void logout(String user);
 }

@@ -43,6 +43,7 @@ public class KowaxDirectDraw {
 	public class Logout implements HttpHandler {
 		@Override
 		public void handle(HttpExchange httpExchange) throws IOException {
+			((DisplayManager) displayManager).logout(httpExchange.getPrincipal().toString());
 			String response = "<html><body><h1>Logged out</h1></body></html>";
 			httpExchange.sendResponseHeaders(401, response.length());
 			OutputStream os = httpExchange.getResponseBody();

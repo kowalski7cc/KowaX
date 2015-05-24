@@ -1,5 +1,7 @@
 package com.xspacesoft.kowax.windowsystem;
 
+import java.util.Map;
+
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.kernel.TokenKey;
@@ -8,11 +10,13 @@ public class Window {
 	
 	private String title;
 	private StringBuilder content;
+	private String principal;
+	private Map <String,String> params;
 	private boolean minimizeSupported;
 	private KWindow associatedApp;
 	private int pid;
 
-	public Window(String title, boolean minimizeSupported, KWindow associatedApp) {
+	public Window(String title, boolean minimizeSupported, KWindow associatedApp, String principal) {
 		this.title = title;
 		this.minimizeSupported = minimizeSupported;
 		this.associatedApp = associatedApp;
@@ -20,7 +24,7 @@ public class Window {
 	}
 
 	public Window(String name, boolean minimizeSupported) {
-		new Window(name, minimizeSupported, null);
+		new Window(name, minimizeSupported, null, "root");
 	}
 
 	public Window(String name) {
@@ -68,4 +72,21 @@ public class Window {
 		if(Initrfs.isTokenValid(tokenKey))
 			this.pid = pid;
 	}
+
+	public String getPrincipal() {
+		return principal;
+	}
+	
+	public String paramGet(String key) {
+		return this.params.get(key);
+	}
+	
+	public boolean paramContainsKey(String key) {
+		return this.params.containsKey(key);
+	}
+
+	public void setParams(Map<String, String> params) {
+		this.params = params;
+	}
+	
 }

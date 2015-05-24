@@ -98,6 +98,7 @@ public class ShellServer extends Thread {
 		
 		
 		// USER LOGGED IN!!!
+		taskManager.getTask(pid).setUser(session.getUsername());
 		sockethelper.clear();
 		Initrfs.getLogwolf().i(session.getUsername() + " logged in");;
 		sockethelper.println("Welcome back, " + session.getUsername() + "!");
