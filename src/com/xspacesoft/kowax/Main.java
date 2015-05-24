@@ -7,12 +7,15 @@ import java.io.PrintWriter;
 import com.xspacesoft.kowax.kernel.Stdio;
 
 public class Main {
-	
+	/** Default Shell Port */
 	private final static int DEFAULT_PORT = 23;
+	/** Default Http Server */
+	private final static int DEFAULT_HTTP = 80;
 	/** Forces debug output */
 	private final static boolean DEFAULT_OUTPUT_DEBUG = true;
 	/** Forces verbose output */
 	private final static boolean DEFAULT_OUTPUT_VERBOSE = true;
+	/** Default system input */
 	private final static InputStream DEFALUT_SYSTEM_IN = System.in;
 	private final static PrintStream DEFAULT_SYSTEM_OUT = System.out;
 	private final static String[] TITLE = {
@@ -35,6 +38,12 @@ public class Main {
 		if(ap.getArgument("port")!=null) {
 			if(Stdio.isNumber(ap.getArgument("port"))) {
 				port = Stdio.parseInt(ap.getArgument("port"));
+			}
+		}
+		int http = DEFAULT_HTTP;
+		if(ap.getArgument("httpport")!=null) {
+			if(Stdio.isNumber(ap.getArgument("httpport"))) {
+				http = Stdio.parseInt(ap.getArgument("httpport"));
 			}
 		}
 		boolean debug = DEFAULT_OUTPUT_DEBUG;
@@ -70,7 +79,7 @@ public class Main {
 			Thread.sleep(600);
 			System.out.println("----------------");
 			Thread.sleep(10);
-			Initrfs init = new Initrfs(port, debug, verbose, DEFALUT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
+			Initrfs init = new Initrfs(port, http, debug, verbose, DEFALUT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
 			out.flush();
 			init.start();
 		} catch (InterruptedException e) {

@@ -1,10 +1,12 @@
 package com.xspacesoft.kowax.plugins;
 
+import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.windowsystem.Window;
 
-public class Kalculator extends PluginBase {
+public class Kalculator extends PluginBase implements KWindow{
 	
 	//ArithmeticException
 	
@@ -143,5 +145,30 @@ public class Kalculator extends PluginBase {
 			}
 		}
 		return buffer;
+	}
+
+	@Override
+	public void onCreateWindow(Window window) {
+		window.setTitle("Calculator");
+		window.getContent().append("<form action=\"desktop\"><input type='hidden' disabled  name='application' value='" + getAppletName() + "'/>");
+		window.getContent().append("<input type='text' name='action'/><input type='submit' value='='/>");
+	}
+
+	@Override
+	public void onDestroyWindow(Window window) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onWindowHidden(Window window) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onWindowResume(Window window) {
+		// TODO Auto-generated method stub
+		
 	}
 }

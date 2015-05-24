@@ -36,9 +36,11 @@ public class Initrfs {
 	public final static String BUILD = BUILD_RESOURCE.getString("build.number").startsWith("$") ? 
 			"NA" : BUILD_RESOURCE.getString("build.number"); //$NON-NLS-1$
 	// Indicates api level
+//	public final static SYSTEMHOST = 
 	public final static int API = 1;
 //	private static File currentDirectory;
 	private int port;
+	private int http;
 	private boolean debug;
 	private boolean verbose;
 	@SuppressWarnings("unused")
@@ -70,14 +72,16 @@ public class Initrfs {
 		{KowaxUpdater.class, true},
 	};
 	
-	public Initrfs(int port, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
+	public Initrfs(int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
 		this.port = port;
+		this.http = http;
 		this.debug = debug;
 		this.verbose = verbose;
 		shellInput = defalutSystemIn;
 		shellOutput = defaultSystemOut;
 	}
 	
+	@Deprecated
 	public Initrfs(int port, boolean debug, boolean verbose) {
 		this.port = port;
 		this.debug = debug;
@@ -154,7 +158,7 @@ public class Initrfs {
 		// Start KWindowSystem
 		try {
 			logwolf.v("Starting KowaxDirectDraw Server");
-			kowaxDirectDraw = new KowaxDirectDraw(80, tokenKey, null);
+			kowaxDirectDraw = new KowaxDirectDraw(http, tokenKey, null);
 			kowaxDirectDraw.startServer();
 			logwolf.i("KowaxDirectDraw server is now up");
 		} catch (Exception e) {

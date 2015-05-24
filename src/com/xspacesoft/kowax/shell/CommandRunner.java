@@ -135,7 +135,7 @@ public class CommandRunner {
 			pName = plugin.getAppletName() + " " + command.split(" ")[0];
 		}
 		pName = pName.substring(0, 1).toUpperCase() + pName.substring(1);
-		pid = taskmanager.newTask("root", pName);
+		pid = taskmanager.newTask(session.isSudo() ? "root" : session.getUsername(), pName);
 		plugin.start(command, session.getSockethelper(), this);
 		taskmanager.removeTask(pid);
 	}

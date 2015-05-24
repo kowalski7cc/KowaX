@@ -29,7 +29,6 @@ public class Kalendar extends PluginBase implements KWindow {
 	@Override
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, 1);
 		SimpleDateFormat format1 = new SimpleDateFormat("EEE, d MMM yyyy hh 'o''clock' a, zzzz");
 		stdio.println("Today is " + format1.format(cal.getTime()));
 	}
@@ -48,7 +47,6 @@ public class Kalendar extends PluginBase implements KWindow {
 		window.setContent(new StringBuilder());
 		window.getContent().append("<h4>Today is</h4>");
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, 1);
 		SimpleDateFormat format1 = new SimpleDateFormat("EEE, d MMM yyyy hh 'o''clock' a, zzzz");
 		window.getContent().append(format1.format(cal.getTime()));
 	}
