@@ -28,7 +28,7 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 	private static String build;
 	private static String lastBuild;
 	private final static String COMMITURL = "https://bitbucket.org/api/2.0/repositories/xspacesoft/kowax/commits";
-	private final static boolean DEBUG = true;
+	private final static boolean DEBUG = false;
 	private final static String BASEURL = "https://drone.io/bitbucket.org/xspacesoft/kowax/files/target/";
 	private static String version;
 	public KowaxUpdater() {
