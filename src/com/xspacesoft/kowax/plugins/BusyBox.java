@@ -82,6 +82,13 @@ public class BusyBox extends PluginBase implements KernelAccess {
 			stdio.clear();
 		} else if (job[0].equalsIgnoreCase("reverse")) {
 			stdio.reverse();
+		} else if (job[0].equalsIgnoreCase("oobexperience")) {
+			if(job.length>1) {
+				if(job[1].equalsIgnoreCase("reset")) {
+					if(Initrfs.wizardReset(tokenKey))
+						stdio.println("KowaX Out-of-box Experience resetted.");
+				}
+			}
 		} else if (job[0].equalsIgnoreCase("help")) {
 			PluginManager pluginManager = Initrfs.getPluginManager(tokenKey);
 			List<PluginBase> shellPlugins = pluginManager.getPlugins();

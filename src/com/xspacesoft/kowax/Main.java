@@ -1,22 +1,16 @@
 package com.xspacesoft.kowax;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.prefs.Preferences;
 
 import com.xspacesoft.kowax.kernel.Stdio;
 
 public class Main {
-	/** Default Shell Port */
-	private final static int DEFAULT_PORT = 23;
-	/** Default Http Server */
-	private final static int DEFAULT_HTTP = 80;
-	/** Forces debug output */
-	private final static boolean DEFAULT_OUTPUT_DEBUG = true;
-	/** Forces verbose output */
-	private final static boolean DEFAULT_OUTPUT_VERBOSE = true;
 	/** Default system input */
-	private final static InputStream DEFALUT_SYSTEM_IN = System.in;
+	private final static InputStream DEFAULT_SYSTEM_IN = System.in;
 	private final static PrintStream DEFAULT_SYSTEM_OUT = System.out;
 	private final static String[] TITLE = {
 		"         ___  __    __   _   __  __",
@@ -27,6 +21,8 @@ public class Main {
 	};
 
 	public static void main(String[] args) {
+		Preferences pref = Preferences.userRoot().node(Initrfs.class.getName());
+//		pref.putBoolean("configured", false);
 		PrintWriter out = new PrintWriter(DEFAULT_SYSTEM_OUT, true);
 //		out.flush();
 		OptionsParser ap = new OptionsParser(args);
@@ -34,27 +30,7 @@ public class Main {
 //			Initrfs.printHelp();
 			System.exit(0);
 		}
-		int port = DEFAULT_PORT;
-		if(ap.getArgument("port")!=null) {
-			if(Stdio.isNumber(ap.getArgument("port"))) {
-				port = Stdio.parseInt(ap.getArgument("port"));
-			}
-		}
-		int http = DEFAULT_HTTP;
-		if(ap.getArgument("httpport")!=null) {
-			if(Stdio.isNumber(ap.getArgument("httpport"))) {
-				http = Stdio.parseInt(ap.getArgument("httpport"));
-			}
-		}
-		boolean debug = DEFAULT_OUTPUT_DEBUG;
-		if(ap.getTag("debug")) {
-			debug = true;
-		}
-		boolean verbose = DEFAULT_OUTPUT_VERBOSE;
-		if(ap.getTag("verbose")) {
-			verbose = true;
-		}
-		if(!debug) {
+		if(!BuildGet.stringToBoolean(BuildGet.getString("default.force.debug"))) {
 			Initrfs.clear(DEFAULT_SYSTEM_OUT);
 			System.out.println();
 		}
@@ -79,7 +55,42 @@ public class Main {
 			Thread.sleep(600);
 			System.out.println("----------------");
 			Thread.sleep(10);
-			Initrfs init = new Initrfs(port, http, debug, verbose, DEFALUT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
+			
+			// Do configuration wizard if first launch
+			if(!pref.getBoolean("configured", false)) {
+				SetupWizard setupWizard = new SetupWizard(pref, out, DEFAULT_SYSTEM_IN);
+				setupWizard.start();
+				pref.putBoolean("configured", true);
+				String a;
+				out.println();
+				out.println(a = "Starting up!");
+				for(int i=0;i<a.length();i++) {
+					out.printf("-");
+				}
+			}
+			
+			int telnet = pref.getInt("telnet_port", Stdio.parseInt(BuildGet.getString("default.telnet")));
+			if(ap.getArgument("telnet")!=null) {
+				if(Stdio.isNumber(ap.getArgument("telnet"))) {
+					telnet = Stdio.parseInt(ap.getArgument("telnet"));
+				}
+			}
+			int http = pref.getInt("http_port", Stdio.parseInt(BuildGet.getString("default.http")));
+			if(ap.getArgument("httpport")!=null) {
+				if(Stdio.isNumber(ap.getArgument("httpport"))) {
+					http = Stdio.parseInt(ap.getArgument("httpport"));
+				}
+			}
+			boolean debug = pref.getBoolean("force_debug", BuildGet.stringToBoolean(BuildGet.getString("default.force.debug")));
+			if(ap.getTag("debug")) {
+				debug = true;
+			}
+			boolean verbose = pref.getBoolean("force_verbose", BuildGet.stringToBoolean(BuildGet.getString("default.force.verbose")));
+			if(ap.getTag("verbose")) {
+				verbose = true;
+			}
+			String home = pref.get("home_path", new File("").getAbsolutePath());
+			Initrfs init = new Initrfs(home, telnet, http, debug, verbose, DEFAULT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
 			out.flush();
 			init.start();
 		} catch (InterruptedException e) {
@@ -97,5 +108,4 @@ public class Main {
 		out.flush();
 		out.println();
 	}
-
 }

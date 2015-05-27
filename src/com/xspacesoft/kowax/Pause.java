@@ -54,7 +54,9 @@ public class Pause {
 		printWriter.printf(output);
 		if (bufferedReader!=null)
 			bufferedReader.readLine();
-		else 
+		else if(inputStream!=null)
 			inputStream.read();
+		else
+			printWriter.println("Unsuppored input system");
 	}
 }

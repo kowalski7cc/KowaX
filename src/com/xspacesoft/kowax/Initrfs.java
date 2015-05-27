@@ -9,40 +9,35 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 import com.xspacesoft.kowax.kernel.AliasManager;
-import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.PluginBase;
+import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
-import com.xspacesoft.kowax.plugins.*;
 import com.xspacesoft.kowax.shell.ShellServer;
 import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
-import com.xspacesoft.kowax.windowsystem.kenvironment.KowaxDisplayManager;
 
 
 public class Initrfs {
-	private final static String BUILD_DATA = "com.xspacesoft.kowax.build"; //$NON-NLS-1$
-	public final static ResourceBundle BUILD_RESOURCE = ResourceBundle.getBundle(BUILD_DATA);
-	public final static String SHELLNAME = BUILD_RESOURCE.getString("build.artifact").startsWith("$") ?
-			"KowaX" : BUILD_RESOURCE.getString("build.artifact"); //$NON-NLS-1$
-	public final static String VERSION = BUILD_RESOURCE.getString("build.version").startsWith("$") ?
-			"Test build" : BUILD_RESOURCE.getString("build.version"); //$NON-NLS-1$
-	public final static String BUILD = BUILD_RESOURCE.getString("build.number").startsWith("$") ? 
-			"NA" : BUILD_RESOURCE.getString("build.number"); //$NON-NLS-1$
-	// Indicates api level
-//	public final static SYSTEMHOST = 
-	public final static int API = 1;
-//	private static File currentDirectory;
+	public final static String SHELLNAME = BuildGet.getString("build.artifact").startsWith("$") ?
+			"KowaX" : BuildGet.getString("build.artifact"); //$NON-NLS-1$
+	public final static String VERSION = BuildGet.getString("build.version").startsWith("$") ?
+			"Test build" : BuildGet.getString("build.version"); //$NON-NLS-1$
+	public final static String BUILD = BuildGet.getString("build.number").startsWith("$") ? 
+			"NA" : BuildGet.getString("build.number"); //$NON-NLS-1$
+	public final static int API = Stdio.parseInt(BuildGet.getString("build.apilevel"));
+	
 	private int port;
 	private int http;
 	private boolean debug;
 	private boolean verbose;
+	private static File kowaxHome;
 	@SuppressWarnings("unused")
 	private static InputStream shellInput;
 	private static PrintStream shellOutput;
@@ -57,35 +52,16 @@ public class Initrfs {
 
 	private static boolean serviceEnabled;
 	
-	private static final Object[][] CORE_PLUGINS_DATA = {
-		// ClassName, RootAccess
-		{BusyBox.class, true},
-		{CronTab.class, true},
-		{AppExample.class, false},
-		{HivemindControl.class, false},
-		{DenialService.class, false},
-		{Kalculator.class, false},
-		{Kalendar.class, false},
-		{Man.class, false},
-		{Fortune.class, false},
-		{KowaxDisplayManager.class, true},
-		{KowaxUpdater.class, true},
-	};
+	private static final Object[][] CORE_PLUGINS_DATA = DefaultPlugins.getDefaults();
 	
-	public Initrfs(int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
+	public Initrfs(String home, int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
 		this.port = port;
 		this.http = http;
 		this.debug = debug;
 		this.verbose = verbose;
+		kowaxHome = new File(home);
 		shellInput = defalutSystemIn;
 		shellOutput = defaultSystemOut;
-	}
-	
-	@Deprecated
-	public Initrfs(int port, boolean debug, boolean verbose) {
-		this.port = port;
-		this.debug = debug;
-		this.verbose = verbose;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -133,7 +109,7 @@ public class Initrfs {
 		// User Manager
 		logwolf.v("Loading UsersManager");
 		usersManager = new UsersManager();
-		File usersFile = new File("users.kls");
+		File usersFile = new File(new File(new File(kowaxHome,"etc"), "users"), "users.kls");
 		logwolf.i("Users file path: " + usersFile.toURI().toString());
 		try {
 			if((usersFile!=null)&&(usersFile.exists())) {
@@ -233,12 +209,16 @@ public class Initrfs {
 	
 	private void checkFolderTree() {
 //		currentDirectory = new File("");
-		if (!new File("bin").exists())
-			new File("bin").mkdir();
-		if (!new File("etc").exists())
-			new File("etc").mkdir();
-		if (!new File("home").exists())
-			new File("home").mkdir();
+		if (!new File(kowaxHome, "bin").exists())
+			new File(kowaxHome, "bin").mkdir();
+		if (!new File(kowaxHome, "etc").exists())
+			new File(kowaxHome, "etc").mkdir();
+		if (!new File(kowaxHome, "home").exists())
+			new File(kowaxHome, "home").mkdir();
+		if (!new File(kowaxHome, "temp").exists())
+			new File(kowaxHome, "temp").mkdir();
+		if (!new File(kowaxHome, "root").exists())
+			new File(kowaxHome, "root").mkdir();
 	}
 
 	public static Logwolf getLogwolf() {
@@ -250,6 +230,7 @@ public class Initrfs {
 			return null;
 		if(tokenKey.equals(token))
 			return aliasManager;
+		logwolf.w("[SEKowaX] - Invalid token recived (getAliasManager)");
 		return null;
 	}
 
@@ -258,6 +239,7 @@ public class Initrfs {
 			return null;
 		if(tokenKey.equals(token))
 			return pluginManager;
+		logwolf.w("[SEKowaX] - Invalid token recived (getPluginManager)");
 		return null;
 	}
 	
@@ -266,7 +248,18 @@ public class Initrfs {
 			return null;
 		if(tokenKey.equals(token))
 			return kowaxDirectDraw;
+		logwolf.w("[SEKowaX] - Invalid token recived (getKowaxDirectDraw)");
 		return null;
+	}
+	
+	public static boolean wizardReset(TokenKey token) {
+		if(tokenKey == null)
+			return false;
+		if(tokenKey.equals(token)) {
+			Preferences.userRoot().node(Initrfs.class.getName()).putBoolean("configured", false);
+			return true;
+		}
+		return false;
 	}
 
 	public static TaskManager getTaskManager(TokenKey token) {
@@ -274,6 +267,7 @@ public class Initrfs {
 			return null;
 		if(tokenKey.equals(token))
 			return taskManager;
+		logwolf.w("[SEKowaX] - Invalid token recived (getTaskManager)");
 		return null;
 	}
 
@@ -282,6 +276,7 @@ public class Initrfs {
 			return null;
 		if(tokenKey.equals(token))
 			return usersManager;
+		logwolf.w("[SEKowaX] - Invalid token recived (getUsersManager)");
 		return null;
 	}
 	
@@ -299,30 +294,27 @@ public class Initrfs {
 	}
 	
 	public static void clear(PrintStream printStream) {
-		boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
-		boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
-		boolean isOsx = System.getProperty("os.name").toLowerCase().contains("osx");
-		if(isWindows) {
-			try {
-				Runtime.getRuntime().exec("cls");
-			} catch (IOException e) {
-				printStream.print("\u001b[2J");
-				printStream.flush();
-			}
-		} else if(isLinux) {
-			printStream.print("\u001b[2J");
-			printStream.flush();
-		} else if (isOsx) {
-			try {
-				Runtime.getRuntime().exec("clear");
-			} catch (IOException e) {
-				printStream.print("\u001b[2J");
-				printStream.flush();
-			}
-		} else {
-			printStream.print("\u001b[2J");
-			shellOutput.flush();
+//		boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
+//		boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
+//		boolean isOsx = System.getProperty("os.name").toLowerCase().contains("osx");
+//		try {
+//			if(isWindows)
+//				Runtime.getRuntime().exec("cls");
+//			else if(isLinux||isOsx)
+//				Runtime.getRuntime().exec("clear");
+//			else {
+//				printStream.print("\u001b[2J");
+//				printStream.flush();
+//			}
+//		} catch (IOException e) {
+//			printStream.print("\u001b[2J");
+//			printStream.flush();
+//		}
+//		printStream.print("\u001b[2J");
+		for(int c=0; c<1000; c++) {
+			printStream.println("\b");
 		}
+		printStream.flush();
 	}
 
 	public static void halt() {

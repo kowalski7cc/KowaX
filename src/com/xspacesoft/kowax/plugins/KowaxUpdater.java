@@ -48,6 +48,8 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 		if(event==SystemEvent.SYSTEM_START) {
 			if(isUpdateAvailable()) {
 				Initrfs.getLogwolf().i("[KowaxUpdate] - Use 'Update -upgrade' from shell or Start upgrade from GUI.");
+			} else {
+				Initrfs.getLogwolf().i("[KowaxUpdate] - No update available");
 			}
 		}
 	}
@@ -92,8 +94,8 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 			return false;
 		}
 		lastBuild = commit;
-		Initrfs.getLogwolf().d("[KowaxUpdate] - My BUILD: '"+ build +"'");
-		Initrfs.getLogwolf().d("[KowaxUpdate] - Last BUILD: '" + lastBuild + "'");
+		Initrfs.getLogwolf().d("[KowaxUpdate] - My BUILD: '"+ build.substring(0, 15) +"...'");
+		Initrfs.getLogwolf().d("[KowaxUpdate] - Last BUILD: '" + lastBuild.substring(0, 15) + "'");
 		if (!commit.equals(build)) {
 			Initrfs.getLogwolf().i("[KowaxUpdate] - Update available!");
 			return true;
@@ -235,7 +237,10 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 			} else {
 				window.getContent().append("<h4>No update available.</h4>");
 				window.getContent().append("<ul>");
-				window.getContent().append("<li>Current build: '" + build + "'</li>");
+				if(build.equalsIgnoreCase("na"))
+					window.getContent().append("<li>Current build unaviable. Is this a dev build?</li>");
+				else
+					window.getContent().append("<li>Current build: '" + build + "'</li>");
 				window.getContent().append("</ul>");
 			}
 		}
