@@ -16,7 +16,7 @@ import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.exceptions.DuplicateElementException;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class PluginManager {
+public final class PluginManager {
 
 	private List<PluginBase> enabledPlugins;
 	private List<Service> loadedServices;

@@ -19,7 +19,7 @@ import com.xspacesoft.kowax.kernel.UsersManager.InvalidUserException;
 /**
  * The Class CommandRunner handles the running of an applet.
  */
-public class CommandRunner {
+public final class CommandRunner {
 	
 //	private List<ShellPlugin> plugins;
 	private AliasManager aliasManager;

@@ -75,8 +75,7 @@ public class Initrfs {
 		
 		// TOKEN KEY GENERATION
 		logwolf.v("Creating new TokenKey");
-		tokenKey = new TokenKey();
-		tokenKey.newKey();
+		tokenKey = TokenKey.newKey();
 		logwolf.d("TokenKey: ==" + tokenKey.getKey() + "==");
 		
 		// TASK MANAGER LOAD-UP
@@ -322,8 +321,16 @@ public class Initrfs {
 		}
 		printStream.flush();
 	}
+	
+	public static void stopShellSocket() {
+		serviceEnabled = false;
+	}
 
 	public static void halt() {
+		// TODO Make stop services, httpServer and System.exit(0);
 		serviceEnabled = false;
+//		pluginManager.stopServices();
+//		kowaxDirectDraw.stopServer();
+//		System.exit(0);
 	}
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.xspacesoft.kowax.apis.Service;
 
-public class TaskManager {
+public final class TaskManager {
 	
 	public class Task {
 

@@ -20,14 +20,20 @@ public final class TokenKey {
 	
 	private Integer token;
 	
-	public TokenKey() {
-		token = null;
+	private TokenKey(Integer token) {
+		this.token = token;
 	}
 	
-	public void newKey() {
+	public static TokenKey newKey() {
 		Random random = new Random();
-		while((this.token = Math.abs(random.nextInt()))<1000000000)
-			this.token = Math.abs(random.nextInt());
+		Integer token;
+		while((token = Math.abs(random.nextInt()))<1000000000);
+		return new TokenKey(token);
+	}
+	
+	public void changeKey() {
+		Random random = new Random();
+		while((this.token = Math.abs(random.nextInt()))<1000000000);
 	}
 	
 	public Integer getKey() {

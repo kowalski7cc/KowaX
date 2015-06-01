@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UsersManager implements Serializable {
+public final class UsersManager implements Serializable {
 
 	private static final long serialVersionUID = 4900265260339132855L;
 	private static final Object defaultUsers[][] = new Object[][] {

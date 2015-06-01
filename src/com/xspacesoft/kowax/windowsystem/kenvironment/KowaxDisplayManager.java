@@ -26,7 +26,7 @@ import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
 import com.xspacesoft.kowax.windowsystem.Window;
 import com.xspacesoft.kowax.windowsystem.WindowManager;
 
-public class KowaxDisplayManager extends PluginBase implements DisplayManager, HttpHandler, KernelAccess, SystemEventsListener, Service {
+public final class KowaxDisplayManager extends PluginBase implements DisplayManager, HttpHandler, KernelAccess, SystemEventsListener, Service {
 
 	class InterfaceSession {
 		private String username;

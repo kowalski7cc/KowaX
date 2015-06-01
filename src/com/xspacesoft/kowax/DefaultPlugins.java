@@ -13,7 +13,7 @@ import com.xspacesoft.kowax.plugins.Man;
 import com.xspacesoft.kowax.plugins.ServiceManager;
 import com.xspacesoft.kowax.windowsystem.kenvironment.KowaxDisplayManager;
 
-public class DefaultPlugins {
+public final class DefaultPlugins {
 
 	public static Object[][] getDefaults() {
 		return new Object [][] {
