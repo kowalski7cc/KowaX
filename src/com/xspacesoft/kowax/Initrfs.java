@@ -9,6 +9,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import com.xspacesoft.kowax.kernel.AliasManager;
@@ -91,16 +93,17 @@ public class Initrfs {
 		pluginManager = new PluginManager(tokenKey);
 		logwolf.v("PluginManager Started");
 		logwolf.v("Loading default plugins");
+		List<Class<? extends PluginBase>> startupBlacklist = new ArrayList<Class<? extends PluginBase>>();
 		logwolf.d("-----------------------");
-		
 		for (int i = 0; i < CORE_PLUGINS_DATA.length; i++) {
 			try {
-				if((boolean)CORE_PLUGINS_DATA[i][1]==true)
-					pluginManager.addPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0], tokenKey);
-				else
-					pluginManager.addPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0]);
+				pluginManager.addPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0],
+						(boolean) CORE_PLUGINS_DATA[i][2], 
+						((boolean)CORE_PLUGINS_DATA[i][1] ? tokenKey : null));
+				if((boolean) CORE_PLUGINS_DATA[i][3])
+					startupBlacklist.add((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0]);
 			} catch (InstantiationException | IllegalAccessException e) {
-				logwolf.e("Cannot load " + CORE_PLUGINS_DATA[i][0].toString());
+				logwolf.e("Unknown error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			}
 		}
 		logwolf.d("-----------------------");
@@ -173,7 +176,8 @@ public class Initrfs {
 		if (serverSocket == null) {
 			System.exit(1);
 		}
-		pluginManager.sendSystemEvent(SystemEvent.SYSTEM_START, null, tokenKey);
+		
+		pluginManager.sendSystemEvent(SystemEvent.SYSTEM_START, null, tokenKey, startupBlacklist);
 		try {
 			serverSocket.setSoTimeout(1000);
 			logwolf.i("Server ready!");
@@ -219,6 +223,8 @@ public class Initrfs {
 			new File(kowaxHome, "temp").mkdir();
 		if (!new File(kowaxHome, "root").exists())
 			new File(kowaxHome, "root").mkdir();
+		if (!new File(kowaxHome, "dev").exists())
+			new File(kowaxHome, "dev").mkdir();
 	}
 
 	public static Logwolf getLogwolf() {

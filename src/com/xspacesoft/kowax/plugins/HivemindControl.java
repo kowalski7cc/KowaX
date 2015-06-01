@@ -369,10 +369,10 @@ public class HivemindControl extends PluginBase implements Service {
 	public void startService() {
 		if(hivemindManager == null)
 			hivemindManager = new HivemindManager();
-		if (hivemindService==null)
-			hivemindService = new HivemindService(hivemindManager);		
-		if (!hivemindService.isAlive())
+		if (!hivemindService.isAlive()) {
+			hivemindService = new HivemindService(hivemindManager);
 			hivemindService.start();
+		}
 	}
 
 	@Override
@@ -384,6 +384,6 @@ public class HivemindControl extends PluginBase implements Service {
 	
 	@Override
 	public String getServiceName() {
-		return "Hivemind Service";
+		return "HivemindService";
 	}
 }

@@ -86,10 +86,10 @@ public class CommandRunner {
 			return;
 		}
 		while(command.startsWith(" ")) {
-			command.substring(1);
+			command = command.substring(1);
 		}
 		while(command.endsWith(" ")) {
-			command.substring(0, command.length());
+			command = command.substring(0, command.length()-1);
 		}
 		if(command.equals("")) {
 			throw new IllegalArgumentException("Empty");
@@ -162,13 +162,13 @@ public class CommandRunner {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void loadExternalClass(String path) {
+	public void loadInternalClass(String path) {
 		if (!session.isSudo()) {
 			session.getSockethelper().println("command runner: Operation not permitted");
 			return;
 		}
 		try {
-			pluginmanager.addPlugin((Class<? extends PluginBase>) ClassLoader.getSystemClassLoader().loadClass(path));
+			pluginmanager.addPlugin((Class<? extends PluginBase>) ClassLoader.getSystemClassLoader().loadClass(path), null, null);
 			session.getSockethelper().println("Applet " + ClassLoader.getSystemClassLoader().loadClass(path) + " loaded");
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			session.getSockethelper().println("Failed to load applet: " + e.toString());
@@ -253,7 +253,7 @@ public class CommandRunner {
 	public void sendSystemEvent(SystemEvent event, String extraValue, TokenKey tokenKey, boolean sudo) {
 		if(!Initrfs.isTokenValid(tokenKey))
 			throw new InsufficientPermissionsException();
-		pluginmanager.sendSystemEvent(event, extraValue, this);
+		pluginmanager.sendSystemEvent(event, extraValue, this, null);
 		
 	}
 }

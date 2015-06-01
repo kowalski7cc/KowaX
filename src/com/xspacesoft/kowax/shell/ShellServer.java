@@ -130,6 +130,8 @@ public class ShellServer extends Thread {
 						sockethelper.println();
 					} catch (IllegalArgumentException e) {
 						// New line
+					} catch (Exception e) {
+						sockethelper.println("-shell: Error launching applet: " + e.toString());
 					}
 				}
 			}

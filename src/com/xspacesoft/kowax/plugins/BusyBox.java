@@ -73,7 +73,7 @@ public class BusyBox extends PluginBase implements KernelAccess {
 		} else if (job[0].equalsIgnoreCase("run")) {
 			runExternalClass(command.substring(job[0].length()+1), commandRunner);
 		} else if (job[0].equalsIgnoreCase("load")) {
-			commandRunner.loadExternalClass(command.substring(job[0].length()+1));
+			commandRunner.loadInternalClass(command.substring(job[0].length()+1));
 		} else if (job[0].equalsIgnoreCase("whoami")){
 			stdio.println(commandRunner.getUsername());
 		} else if (job[0].equalsIgnoreCase("version")) {
@@ -83,11 +83,17 @@ public class BusyBox extends PluginBase implements KernelAccess {
 		} else if (job[0].equalsIgnoreCase("reverse")) {
 			stdio.reverse();
 		} else if (job[0].equalsIgnoreCase("oobexperience")) {
-			if(job.length>1) {
-				if(job[1].equalsIgnoreCase("reset")) {
-					if(Initrfs.wizardReset(tokenKey))
-						stdio.println("KowaX Out-of-box Experience resetted.");
+			if(commandRunner.isSudo()) {
+				if(job.length>1) {
+					if(job[1].equalsIgnoreCase("reset")) {
+						if(Initrfs.wizardReset(tokenKey))
+							stdio.println("KowaX Out-of-box Experience resetted.");
+						else
+							stdio.println("Unknown error.");
+					}
 				}
+			} else {
+				stdio.println("Must be root.");
 			}
 		} else if (job[0].equalsIgnoreCase("help")) {
 			PluginManager pluginManager = Initrfs.getPluginManager(tokenKey);
@@ -182,13 +188,14 @@ public class BusyBox extends PluginBase implements KernelAccess {
 
 	private void printTasks(CommandRunner commandRunner, Stdio stdio) {
 		stdio.println("Running processes:");
-		stdio.println("User" + "\t" + "Pid" + "\t" +"Start" + "\t" + "Task Name");
+		stdio.println("User" + "\t" + "Pid" + "\t" +"Start" + "\t" + "Service" + "\t" + "Task Name");
 		SimpleDateFormat ft = new SimpleDateFormat ("HH:mm");
 		List<Task> tasks = Initrfs.getTaskManager(tokenKey).getRunningTasks();
 		for(Task task : tasks) {
 			stdio.println(task.getUser() + "\t" + 
 					task.getPid() + "\t" + 
 					ft.format(task.getDate()) + "\t" 
+					+ (task.getService()!=null ? "yes" : "no") + "\t"
 					+ task.getAppletName());
 		}
 		stdio.println();

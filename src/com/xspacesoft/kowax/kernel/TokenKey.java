@@ -2,7 +2,7 @@ package com.xspacesoft.kowax.kernel;
 
 import java.util.Random;
 
-public class TokenKey {
+public final class TokenKey {
 	
 	public static class InvalidTokenException extends IllegalArgumentException {
 
@@ -26,7 +26,8 @@ public class TokenKey {
 	
 	public void newKey() {
 		Random random = new Random();
-		this.token = Math.abs(random.nextInt());
+		while((this.token = Math.abs(random.nextInt()))<1000000000)
+			this.token = Math.abs(random.nextInt());
 	}
 	
 	public Integer getKey() {

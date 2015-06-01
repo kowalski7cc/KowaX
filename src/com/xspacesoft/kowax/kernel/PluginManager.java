@@ -2,7 +2,6 @@ package com.xspacesoft.kowax.kernel;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -20,80 +19,97 @@ import com.xspacesoft.kowax.shell.CommandRunner;
 public class PluginManager {
 
 	private List<PluginBase> enabledPlugins;
+	private List<Service> loadedServices;
+	private List<PluginBase> rootPlugins;
 	private TaskManager taskManager;
 	private Logwolf logwolf;
 
 	public PluginManager(TokenKey tokenKey) {
 		enabledPlugins = new ArrayList<PluginBase>();
+		loadedServices = new ArrayList<Service>();
+		rootPlugins = new ArrayList<PluginBase>();
 		taskManager = Initrfs.getTaskManager(tokenKey);
 		logwolf = Initrfs.getLogwolf();
 	}
 
-	public void addPlugin(File file) throws MalformedURLException, ClassNotFoundException, ClassCastException {
+	public void filePluginLoad(File file, Boolean startService, TokenKey tokenKey) throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, IOException {
 		URL[] urls = null;
 		URL url = file.toURI().toURL();
 		urls = new URL[] { url };
 		URLClassLoader ucl = new URLClassLoader(urls);
-		try {
-			@SuppressWarnings("unchecked")
-			Class<? extends PluginBase> load = (Class<? extends PluginBase>) ucl.loadClass(file.getName());
-			addPlugin(load);
-		} catch (Exception e) {
-			throw new ClassCastException();
-		} finally {
-			try {
-				ucl.close();
-			} catch (IOException e) {
-				logwolf.e(e);
-			}
+		Class<? extends PluginBase> obj = ucl.loadClass(file.getName()).asSubclass(PluginBase.class);
+		if(obj.isInstance(PluginBase.class)) {
+			addPlugin(obj, startService, tokenKey);
 		}
+		ucl.close();
 	}
+//
+//	public void addPlugin(Class<? extends PluginBase> loadPlugin)
+//			throws InstantiationException, IllegalAccessException {
+//		addPlugin(loadPlugin, null, null);
+//	}
 
-	public void addPlugin(Class<? extends PluginBase> loadPlugin)
+	public void addPlugin(Class<? extends PluginBase> loadPlugin, Boolean startService, TokenKey tokenKey)
 			throws InstantiationException, IllegalAccessException {
-		addPlugin(loadPlugin, null);
-	}
-
-	public void addPlugin(Class<? extends PluginBase> loadPlugin, TokenKey tokenKey)
-			throws InstantiationException, IllegalAccessException {
-		Initrfs.getLogwolf().d("Trying to load class " + loadPlugin.getName() +".");
+		Initrfs.getLogwolf().d("[PluginManager] - Trying to load class " + loadPlugin.getName() +".");
 		PluginBase newPlugin = loadPlugin.newInstance();
 		String pluginName = loadPlugin.getSimpleName();
+		// Check if has valid plug-in name
 		if(newPlugin.getAppletName() == null) {
-			logwolf.e("Invalid shell name in plugin " + pluginName);
+			logwolf.e("[PluginManager] - Invalid shell name in plugin " + pluginName + ". Stopped loadup.");
 			return;
 		}
+		
+		// Check duplicates
 		for (PluginBase shellPlugin : enabledPlugins) {
 			if(shellPlugin.getAppletName().equals(newPlugin.getAppletName())) {
 				throw new DuplicateElementException(newPlugin.getAppletName());
 			}
 		}
-		if((tokenKey!=null)&&(Initrfs.isTokenValid(tokenKey))) {
-			try {
-				KernelAccess sup = (KernelAccess) newPlugin;
-				sup.setTokenKey(tokenKey);
-				logwolf.d("Plugin " + pluginName + " loaded at kernel level");
-			} catch (Exception e) {
-				// Can't load at kernel level
-				logwolf.d("Can't load " + pluginName + " at kernel level.");
+		enabledPlugins.add(newPlugin);
+		
+		// Give permissions
+		if(newPlugin instanceof KernelAccess) {
+			if(tokenKey!=null) {
+				if(Initrfs.isTokenValid(tokenKey)) {
+					KernelAccess kernelAccess = (KernelAccess) newPlugin;
+					try {
+						kernelAccess.setTokenKey(tokenKey);
+						logwolf.d("[PluginManager] - Plugin " + pluginName + " loaded at kernel level");
+						rootPlugins.add(newPlugin);
+					} catch (Exception e) {
+						logwolf.e("[PluginManager] - Plugin " + pluginName + " failed to load at kernel level");
+						logwolf.e("[PluginManager] - " + e.toString());
+					}
+				} else {
+					logwolf.e("[PluginManager] - Invalid TokenKey");
+				}
 			}
+		} else {
+			logwolf.d("[PluginManager] - " + pluginName + " doesn't support load at kernel level.");
 		}
-		try {
+		
+		// Start service
+		if(newPlugin instanceof Service) {
 			Service service = (Service) newPlugin;
 			if(service.getServiceName()!=null) {
-				service.startService();
-				taskManager.newTask("root", service.getServiceName());
-				Initrfs.getLogwolf().d("Started " + pluginName + " service @" + service.toString().split("@")[1]);
+				if((startService!=null)&&startService) {
+					try {
+						service.startService();
+						taskManager.newTask("root", service.getServiceName(), service);
+					} catch (Exception e) {
+						Initrfs.getLogwolf().e("[PluginManager] - Can't start service" + service.getServiceName());
+						Initrfs.getLogwolf().e("[PluginManager] - " + e.toString());
+					}
+				}
+				loadedServices.add(service);
 			} else {
-				Initrfs.getLogwolf().d("Can't start " + pluginName + ", invalid service name.");
+				Initrfs.getLogwolf().e("[PluginManager] - Can't start " + pluginName + ", invalid service name.");
 			}
-			
-		} catch (Exception e) {
-			// Can't load plugin as service
-			logwolf.d("Plugin " + pluginName + " has not a service to start");
+		} else {
+			logwolf.d("[PluginManager] - " + pluginName + " doesn't support services");
 		}
-		enabledPlugins.add(newPlugin);
-		logwolf.d("Plugin " + pluginName + " load complete");
+		logwolf.d("[PluginManager] - Plugin " + pluginName + " load complete");
 	}
 
 	public String[] getPluginsName() {
@@ -124,7 +140,7 @@ public class PluginManager {
 		}
 	}
 
-	public void sendSystemEvent(SystemEvent event, String extraValue, CommandRunner commandRunner) {
+	public void sendSystemEvent(SystemEvent event, String extraValue, CommandRunner commandRunner, List<Class<? extends PluginBase>> blacklist) {
 		for (PluginBase thisPlugin : enabledPlugins) {
 			try {
 				SystemEventsListener listeners = (SystemEventsListener) thisPlugin;
@@ -133,10 +149,22 @@ public class PluginManager {
 			} catch (Exception e) { }
 		}
 	}
-
+	
 	public void sendSystemEvent(SystemEvent event, String extraValue, TokenKey tokenKey) {
+		sendSystemEvent(event, extraValue, tokenKey, null);
+	}
+
+	public void sendSystemEvent(SystemEvent event, String extraValue, TokenKey tokenKey , List<Class<? extends PluginBase>> blacklist) {
 		CommandRunner commandRunner = new CommandRunner(tokenKey, false);
-		sendSystemEvent(event, extraValue, commandRunner);
+		sendSystemEvent(event, extraValue, commandRunner, blacklist);
+	}
+
+	public List<Service> getServices() {
+		return loadedServices;
+	}
+	
+	public List<PluginBase> getRootPlugins() {
+		return rootPlugins;
 	}
 
 }

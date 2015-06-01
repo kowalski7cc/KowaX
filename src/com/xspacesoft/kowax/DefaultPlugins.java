@@ -10,24 +10,26 @@ import com.xspacesoft.kowax.plugins.Kalculator;
 import com.xspacesoft.kowax.plugins.Kalendar;
 import com.xspacesoft.kowax.plugins.KowaxUpdater;
 import com.xspacesoft.kowax.plugins.Man;
+import com.xspacesoft.kowax.plugins.ServiceManager;
 import com.xspacesoft.kowax.windowsystem.kenvironment.KowaxDisplayManager;
 
 public class DefaultPlugins {
 
 	public static Object[][] getDefaults() {
 		return new Object [][] {
-				// ClassName, RootAccess
-				{BusyBox.class, true},
-				{CronTab.class, true},
-				{AppExample.class, false},
-				{HivemindControl.class, false},
-				{DenialService.class, false},
-				{Kalculator.class, false},
-				{Kalendar.class, false},
-				{Man.class, false},
-				{Fortune.class, false},
-				{KowaxDisplayManager.class, true},
-				{KowaxUpdater.class, true},
+				// ClassName, RootAccess, AutostartService, Run@Boot, 
+				{BusyBox.class, true, true, true},
+				{CronTab.class, true, true, true},
+				{AppExample.class, false, false, false},
+				{HivemindControl.class, false, true, true},
+				{DenialService.class, false, false, false},
+				{Kalculator.class, false, false, false},
+				{Kalendar.class, false, false, false},
+				{Man.class, false, false, false},
+				{Fortune.class, false, false, false},
+				{KowaxDisplayManager.class, true, true, true},
+				{KowaxUpdater.class, true, true, true},
+				{ServiceManager.class, true, false, false},
 			};
 	}
 }

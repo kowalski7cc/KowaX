@@ -94,8 +94,8 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 			return false;
 		}
 		lastBuild = commit;
-		Initrfs.getLogwolf().d("[KowaxUpdate] - My BUILD: '"+ build.substring(0, 15) +"...'");
-		Initrfs.getLogwolf().d("[KowaxUpdate] - Last BUILD: '" + lastBuild.substring(0, 15) + "'");
+		Initrfs.getLogwolf().d("[KowaxUpdate] - My BUILD: '"+ build.substring(0, 10) +"...'");
+		Initrfs.getLogwolf().d("[KowaxUpdate] - Last BUILD: '" + lastBuild.substring(0, 10) + "'");
 		if (!commit.equals(build)) {
 			Initrfs.getLogwolf().i("[KowaxUpdate] - Update available!");
 			return true;

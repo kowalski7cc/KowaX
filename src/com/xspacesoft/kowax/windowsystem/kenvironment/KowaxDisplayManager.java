@@ -217,7 +217,9 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 		}
 		switch(command.toLowerCase()) {
 		case "--replace": setDisplayManager();
-		break;
+			stdio.println("KDM Running on DirectDraw " + Initrfs.getKowaxDirectDraw(tokenKey).getClass().getName());
+			stdio.println("Address: @" + Initrfs.getKowaxDirectDraw(tokenKey).toString().split("@")[1]);
+			break;
 		}
 	}
 
@@ -283,7 +285,9 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 
 	@Override
 	public void stopService() {
-		
+		closeAllSessions();
+		guiApplications = null;
+		System.gc();
 	}
 
 	@Override
@@ -321,6 +325,15 @@ public class KowaxDisplayManager extends PluginBase implements DisplayManager, H
 		session.close();
 		sessions.remove(getSession(user));
 		
+	}
+	
+	private void closeAllSessions() {
+		for(InterfaceSession interfaceSession : sessions) {
+			interfaceSession.windowManager.close();
+			interfaceSession.windowManager = null;
+			interfaceSession.close();
+			sessions.remove(interfaceSession);
+		}
 	}
 
 }

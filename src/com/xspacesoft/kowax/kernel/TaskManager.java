@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.xspacesoft.kowax.apis.Service;
+
 public class TaskManager {
 	
 	public class Task {
@@ -13,13 +15,15 @@ public class TaskManager {
 		private int pid;
 		private String applet;
 		private Date date;
+		private Service service;
 		
-		public Task(String user, int pid, String applet) {
+		public Task(String user, int pid, String applet, Service service) {
 			super();
 			this.user = user;
 			this.pid = pid;
 			this.applet = applet;
 			date = new Date();
+			this.service = service;
 		}
 
 		public String getUser() {
@@ -45,6 +49,10 @@ public class TaskManager {
 		public void setAppletName(String applet) {
 			this.applet = applet;
 		}
+
+		public Service getService() {
+			return service;
+		}
 		
 	}
 	
@@ -55,9 +63,13 @@ public class TaskManager {
 		tasks = new ArrayList<Task>();
 	}
 	
-	public int newTask(String user, String appletName) {
-		tasks.add(new Task(user, lastPid, appletName));
+	public int newTask(String user, String appletName, Service service) {
+		tasks.add(new Task(user, lastPid, appletName, service));
 		return lastPid++;
+	}
+	
+	public int newTask(String user, String appletName) {
+		return newTask(user, appletName, null);
 	}
 	
 	public Task getTask(int pid) {
@@ -75,7 +87,7 @@ public class TaskManager {
 	}
 	
 	public void removeTask(int pid) {
-		if(pid<=1)
+		if(pid<0)
 			return;
 		Iterator<Task> ite = tasks.iterator();
 		while(ite.hasNext()) {
