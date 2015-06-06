@@ -13,7 +13,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.kernel.SystemApi;
+import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
+import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.InvalidUserException;
 
 public class KowaxDirectDraw {
@@ -59,7 +62,6 @@ public class KowaxDirectDraw {
 			if(params.get("shutdown")!=null) {
 				String response = "<html><head><title>System off</title></head><body><h1>System off</h1><body></html>";
 				writeResponse(httpExchange, response);
-				Initrfs.getPluginManager(tokenKey).stopServices();
 				Initrfs.halt();
 			}
 		}
@@ -77,7 +79,7 @@ public class KowaxDirectDraw {
 			@Override
 			public boolean checkCredentials(String user, String pwd) {
 				try {
-					return Initrfs.getUsersManager(tokenKey).isPasswordValid(user, pwd);
+					return ((UsersManager) Initrfs.getSystemApi(SystemApi.USERS_MANAGER, tokenKey)).isPasswordValid(user, pwd);
 				} catch (InvalidUserException e) {
 					return false;
 				}
@@ -110,7 +112,7 @@ public class KowaxDirectDraw {
 		setUp();
 		if(server!=null) {
 			server.start();
-			Initrfs.getTaskManager(tokenKey).newTask("root", "KowaxDirectDraw Server");
+			((TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey)).newTask("root", "KowaxDirectDraw Server");
 		} else {
 			Initrfs.getLogwolf().e("Failed to start KWS: NullPointerServer");
 		}
@@ -118,7 +120,7 @@ public class KowaxDirectDraw {
 	
 	public void stopServer() {
 		server.stop(0);
-		Initrfs.getTaskManager(tokenKey).removeTask(serverPid);
+		((TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey)).removeTask(serverPid);
 	}
 	
 	@Deprecated

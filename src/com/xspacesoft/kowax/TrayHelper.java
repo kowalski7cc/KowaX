@@ -27,11 +27,11 @@ public class TrayHelper {
 		if (!SystemTray.isSupported()) {
             throw new UnsupportedOperationException();
         }
-		String path = "/com/xspacesoft/kshell/tray.gif";
+		String path = "/com/xspacesoft/kowax/tray.gif";
         Image img = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource(path));
         PopupMenu popup = new PopupMenu();
         trayIcon = new TrayIcon(img);
-        MenuItem modeHint = new MenuItem("Project security");
+        MenuItem modeHint = new MenuItem(Initrfs.SHELLNAME);
         modeHint.addActionListener(new ActionListener() {
             @Override
 			public void actionPerformed(ActionEvent e) {
@@ -63,7 +63,7 @@ public class TrayHelper {
 		popup.addSeparator();
 		popup.add(exit);
 		trayIcon.setPopupMenu(popup);
-		trayIcon.setToolTip("SOIC Dashboard");
+		trayIcon.setToolTip("Open up Dashboard");
 		try {
 			tray.add(trayIcon);
 		} catch (NullPointerException e) {

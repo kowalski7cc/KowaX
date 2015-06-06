@@ -10,6 +10,7 @@ import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
@@ -50,25 +51,25 @@ public final class CommandRunner {
 		this.tokenKey = tokenKey;
 		if(!Initrfs.isTokenValid(tokenKey))
 			throw new TokenKey.InvalidTokenException();
-		this.usersManager = Initrfs.getUsersManager(tokenKey);
-		this.pluginmanager = Initrfs.getPluginManager(tokenKey);
-		this.taskmanager = Initrfs.getTaskManager(tokenKey);
-		this.aliasManager = Initrfs.getAliasManager(tokenKey);
+		this.usersManager = (UsersManager) Initrfs.getSystemApi(SystemApi.USERS_MANAGER, tokenKey);
+		this.pluginmanager = (PluginManager) Initrfs.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey);
+		this.taskmanager = (TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
+		this.aliasManager = (AliasManager) Initrfs.getSystemApi(SystemApi.ALIAS_MANAGER, tokenKey);
 		this.session.setSudo(sudo);
 	}
 	
 	public CommandRunner(TokenKey tokenKey, boolean sudo) {
-		this.tokenKey = tokenKey;
-		if(!Initrfs.isTokenValid(tokenKey))
-			throw new TokenKey.InvalidTokenException();
-		this.usersManager = Initrfs.getUsersManager(tokenKey);
-		this.pluginmanager = Initrfs.getPluginManager(tokenKey);
-		this.taskmanager = Initrfs.getTaskManager(tokenKey);
-		this.aliasManager = Initrfs.getAliasManager(tokenKey);
+//		this.tokenKey = tokenKey;
+//		if(!Initrfs.isTokenValid(tokenKey))
+//			throw new TokenKey.InvalidTokenException();
+//		this.usersManager = Initrfs.getUsersManager(tokenKey);
+//		this.pluginmanager = Initrfs.getPluginManager(tokenKey);
+//		this.taskmanager = Initrfs.getTaskManager(tokenKey);
+//		this.aliasManager = Initrfs.getAliasManager(tokenKey);
 		Stdio stdio = new Stdio();
 		Session session = new Session(stdio);
-		this.session = session;
-		this.session.setSudo(sudo);
+		session.setSudo(sudo);
+		new CommandRunner(session, tokenKey, sudo);
 	}
 
 	/**

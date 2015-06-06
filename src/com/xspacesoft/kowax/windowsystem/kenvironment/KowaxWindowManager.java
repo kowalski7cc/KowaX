@@ -7,7 +7,10 @@ import java.util.Map;
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.kernel.SystemApi;
+import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
+import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
 import com.xspacesoft.kowax.windowsystem.Window;
 import com.xspacesoft.kowax.windowsystem.WindowManager;
 
@@ -17,8 +20,10 @@ public class KowaxWindowManager implements WindowManager, KernelAccess{
 	private TokenKey tokenKey;
 	private List<KWindow> guiApps;
 	private String principal;
+	private TaskManager taskManager;
 	private int myPid;
 
+	@Deprecated
 	public KowaxWindowManager() {
 		windows = new ArrayList<Window>();
 		guiApps = new ArrayList<KWindow>();
@@ -29,7 +34,7 @@ public class KowaxWindowManager implements WindowManager, KernelAccess{
 		guiApps = new ArrayList<KWindow>();
 		setTokenKey(tokenKey);
 		this.principal = principal;
-		myPid = Initrfs.getTaskManager(tokenKey).newTask(principal, "KWM");
+		myPid = taskManager.newTask(principal, "KWM");
 	}
 
 	@Override
@@ -69,7 +74,7 @@ public class KowaxWindowManager implements WindowManager, KernelAccess{
 			newWindow.setParams(params);
 			kwin.onCreateWindow(newWindow);
 			windows.add(newWindow);
-			newWindow.setPid(Initrfs.getTaskManager(tokenKey).newTask(principal, newWindow.getTitle() + " (KWM)"), tokenKey);
+			newWindow.setPid(taskManager.newTask(principal, newWindow.getTitle() + " (KWM)"), tokenKey);
 			return newWindow;
 			} catch (Exception e) {
 				return null;
@@ -81,7 +86,8 @@ public class KowaxWindowManager implements WindowManager, KernelAccess{
 	@Override
 	public void setTokenKey(TokenKey tokenKey) {
 		this.tokenKey = tokenKey;
-		guiApps = Initrfs.getKowaxDirectDraw(tokenKey).getDisplayManger().getSupportedApps();
+		taskManager = (TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
+		guiApps = ((KowaxDirectDraw) Initrfs.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey)).getDisplayManger().getSupportedApps();
 	}
 
 	@Override
@@ -89,7 +95,7 @@ public class KowaxWindowManager implements WindowManager, KernelAccess{
 		for(Window window : windows) {
 			if(window.equals(myWindow)) {
 				window.getAssociatedApp().onDestroyWindow(window);
-				Initrfs.getTaskManager(tokenKey).removeTask(myWindow.getPid());
+				taskManager.removeTask(myWindow.getPid());
 				windows.remove(window);
 				System.gc();
 				return;
@@ -100,7 +106,7 @@ public class KowaxWindowManager implements WindowManager, KernelAccess{
 	public void unload() {
 		for(Window window : windows) {
 				window.getAssociatedApp().onDestroyWindow(window);
-				Initrfs.getTaskManager(tokenKey).removeTask(window.getPid());
+				taskManager.removeTask(window.getPid());
 				windows.remove(window);
 				return;
 		}
@@ -109,7 +115,7 @@ public class KowaxWindowManager implements WindowManager, KernelAccess{
 	@Override
 	public void close() {
 		unload();
-		Initrfs.getTaskManager(tokenKey).removeTask(myPid);
+		taskManager.removeTask(myPid);
 	}
 
 }

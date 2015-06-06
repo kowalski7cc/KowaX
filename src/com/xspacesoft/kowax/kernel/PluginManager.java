@@ -28,7 +28,7 @@ public final class PluginManager {
 		enabledPlugins = new ArrayList<PluginBase>();
 		loadedServices = new ArrayList<Service>();
 		rootPlugins = new ArrayList<PluginBase>();
-		taskManager = Initrfs.getTaskManager(tokenKey);
+		taskManager = (TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
 		logwolf = Initrfs.getLogwolf();
 	}
 

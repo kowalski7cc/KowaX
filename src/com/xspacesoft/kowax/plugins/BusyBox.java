@@ -8,15 +8,20 @@ import java.util.Scanner;
 
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemApi;
+import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TaskManager.Task;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
 
 public class BusyBox extends PluginBase implements KernelAccess {
 	
+	private static final String EULA = "eula.txt";
 	private TokenKey tokenKey;
 
 	@Override
@@ -54,9 +59,10 @@ public class BusyBox extends PluginBase implements KernelAccess {
 		} else if (job[0].equalsIgnoreCase("about")) {
 			showAbout(stdio);
 		} else if (job[0].equalsIgnoreCase("startx")) {
-			if(Initrfs.getKowaxDirectDraw(tokenKey).isRunning())
-				Initrfs.getKowaxDirectDraw(tokenKey).stopServer();
-			Initrfs.getKowaxDirectDraw(tokenKey).startServer();
+			KowaxDirectDraw kowaxDirectDraw = (KowaxDirectDraw) Initrfs.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey);
+			if(kowaxDirectDraw.isRunning())
+				return;
+			kowaxDirectDraw.startServer();
 		} else if (job[0].equalsIgnoreCase("ls")) {
 			listApplets();
 		} else if (job[0].equalsIgnoreCase("sudo")) {
@@ -96,7 +102,7 @@ public class BusyBox extends PluginBase implements KernelAccess {
 				stdio.println("Must be root.");
 			}
 		} else if (job[0].equalsIgnoreCase("help")) {
-			PluginManager pluginManager = Initrfs.getPluginManager(tokenKey);
+			PluginManager pluginManager = (PluginManager) Initrfs.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey);
 			List<PluginBase> shellPlugins = pluginManager.getPlugins();
 			for(PluginBase shellPlugin : shellPlugins) {
 				stdio.print(shellPlugin.getAppletName().substring(0, 1).toUpperCase() + 
@@ -120,7 +126,7 @@ public class BusyBox extends PluginBase implements KernelAccess {
 		if((substring.split("=").length<2)||(substring.split("=").length>3)) {
 			String[] a = substring.split("=");
 			Initrfs.getLogwolf().i(substring);
-			Initrfs.getAliasManager(tokenKey).newAlias(a[1], a[0]);
+			((AliasManager) Initrfs.getSystemApi(SystemApi.ALIAS_MANAGER, tokenKey)).newAlias(a[1], a[0]);
 			commandRunner.getSocketHelper().println("Alias created");
 		}
 	}
@@ -136,9 +142,9 @@ public class BusyBox extends PluginBase implements KernelAccess {
 	}
 
 	private void showEula(Stdio stdio) {
-		stdio.println("End-User License Agreement for Project Security");
+		stdio.println("End-User License Agreement for " + Initrfs.SHELLNAME);
 		try {
-			InputStream is = this.getClass().getClassLoader().getResourceAsStream("eula.txt");
+			InputStream is = Initrfs.class.getResourceAsStream(EULA);
 			Scanner scn = new Scanner(is);
 			while(scn.hasNext()) {
 				stdio.println(scn.nextLine() + "");
@@ -156,15 +162,18 @@ public class BusyBox extends PluginBase implements KernelAccess {
 		} else {
 			stdio.println("Shutting down");
 			Initrfs.getLogwolf().i("Stopping " + Initrfs.SHELLNAME);
+			Initrfs.getLogwolf().i("Sending TERM signal...");
 			Initrfs.getLogwolf().i("Stopping all services");
-			Initrfs.getPluginManager(tokenKey).stopServices();
+			((PluginManager) Initrfs.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).stopServices();
 			Initrfs.getLogwolf().i("Closing server socket");
 			try {
 				stdio.getSocket(tokenKey).close();
 			} catch (IOException e) {
-				// WHO EVEN CARES?
+				Initrfs.getLogwolf().e("IOException on shutdown: " + e);
+			} finally {
+				((KowaxDirectDraw) Initrfs.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey)).stopServer();
+				Initrfs.stopShellSocket();
 			}
-			Initrfs.halt();
 		}
 	}
 	
@@ -190,7 +199,7 @@ public class BusyBox extends PluginBase implements KernelAccess {
 		stdio.println("Running processes:");
 		stdio.println("User" + "\t" + "Pid" + "\t" +"Start" + "\t" + "Service" + "\t" + "Task Name");
 		SimpleDateFormat ft = new SimpleDateFormat ("HH:mm");
-		List<Task> tasks = Initrfs.getTaskManager(tokenKey).getRunningTasks();
+		List<Task> tasks = ((TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey)).getRunningTasks();
 		for(Task task : tasks) {
 			stdio.println(task.getUser() + "\t" + 
 					task.getPid() + "\t" + 

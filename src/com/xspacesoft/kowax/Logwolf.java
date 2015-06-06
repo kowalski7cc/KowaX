@@ -17,8 +17,6 @@ public class Logwolf {
 	private PrintWriter shellOutput;
 	private PrintWriter fileOutput;
 	
-	
-
 	public Logwolf(PrintStream output, File file) throws FileNotFoundException, 
 		UnsupportedEncodingException, IOException {
 		if(!file.exists())
@@ -120,5 +118,10 @@ public class Logwolf {
 
 	public void setLoggiongEnabled(boolean enableLogging) {
 		this.enableLogging = enableLogging;
+	}
+	
+	public static void updateSplash(String s) {
+		if((Initrfs.splash!=null) && (Initrfs.splash.isVisible()))
+			Initrfs.splash.getLblLogwolf().setText(s);
 	}
 }

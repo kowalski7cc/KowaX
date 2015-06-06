@@ -71,11 +71,13 @@ public class AliasManager {
 		aliases.add(new Alias("alias", "system alias"));
 		aliases.add(new Alias("ps", "system ps"));
 		aliases.add(new Alias("hwinfo", "system hwinfo"));
-		aliases.add(new Alias("ls", "system ls"));
+		aliases.add(new Alias("ls", "explorer ls"));
+		aliases.add(new Alias("rm", "explorer rm"));
+		aliases.add(new Alias("cd", "explorer cd"));
+		aliases.add(new Alias("mk", "explorer mk"));
 		aliases.add(new Alias("shutdown", "system shutdown"));
 		aliases.add(new Alias("about", "system about"));
 		aliases.add(new Alias("eula", "system eula"));
-		aliases.add(new Alias("target", "system target"));
 		aliases.add(new Alias("macro", "system macro"));
 		aliases.add(new Alias("", "exit"));
 		aliases.add(new Alias("sudo", "system sudo"));

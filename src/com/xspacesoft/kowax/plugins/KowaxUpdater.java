@@ -11,11 +11,14 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
 import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Logwolf;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.kernel.PluginBase;
+import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
@@ -46,6 +49,7 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 	@Override
 	public void runIntent(SystemEvent event, String extraValue, CommandRunner commandRunner) {
 		if(event==SystemEvent.SYSTEM_START) {
+			Logwolf.updateSplash("[KowaxUpdate] - Checking for updates...");
 			if(isUpdateAvailable()) {
 				Initrfs.getLogwolf().i("[KowaxUpdate] - Use 'Update -upgrade' from shell or Start upgrade from GUI.");
 			} else {
@@ -83,8 +87,8 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 	}
 
 	private boolean isUpdateAvailable() {
-		if(build.equals("NA")) {
-			Initrfs.getLogwolf().w("[KowaxUpdate] - Can't get build version. Is a dev build?");
+		if(build==null) {
+			Initrfs.getLogwolf().w("[KowaxUpdate] - Can't get build version. Is this a dev build?");
 			return false;
 		}
 		Initrfs.getLogwolf().i("[KowaxUpdate] - Checking for updates...");
@@ -261,7 +265,7 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 			update.renameTo(path);
 		}
 		update.delete();
-		Initrfs.getPluginManager(tokenKey).stopServices();
+		((PluginManager) Initrfs.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).stopServices();
 		Initrfs.halt();
 		System.out.println("3: "+update);
 		try {

@@ -6,6 +6,7 @@ import java.net.Socket;
 import com.xspacesoft.kowax.Initrfs;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
@@ -33,8 +34,8 @@ public class ShellServer extends Thread {
 				"Localhost" : socket.getInetAddress().getHostAddress()) + ")");
 		if(!Initrfs.isTokenValid(tokenKey))
 			throw new TokenKey.InvalidTokenException();
-		usersManager = Initrfs.getUsersManager(tokenKey);
-		taskManager = Initrfs.getTaskManager(tokenKey);
+		usersManager = (UsersManager) Initrfs.getSystemApi(SystemApi.USERS_MANAGER, tokenKey);
+		taskManager = (TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
 	}
 	
 	@Override

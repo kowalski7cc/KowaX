@@ -53,7 +53,10 @@ public class SetupWizard {
 				BuildGet.stringToBoolean(BuildGet.getString("default.force.debug")), true,scn);
 		boolean forceVerbose = getBoolean("Force verbose output mode?", 
 				BuildGet.stringToBoolean(BuildGet.getString("default.force.verbose")), true, scn);
-		boolean eula = getBoolean("Do you accept EULA?", false, false, scn);
+		boolean autostartHttp = getBoolean("Autostart Http server?", 
+				BuildGet.stringToBoolean(BuildGet.getString("default.start.http")), true,scn);
+		boolean eula = getBoolean("Do you accept EULA?", 
+				BuildGet.stringToBoolean(BuildGet.getString("default.accept.eula")), false,scn);
 		if(!eula) {
 			out.println("Without accepting eula you can't continue. Press ENTER to exit.");
 			scn.nextLine();
@@ -65,6 +68,7 @@ public class SetupWizard {
 		preferences.put("home_path", homePath);
 		preferences.putBoolean("force_debug", forceDebug);
 		preferences.putBoolean("force_verbose", forceVerbose);
+		preferences.putBoolean("autostart_http", autostartHttp);
 		this.username = username;
 		this.password = password;
 		configTitle("Setup complete", 5, 5);
