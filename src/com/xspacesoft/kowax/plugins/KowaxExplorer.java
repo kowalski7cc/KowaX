@@ -116,6 +116,7 @@ public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerI
 			case "file":
 				if(commands.length==2) {
 					stdio.println("Usage: [Exporer] mk (file|dir) <name>");
+					return;
 				}
 				String filename = "";
 				for(int i=2;i<commands.length;i++) {
@@ -135,6 +136,7 @@ public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerI
 			case "dir":
 				if(commands.length==2) {
 					stdio.println("Usage: [Exporer] mk (file|dir) <name>");
+					return;
 				}
 				String dirname = "";
 				for(int i=2;i<commands.length;i++) {
@@ -152,6 +154,31 @@ public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerI
 				break;
 			}
 			break;
+		case "rm":
+			if(commands.length==2) {
+				stdio.println("Usage: [Exporer] rm <name>");
+				return;
+			}
+			String fname = "";
+			for(int i=2;i<commands.length;i++) {
+				fname+=commands[i];
+			}
+			if(new File(userExpl.currentPath, fname).exists()) {
+				new File(userExpl.currentPath, fname).delete();
+				stdio.println("Ok");
+			} else {
+				stdio.println("Can't find file " + fname);
+			}
+			break;
+		case "cd":
+			if(commands.length==2) {
+				stdio.println("Usage: [Exporer] cd <directory>");
+				return;
+			}
+			break;
+		default:
+			stdio.println(getHint());
+			break;
 		}
 	}
 
@@ -162,7 +189,7 @@ public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerI
 
 	@Override
 	public String getHint() {
-		return "KowaX File Explorer";
+		return "Usage: [Explorer] (ls|mk|rm|cd)";
 	}
 
 	@Override
