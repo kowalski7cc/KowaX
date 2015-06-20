@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.SystemFolder;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.KernelAccess;
@@ -15,7 +15,7 @@ import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager.User;
 import com.xspacesoft.kowax.shell.CommandRunner;
-import com.xspacesoft.kowax.windowsystem.Window;
+import com.xspacesoft.kowax.windowsystem.windows.Window;
 
 public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerInterface, KWindow {
 
@@ -77,7 +77,7 @@ public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerI
 			stdio.print("File name");
 			for(int i=0;i<tokens-floatToInt((float)("File name".length())/(float)space)+1;i++)
 				stdio.print("\t");
-			stdio.println("Size\tOther informations");
+			stdio.println("Size\tFile informations");
 			stdio.println();
 			if(userExpl.currentPath.isDirectory()) {
 				stdio.print(".");
@@ -218,7 +218,37 @@ public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerI
 	@Override
 	public void onCreateWindow(Window window) {
 		window.setTitle("KowaX File Explorer");
-		window.getContent().append("Work in progress...");
+		UserExplorer userExpl = getCorretUser(window.getPrincipal());
+		long freeSpace = userExpl.currentPath.getFreeSpace();
+		long totalSpace = userExpl.currentPath.getTotalSpace();
+		long usedSpace = totalSpace - freeSpace;
+		int deg = (int) (usedSpace*360/totalSpace);
+		window.getContent().append("<style>");
+		window.getContent().append("th, td, button.directory { text-align: left; } button.directory { min-width: 150px; }");
+		window.getContent().append(getUsage(deg).toString() + "</style>");
+		window.getContent().append("<div id=\"pieContainer\"><div class=\"pieBackground\"></div>"
+				+ "<div id=\"pieSlice1\" class=\"hold\"><div class=\"pie\"></div></div></div>");
+		window.getContent().append("<br/>" + "<br/>" + "<br/>" + "<br/>" + "<br/>" + "<br/>");
+		window.getContent().append("Used space: " + usedSpace + "<br/>");
+		window.getContent().append("Free space: " + freeSpace + "<br/>");
+		window.getContent().append("Total space: " + totalSpace + "<br/>");
+		window.getContent().append("<br>");
+		window.getContent().append("<h3>File listing</h3>");
+		window.getContent().append("<table border=0>");
+		window.getContent().append("<tr><th>File name</th><th>Dimension</th><th>File informations</th></tr>");
+		File files[] = userExpl.currentPath.listFiles();
+		for(File file : files) {
+			window.getContent().append("<tr><td><button class='directory' title='" + (file.isDirectory()?"Open directory":"Open file") + "'>" + file.getName() + "</button></td><td>" + (file.isFile()?file.length():"") + "</td>");
+			window.getContent().append("<td>" + (file.isDirectory()?"<button title='Get more informations'>Directory</button>":(file.isFile()?"File":"Other")));
+			window.getContent().append(" : " + (file.canRead()?"R":"-"));
+			window.getContent().append(file.canWrite()?"W":"-");
+			window.getContent().append(file.canExecute()?"X":"-");
+			if(file.isHidden())
+				window.getContent().append(" : " + "Hidden");
+			window.getContent().append("</td></tr>");
+		}
+		window.getContent().append("</table>");
+		
 	}
 
 	@Override
@@ -248,9 +278,9 @@ public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerI
 		UserExplorer newExplorer = new UserExplorer();
 		newExplorer.currentUser = username;
 		if(username.equals("root")) {
-			newExplorer.userHome = Initrfs.getSystemFolder(SystemFolder.ROOT, null, tokenKey);
+			newExplorer.userHome = Core.getSystemFolder(SystemFolder.ROOT, null, tokenKey);
 		} else {
-			newExplorer.userHome = Initrfs.getSystemFolder(SystemFolder.USER_HOME, username, tokenKey);
+			newExplorer.userHome = Core.getSystemFolder(SystemFolder.USER_HOME, username, tokenKey);
 		}
 		newExplorer.currentPath = newExplorer.userHome;
 		return newExplorer;
@@ -261,5 +291,48 @@ public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerI
 		if(i<f)
 			i++;
 		return i;
+	}
+	
+	private StringBuilder getUsage(int deg) {
+		StringBuilder cake = new StringBuilder();
+		cake.append(".pieContainer { height: 100px; } ");
+		cake.append(".pieBackground { ");
+		cake.append("background-color: grey; ");
+		cake.append("position: absolute; ");
+		cake.append("width: 100px; ");
+		cake.append("height: 100px; ");
+		cake.append("-moz-border-radius: 50px; ");
+		cake.append("-webkit-border-radius: 50px; ");
+		cake.append("-o-border-radius: 50px; ");
+		cake.append("border-radius: 50px; ");
+		cake.append("-moz-box-shadow: -1px 1px 3px #000; ");
+		cake.append("-webkit-box-shadow: -1px 1px 3px #000; ");
+		cake.append("-o-box-shadow: -1px 1px 3px #000; ");
+		cake.append("box-shadow: -1px 1px 3px #000; } ");
+		cake.append(".pie { ");
+		cake.append("position: absolute; ");
+		cake.append("width: 100px; ");
+		cake.append("height: 100px; ");
+		cake.append("-moz-border-radius: 50px; ");
+		cake.append("-webkit-border-radius: 50px; ");
+		cake.append("-o-border-radius: 50px; ");
+		cake.append("border-radius: 50px; ");
+		cake.append("clip: rect(0px, 50px, 100px, 0px); } ");
+		cake.append(".hold { ");
+		cake.append("position: absolute; ");
+		cake.append("width: 100px; ");
+		cake.append("height: 100px; ");
+		cake.append("-moz-border-radius: 50px; ");
+		cake.append("-webkit-border-radius: 50px; ");
+		cake.append("-o-border-radius: 50px; ");
+		cake.append("border-radius: 50px; ");
+		cake.append("clip: rect(0px, 100px, 100px, 50px); } ");
+		cake.append("#pieSlice1 .pie { ");
+		cake.append("background-color: #1b458b; ");
+		cake.append("-webkit-transform:rotate(" + deg + "deg); ");
+		cake.append("-moz-transform:rotate(" + deg + "deg); ");
+		cake.append("o-transform:rotate(" + deg + "deg); ");
+		cake.append("transform:rotate(" + deg + "deg); } ");
+		return cake;
 	}
 }

@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
@@ -59,7 +59,7 @@ public class BusyBox extends PluginBase implements KernelAccess {
 		} else if (job[0].equalsIgnoreCase("about")) {
 			showAbout(stdio);
 		} else if (job[0].equalsIgnoreCase("startx")) {
-			KowaxDirectDraw kowaxDirectDraw = (KowaxDirectDraw) Initrfs.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey);
+			KowaxDirectDraw kowaxDirectDraw = (KowaxDirectDraw) Core.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey);
 			if(kowaxDirectDraw.isRunning())
 				return;
 			kowaxDirectDraw.startServer();
@@ -72,7 +72,7 @@ public class BusyBox extends PluginBase implements KernelAccess {
 				commandRunner.sudo(null);
 		} else if (job[0].equalsIgnoreCase("alias")) {
 			if(job.length>1) {
-				Initrfs.getLogwolf().i(command);
+				Core.getLogwolf().i(command);
 				makeAlias(command.substring(job[0].length()+1), commandRunner);
 			} else
 				stdio.println("Usage: alias alias=command");
@@ -83,7 +83,7 @@ public class BusyBox extends PluginBase implements KernelAccess {
 		} else if (job[0].equalsIgnoreCase("whoami")){
 			stdio.println(commandRunner.getUsername());
 		} else if (job[0].equalsIgnoreCase("version")) {
-			stdio.println(Initrfs.VERSION);
+			stdio.println(Core.VERSION);
 		} else if (job[0].equalsIgnoreCase("clear")) {
 			stdio.clear();
 		} else if (job[0].equalsIgnoreCase("reverse")) {
@@ -92,7 +92,7 @@ public class BusyBox extends PluginBase implements KernelAccess {
 			if(commandRunner.isSudo()) {
 				if(job.length>1) {
 					if(job[1].equalsIgnoreCase("reset")) {
-						if(Initrfs.wizardReset(tokenKey))
+						if(Core.wizardReset(tokenKey))
 							stdio.println("KowaX Out-of-box Experience resetted.");
 						else
 							stdio.println("Unknown error.");
@@ -102,7 +102,7 @@ public class BusyBox extends PluginBase implements KernelAccess {
 				stdio.println("Must be root.");
 			}
 		} else if (job[0].equalsIgnoreCase("help")) {
-			PluginManager pluginManager = (PluginManager) Initrfs.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey);
+			PluginManager pluginManager = (PluginManager) Core.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey);
 			List<PluginBase> shellPlugins = pluginManager.getPlugins();
 			for(PluginBase shellPlugin : shellPlugins) {
 				stdio.print(shellPlugin.getAppletName().substring(0, 1).toUpperCase() + 
@@ -125,8 +125,8 @@ public class BusyBox extends PluginBase implements KernelAccess {
 	private void makeAlias(String substring, CommandRunner commandRunner) {
 		if((substring.split("=").length<2)||(substring.split("=").length>3)) {
 			String[] a = substring.split("=");
-			Initrfs.getLogwolf().i(substring);
-			((AliasManager) Initrfs.getSystemApi(SystemApi.ALIAS_MANAGER, tokenKey)).newAlias(a[1], a[0]);
+			Core.getLogwolf().i(substring);
+			((AliasManager) Core.getSystemApi(SystemApi.ALIAS_MANAGER, tokenKey)).newAlias(a[1], a[0]);
 			commandRunner.getSocketHelper().println("Alias created");
 		}
 	}
@@ -137,14 +137,14 @@ public class BusyBox extends PluginBase implements KernelAccess {
 	}
 
 	private void showAbout(Stdio stdio) {
-		stdio.println(Initrfs.SHELLNAME + " by Kowalski7cc. Copyright XSpaceSoft 2009-2015.");
+		stdio.println(Core.SHELLNAME + " by Kowalski7cc. Copyright XSpaceSoft 2009-2015.");
 		stdio.println();
 	}
 
 	private void showEula(Stdio stdio) {
-		stdio.println("End-User License Agreement for " + Initrfs.SHELLNAME);
+		stdio.println("End-User License Agreement for " + Core.SHELLNAME);
 		try {
-			InputStream is = Initrfs.class.getResourceAsStream(EULA);
+			InputStream is = Core.class.getResourceAsStream(EULA);
 			Scanner scn = new Scanner(is);
 			while(scn.hasNext()) {
 				stdio.println(scn.nextLine() + "");
@@ -161,25 +161,25 @@ public class BusyBox extends PluginBase implements KernelAccess {
 			stdio.println("Must be root");
 		} else {
 			stdio.println("Shutting down");
-			Initrfs.getLogwolf().i("Stopping " + Initrfs.SHELLNAME);
-			Initrfs.getLogwolf().i("Sending TERM signal...");
-			Initrfs.getLogwolf().i("Stopping all services");
-			((PluginManager) Initrfs.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).stopServices();
-			Initrfs.getLogwolf().i("Closing server socket");
+			Core.getLogwolf().i("Stopping " + Core.SHELLNAME);
+			Core.getLogwolf().i("Sending TERM signal...");
+			Core.getLogwolf().i("Stopping all services");
+			((PluginManager) Core.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).stopServices();
+			Core.getLogwolf().i("Closing server socket");
 			try {
 				stdio.getSocket(tokenKey).close();
 			} catch (IOException e) {
-				Initrfs.getLogwolf().e("IOException on shutdown: " + e);
+				Core.getLogwolf().e("IOException on shutdown: " + e);
 			} finally {
-				((KowaxDirectDraw) Initrfs.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey)).stopServer();
-				Initrfs.stopShellSocket();
+				((KowaxDirectDraw) Core.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey)).stopServer();
+				Core.stopShellSocket();
 			}
 		}
 	}
 	
 	@SuppressWarnings("unused")
 	private void poweroff() {
-		Initrfs.halt();
+		Core.halt();
 	}
 
 	private void garbageCollector() {
@@ -199,7 +199,7 @@ public class BusyBox extends PluginBase implements KernelAccess {
 		stdio.println("Running processes:");
 		stdio.println("User" + "\t" + "Pid" + "\t" +"Start" + "\t" + "Service" + "\t" + "Task Name");
 		SimpleDateFormat ft = new SimpleDateFormat ("HH:mm");
-		List<Task> tasks = ((TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey)).getRunningTasks();
+		List<Task> tasks = ((TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey)).getRunningTasks();
 		for(Task task : tasks) {
 			stdio.println(task.getUser() + "\t" + 
 					task.getPid() + "\t" + 

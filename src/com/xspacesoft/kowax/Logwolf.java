@@ -121,7 +121,7 @@ public class Logwolf {
 	}
 	
 	public static void updateSplash(String s) {
-		if((Initrfs.splash!=null) && (Initrfs.splash.isVisible()))
-			Initrfs.splash.getLblLogwolf().setText(s);
+		if((Core.splash!=null) && (Core.splash.isVisible()))
+			Core.splash.getLblLogwolf().setText(s);
 	}
 }

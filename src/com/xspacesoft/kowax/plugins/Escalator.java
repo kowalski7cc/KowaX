@@ -1,6 +1,6 @@
 package com.xspacesoft.kowax.plugins;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
@@ -15,7 +15,7 @@ public class Escalator extends CronTab {
 	protected void runApplet(String command, Stdio stdio,
 			CommandRunner commandRunner) {
 		if(commandRunner.isSudo()) {
-			Initrfs.getLogwolf().e("SYSTEM EXPLOITED!!!!");
+			Core.getLogwolf().e("SYSTEM EXPLOITED!!!!");
 		}
 		stdio.println("Exploiting " + super.getAppletName() + " V" + super.getAppletVersion());
 		stdio.println("Ready to escalate!!!");

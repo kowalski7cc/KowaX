@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.Service;
@@ -23,8 +23,8 @@ import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.DisplayManager;
 import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
-import com.xspacesoft.kowax.windowsystem.Window;
 import com.xspacesoft.kowax.windowsystem.WindowManager;
+import com.xspacesoft.kowax.windowsystem.windows.Window;
 
 public final class KowaxDisplayManager extends PluginBase implements DisplayManager, HttpHandler, KernelAccess, SystemEventsListener, Service {
 
@@ -78,7 +78,7 @@ public final class KowaxDisplayManager extends PluginBase implements DisplayMana
 		}		
 		code.append("<html>");
 		code.append("<head>");
-		code.append("<title>" + principal + "@" + Initrfs.SHELLNAME + "</title>");
+		code.append("<title>" + principal + "@" + Core.SHELLNAME + "</title>");
 		code.append("<style>");
 		code.append("table.pro, th.pro, td.pro { border: 0px solid black; }");
 //		code.append("table, th, td { border: 0px solid black; border-collapse: collapse; } th, td { padding: 15px;  vertical-align: top;}");
@@ -92,7 +92,7 @@ public final class KowaxDisplayManager extends PluginBase implements DisplayMana
 		code.append(".containerColumna{ height: 100%; }");
 		code.append("</style>");
 		code.append("</head><body>");
-		code.append("<h1>" + Initrfs.SHELLNAME + " " + Initrfs.VERSION + "</h1>");
+		code.append("<h1>" + Core.SHELLNAME + " " + Core.VERSION + "</h1>");
 		code.append("<h2>Welcome back, " + principal + "!</h2>");
 		code.append("<hr/>");
 		try {
@@ -156,13 +156,13 @@ public final class KowaxDisplayManager extends PluginBase implements DisplayMana
 				code.append("</form></fieldset></td>");
 				code.append("<td><fieldset class='dash'><legend><fieldset>Running processes</fieldset></legend>");
 				code.append("<table class=pro>");
-				List<Task> tasks = Initrfs.getTaskManager(tokenKey).getRunningTasks();
+				List<Task> tasks = Core.getTaskManager(tokenKey).getRunningTasks();
 				code.append("<tr class=pro><th class=pro>User</th><th class=pro>Pid</th><th class=pro>Process</th></tr>");
 				for(Task task : tasks) {
 					code.append("<tr class=pro><td class=pro>" + task.getUser() + "</td><td class=pro>" + task.getPid() + "</td><td class=pro>" + task.getAppletName()  +"</td>");
 				}
 				code.append("</table></td></fieldset><td><fieldset class='dash'><legend><fieldset>System users</fieldset></legend><ul>");
-				String[] sysUsers = Initrfs.getUsersManager(tokenKey).getUsersName();
+				String[] sysUsers = Core.getUsersManager(tokenKey).getUsersName();
 				for(String usr : sysUsers) {
 					code.append("<li>" + usr + "</li>");
 				}
@@ -217,8 +217,8 @@ public final class KowaxDisplayManager extends PluginBase implements DisplayMana
 		}
 		switch(command.toLowerCase()) {
 		case "--replace": setDisplayManager();
-			stdio.println("KDM Running on DirectDraw " + Initrfs.getKowaxDirectDraw(tokenKey).getClass().getName());
-			stdio.println("Address: @" + Initrfs.getKowaxDirectDraw(tokenKey).toString().split("@")[1]);
+			stdio.println("KDM Running on DirectDraw " + Core.getKowaxDirectDraw(tokenKey).getClass().getName());
+			stdio.println("Address: @" + Core.getKowaxDirectDraw(tokenKey).toString().split("@")[1]);
 			break;
 		}
 	}
@@ -235,7 +235,7 @@ public final class KowaxDisplayManager extends PluginBase implements DisplayMana
 
 	@Override
 	public void setTokenKey(TokenKey tokenKey) {
-		if(Initrfs.isTokenValid(tokenKey))
+		if(Core.isTokenValid(tokenKey))
 			this.tokenKey = tokenKey;
 	}
 
@@ -252,8 +252,8 @@ public final class KowaxDisplayManager extends PluginBase implements DisplayMana
 
 	@Override
 	public void setDisplayManager() {
-		Initrfs.getLogwolf().i("[KDM]: Setting Display Manager");
-		Initrfs.getKowaxDirectDraw(tokenKey).setDisplayManager(this);
+		Core.getLogwolf().i("[KDM]: Setting Display Manager");
+		Core.getKowaxDirectDraw(tokenKey).setDisplayManager(this);
 		if(this.plugins==null)
 			loadPlugins();
 	}
@@ -276,8 +276,8 @@ public final class KowaxDisplayManager extends PluginBase implements DisplayMana
 	public void startService() {
 		// The service implementation is a workaround for load thing @ startup
 		// With elevated permissions
-		if(Initrfs.isTokenValid(tokenKey))
-			pluginManager = Initrfs.getPluginManager(tokenKey);
+		if(Core.isTokenValid(tokenKey))
+			pluginManager = Core.getPluginManager(tokenKey);
 		else
 			throw new InsufficientPermissionsException();
 		loadPlugins();

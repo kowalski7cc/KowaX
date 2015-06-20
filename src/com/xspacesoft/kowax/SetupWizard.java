@@ -28,9 +28,9 @@ public class SetupWizard {
 	
 	public void start() {
 		configTitle("Introduction", 1, 5);
-		out.println("Welcome to " + Initrfs.SHELLNAME + "!");
+		out.println("Welcome to " + Core.SHELLNAME + "!");
 		out.println("This wizard will allow you to set up your server easily.");
-		out.println("It will be asked you the ports that will be used by " + Initrfs.SHELLNAME);
+		out.println("It will be asked you the ports that will be used by " + Core.SHELLNAME);
 		out.println("for it's services.");
 		out.println();
 		out.println("Press ENTER when you are ready.");
@@ -73,7 +73,7 @@ public class SetupWizard {
 		this.password = password;
 		configTitle("Setup complete", 5, 5);
 		out.println("Thank you for choosing us!");
-		out.println("Enjoy using " + Initrfs.SHELLNAME);
+		out.println("Enjoy using " + Core.SHELLNAME);
 		out.println("Press ENTER to start system");
 		scn.nextLine();
 		scn.close();
@@ -87,8 +87,8 @@ public class SetupWizard {
 	}
 
 	private void configTitle(String hint, int step, int max) {
-		Initrfs.clear(System.out);
-		String title = "KowaX " + Initrfs.VERSION + " setup"; 
+		Core.clear(System.out);
+		String title = "KowaX " + Core.VERSION + " setup"; 
 		out.println(title);
 		for(int i=0; i<title.length()+5; i++) {
 			out.printf("-");
@@ -121,7 +121,7 @@ public class SetupWizard {
 		String inBuffer;
 		out.println("Select home directory path: ");
 		out.println("1) User home directory");
-		out.println("2) " + Initrfs.SHELLNAME + " directory");
+		out.println("2) " + Core.SHELLNAME + " directory");
 		out.println("3) Custom path (NA)");
 		out.println();
 		out.printf("Your choice [1]: ");

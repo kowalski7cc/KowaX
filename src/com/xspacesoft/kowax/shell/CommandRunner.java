@@ -2,7 +2,7 @@ package com.xspacesoft.kowax.shell;
 
 import java.io.IOException;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.exceptions.DuplicateElementException;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
@@ -49,23 +49,23 @@ public final class CommandRunner {
 	public CommandRunner(Session session, TokenKey tokenKey, boolean sudo) {
 		this.session = session;
 		this.tokenKey = tokenKey;
-		if(!Initrfs.isTokenValid(tokenKey))
+		if(!Core.isTokenValid(tokenKey))
 			throw new TokenKey.InvalidTokenException();
-		this.usersManager = (UsersManager) Initrfs.getSystemApi(SystemApi.USERS_MANAGER, tokenKey);
-		this.pluginmanager = (PluginManager) Initrfs.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey);
-		this.taskmanager = (TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
-		this.aliasManager = (AliasManager) Initrfs.getSystemApi(SystemApi.ALIAS_MANAGER, tokenKey);
+		this.usersManager = (UsersManager) Core.getSystemApi(SystemApi.USERS_MANAGER, tokenKey);
+		this.pluginmanager = (PluginManager) Core.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey);
+		this.taskmanager = (TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
+		this.aliasManager = (AliasManager) Core.getSystemApi(SystemApi.ALIAS_MANAGER, tokenKey);
 		this.session.setSudo(sudo);
 	}
 	
 	public CommandRunner(TokenKey tokenKey, boolean sudo) {
 //		this.tokenKey = tokenKey;
-//		if(!Initrfs.isTokenValid(tokenKey))
+//		if(!Core.isTokenValid(tokenKey))
 //			throw new TokenKey.InvalidTokenException();
-//		this.usersManager = Initrfs.getUsersManager(tokenKey);
-//		this.pluginmanager = Initrfs.getPluginManager(tokenKey);
-//		this.taskmanager = Initrfs.getTaskManager(tokenKey);
-//		this.aliasManager = Initrfs.getAliasManager(tokenKey);
+//		this.usersManager = Core.getUsersManager(tokenKey);
+//		this.pluginmanager = Core.getPluginManager(tokenKey);
+//		this.taskmanager = Core.getTaskManager(tokenKey);
+//		this.aliasManager = Core.getAliasManager(tokenKey);
 		Stdio stdio = new Stdio();
 		Session session = new Session(stdio);
 		session.setSudo(sudo);
@@ -242,7 +242,7 @@ public final class CommandRunner {
 	}
 	
 	public Session getSession(TokenKey tokenKey) {
-		if(Initrfs.isTokenValid(tokenKey))
+		if(Core.isTokenValid(tokenKey))
 			return session;
 		return null;
 	}
@@ -252,7 +252,7 @@ public final class CommandRunner {
 	}
 	
 	public void sendSystemEvent(SystemEvent event, String extraValue, TokenKey tokenKey, boolean sudo) {
-		if(!Initrfs.isTokenValid(tokenKey))
+		if(!Core.isTokenValid(tokenKey))
 			throw new InsufficientPermissionsException();
 		pluginmanager.sendSystemEvent(event, extraValue, this, null);
 		

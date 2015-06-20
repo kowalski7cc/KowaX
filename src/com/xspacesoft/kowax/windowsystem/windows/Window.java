@@ -1,8 +1,8 @@
-package com.xspacesoft.kowax.windowsystem;
+package com.xspacesoft.kowax.windowsystem.windows;
 
 import java.util.Map;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.kernel.TokenKey;
 
@@ -20,6 +20,7 @@ public class Window {
 		this.title = title;
 		this.minimizeSupported = minimizeSupported;
 		this.associatedApp = associatedApp;
+		this.principal = principal;
 		content = new StringBuilder();
 	}
 
@@ -69,7 +70,7 @@ public class Window {
 	}
 
 	public void setPid(int pid, TokenKey tokenKey) {
-		if(Initrfs.isTokenValid(tokenKey))
+		if(Core.isTokenValid(tokenKey))
 			this.pid = pid;
 	}
 

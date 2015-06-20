@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
-import com.xspacesoft.kowax.windowsystem.Window;
 import com.xspacesoft.kowax.windowsystem.WindowManager;
+import com.xspacesoft.kowax.windowsystem.windows.Window;
 
 public class KowaxWindowManager implements WindowManager, KernelAccess{
 	
@@ -86,8 +86,8 @@ public class KowaxWindowManager implements WindowManager, KernelAccess{
 	@Override
 	public void setTokenKey(TokenKey tokenKey) {
 		this.tokenKey = tokenKey;
-		taskManager = (TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
-		guiApps = ((KowaxDirectDraw) Initrfs.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey)).getDisplayManger().getSupportedApps();
+		taskManager = (TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
+		guiApps = ((KowaxDirectDraw) Core.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey)).getDisplayManger().getSupportedApps();
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
@@ -60,7 +60,7 @@ public class ServiceManager extends PluginBase implements KernelAccess {
 		switch(commands[0].toLowerCase()) {
 		case "start":
 			if(commands.length>1) {
-				List<Task> tasks = ((TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey)).getRunningTasks();
+				List<Task> tasks = ((TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey)).getRunningTasks();
 				for(Task task : tasks) {
 					if(task.getService()!=null) {
 						if(task.getService().getServiceName().equalsIgnoreCase(commands[1])) {
@@ -69,11 +69,11 @@ public class ServiceManager extends PluginBase implements KernelAccess {
 						}
 					}
 				}
-				List<Service> services = ((PluginManager) Initrfs.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).getServices();
+				List<Service> services = ((PluginManager) Core.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).getServices();
 				for(Service service : services) {
 					if(service.getServiceName().equalsIgnoreCase(commands[1])) {
 						service.startService();
-						((TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey)).newTask("root", service.getServiceName(), service);
+						((TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey)).newTask("root", service.getServiceName(), service);
 						stdio.println("Service started");
 						return;
 					}
@@ -92,7 +92,7 @@ public class ServiceManager extends PluginBase implements KernelAccess {
 					}
 				}
 			}
-			TaskManager taskManager =(TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey); 
+			TaskManager taskManager =(TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey); 
 			List<Task> tasks = taskManager.getRunningTasks();
 			for(Task task : tasks) {
 				if(task.getService()!=null) {
@@ -107,7 +107,7 @@ public class ServiceManager extends PluginBase implements KernelAccess {
 			stdio.println("Can't find requested service");
 			break;
 		case "list":
-			List<Service> services = ((PluginManager) Initrfs.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).getServices();
+			List<Service> services = ((PluginManager) Core.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).getServices();
 			stdio.println("All services:");
 			for(Service service : services) {
 				stdio.println(service.getServiceName());
@@ -128,7 +128,7 @@ public class ServiceManager extends PluginBase implements KernelAccess {
 	}
 
 	public void addBlacklist(String service, TokenKey tokenKey) {
-		if(Initrfs.isTokenValid(tokenKey)) {
+		if(Core.isTokenValid(tokenKey)) {
 			blacklist.add(service);
 		} else {
 			throw new InsufficientPermissionsException();

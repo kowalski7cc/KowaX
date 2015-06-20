@@ -29,7 +29,7 @@ import com.xspacesoft.kowax.shell.ShellServer;
 import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
 
 
-public class Initrfs {
+public class Core {
 	public final static String SHELLNAME = BuildGet.getString("build.artifact").startsWith("$") ?
 			"KowaX" : BuildGet.getString("build.artifact"); //$NON-NLS-1$
 	public final static String VERSION = BuildGet.getString("build.version").startsWith("$") ?
@@ -58,7 +58,7 @@ public class Initrfs {
 	
 	private static final Object[][] CORE_PLUGINS_DATA = DefaultPlugins.getDefaults();
 	
-	public Initrfs(String home, int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut, Splash splash1) {
+	public Core(String home, int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut, Splash splash1) {
 		this.port = port;
 		this.http = http;
 		this.debug = debug;
@@ -71,7 +71,7 @@ public class Initrfs {
 	
 	@SuppressWarnings("unchecked")
 	public void start() {
-		Preferences pref = Preferences.userRoot().node(Initrfs.class.getName());
+		Preferences pref = Preferences.userRoot().node(Core.class.getName());
 		logwolf = new Logwolf(System.out);
 		logwolf.setDebug(debug);
 		logwolf.setVerbose(verbose);
@@ -124,7 +124,7 @@ public class Initrfs {
 		aliasManager = new AliasManager();
 		logwolf.v("AliasManager loaded");
 		aliasManager.loadDefaults();
-		logwolf.i(aliasManager.getLoadedAliases() + " aliases loded");
+		logwolf.i(aliasManager.getLoadedAliases() + " aliases loaded");
 
 		// Start KWindowSystem
 		if(pref.getBoolean("autostart_http", true)) {
@@ -315,7 +315,7 @@ public class Initrfs {
 		if(tokenKey == null)
 			return false;
 		if(tokenKey.equals(token)) {
-			Preferences.userRoot().node(Initrfs.class.getName()).putBoolean("configured", false);
+			Preferences.userRoot().node(Core.class.getName()).putBoolean("configured", false);
 			return true;
 		}
 		return false;

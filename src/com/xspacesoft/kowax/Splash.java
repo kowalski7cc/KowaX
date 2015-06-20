@@ -67,7 +67,7 @@ public class Splash extends JWindow {
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
 		
-		lblLogwolf = new JLabel(Initrfs.SHELLNAME + " " + Initrfs.VERSION);
+		lblLogwolf = new JLabel(Core.SHELLNAME + " " + Core.VERSION);
 		lblLogwolf.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblLogwolf.setBackground(Color.WHITE);
 		lblLogwolf.setForeground(Color.BLACK);
@@ -77,11 +77,15 @@ public class Splash extends JWindow {
 		panel.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(null);
 		
+		JLabel lblPoweredByXspacesoftcom = new JLabel("Powered by XSpaceSoft.com");
+		lblPoweredByXspacesoftcom.setBounds(10, 11, 171, 14);
+		panel_1.add(lblPoweredByXspacesoftcom);
+		
 		JLabel lblVersion = new JLabel("Beta");
 		lblVersion.setVerticalAlignment(SwingConstants.TOP);
 		lblVersion.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblVersion.setFont(new Font("SansSerif", Font.BOLD | Font.ITALIC, 15));
-		lblVersion.setBounds(10, 11, 420, 35);
+		lblVersion.setBounds(382, 11, 48, 25);
 		panel_1.add(lblVersion);
 		
 		JLabel lblLogo = new JLabel("");

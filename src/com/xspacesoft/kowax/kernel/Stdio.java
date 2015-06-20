@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.Pause;
 
 public class Stdio {
@@ -133,7 +133,7 @@ public class Stdio {
 	}
 
 	public Socket getSocket(TokenKey tokenKey) {
-		if(Initrfs.isTokenValid(tokenKey))
+		if(Core.isTokenValid(tokenKey))
 			return socket;
 		return null;
 	}

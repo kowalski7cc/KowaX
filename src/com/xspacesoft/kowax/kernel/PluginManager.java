@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.Logwolf;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.Service;
@@ -28,8 +28,8 @@ public final class PluginManager {
 		enabledPlugins = new ArrayList<PluginBase>();
 		loadedServices = new ArrayList<Service>();
 		rootPlugins = new ArrayList<PluginBase>();
-		taskManager = (TaskManager) Initrfs.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
-		logwolf = Initrfs.getLogwolf();
+		taskManager = (TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
+		logwolf = Core.getLogwolf();
 	}
 
 	public void filePluginLoad(File file, Boolean startService, TokenKey tokenKey) throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, IOException {
@@ -51,7 +51,7 @@ public final class PluginManager {
 
 	public void addPlugin(Class<? extends PluginBase> loadPlugin, Boolean startService, TokenKey tokenKey)
 			throws InstantiationException, IllegalAccessException {
-		Initrfs.getLogwolf().d("[PluginManager] - Trying to load class " + loadPlugin.getName() +".");
+		Core.getLogwolf().d("[PluginManager] - Trying to load class " + loadPlugin.getName() +".");
 		PluginBase newPlugin = loadPlugin.newInstance();
 		String pluginName = loadPlugin.getSimpleName();
 		// Check if has valid plug-in name
@@ -71,7 +71,7 @@ public final class PluginManager {
 		// Give permissions
 		if(newPlugin instanceof KernelAccess) {
 			if(tokenKey!=null) {
-				if(Initrfs.isTokenValid(tokenKey)) {
+				if(Core.isTokenValid(tokenKey)) {
 					KernelAccess kernelAccess = (KernelAccess) newPlugin;
 					try {
 						kernelAccess.setTokenKey(tokenKey);
@@ -98,13 +98,13 @@ public final class PluginManager {
 						service.startService();
 						taskManager.newTask("root", service.getServiceName(), service);
 					} catch (Exception e) {
-						Initrfs.getLogwolf().e("[PluginManager] - Can't start service" + service.getServiceName());
-						Initrfs.getLogwolf().e("[PluginManager] - " + e.toString());
+						Core.getLogwolf().e("[PluginManager] - Can't start service" + service.getServiceName());
+						Core.getLogwolf().e("[PluginManager] - " + e.toString());
 					}
 				}
 				loadedServices.add(service);
 			} else {
-				Initrfs.getLogwolf().e("[PluginManager] - Can't start " + pluginName + ", invalid service name.");
+				Core.getLogwolf().e("[PluginManager] - Can't start " + pluginName + ", invalid service name.");
 			}
 		} else {
 			logwolf.d("[PluginManager] - " + pluginName + " doesn't support services");
@@ -133,7 +133,7 @@ public final class PluginManager {
 			try {
 				Service service = (Service) shellPlugin;
 				service.stopService();
-				Initrfs.getLogwolf().d("Service " + service + " stopped");
+				Core.getLogwolf().d("Service " + service + " stopped");
 			} catch (Exception e){
 				// Plugin has not a service
 			}

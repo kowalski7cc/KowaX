@@ -50,16 +50,16 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
-		Preferences pref = Preferences.userRoot().node(Initrfs.class.getName());
+		Preferences pref = Preferences.userRoot().node(Core.class.getName());
 //		pref.putBoolean("configured", false);
 		PrintWriter out = new PrintWriter(DEFAULT_SYSTEM_OUT, true);
 //		out.flush();
 		if(ap.getTag("h")||ap.getTag("help")) {
-//			Initrfs.printHelp();
+//			Core.printHelp();
 			System.exit(0);
 		}
 		if(!BuildGet.stringToBoolean(BuildGet.getString("default.force.debug"))) {
-			Initrfs.clear(DEFAULT_SYSTEM_OUT);
+			Core.clear(DEFAULT_SYSTEM_OUT);
 			System.out.println();
 		}
 		for (String String : TITLE) {
@@ -76,12 +76,12 @@ public class Main {
 				Thread.sleep(150);
 			}
 			System.out.println();
-			if(Stdio.isNumber(Initrfs.VERSION.charAt(0)))
-				printScroll(out, "Welcome to " + Initrfs.SHELLNAME + " Version " + Initrfs.VERSION + "!" + 
-			(Initrfs.BUILD==null ? "" : (" (" + Initrfs.BUILD.substring(0,8) + "...)" )) , 20);
+			if(Stdio.isNumber(Core.VERSION.charAt(0)))
+				printScroll(out, "Welcome to " + Core.SHELLNAME + " Version " + Core.VERSION + "!" + 
+			(Core.BUILD==null ? "" : (" (" + Core.BUILD.substring(0,8) + "...)" )) , 20);
 			else
-				printScroll(out, "Welcome to " + Initrfs.SHELLNAME + " \"" + Initrfs.VERSION + "\" release!" + 
-						(Initrfs.BUILD==null ? "" : (" (" + Initrfs.BUILD.substring(0, 8) + "...)" )) , 20);
+				printScroll(out, "Welcome to " + Core.SHELLNAME + " \"" + Core.VERSION + "\" release!" + 
+						(Core.BUILD==null ? "" : (" (" + Core.BUILD.substring(0, 8) + "...)" )) , 20);
 			Thread.sleep(600);
 			System.out.println("----------------");
 			Thread.sleep(10);
@@ -91,7 +91,7 @@ public class Main {
 				splash.fadeOut();
 				SetupWizard setupWizard = new SetupWizard(pref, out, DEFAULT_SYSTEM_IN);
 				setupWizard.start();
-				Initrfs.sleep(1000);
+				Core.sleep(1000);
 				Logwolf.updateSplash("Starting up...");
 				splash.fadeIn();
 				pref.putBoolean("configured", true);
@@ -123,7 +123,7 @@ public class Main {
 			// TODO add tray
 //			TrayHelper trayHelper = new TrayHelper(telnet);
 //			trayHelper.addTray();
-			Initrfs init = new Initrfs(home, telnet, http, debug, verbose, DEFAULT_SYSTEM_IN, DEFAULT_SYSTEM_OUT, splash);
+			Core init = new Core(home, telnet, http, debug, verbose, DEFAULT_SYSTEM_IN, DEFAULT_SYSTEM_OUT, splash);
 			out.flush();
 			init.start();
 		} catch (InterruptedException e) {

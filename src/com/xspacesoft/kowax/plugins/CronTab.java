@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
@@ -177,7 +177,7 @@ public class CronTab extends PluginBase implements Service, KernelAccess {
 			CommandRunner commandRunner = new CommandRunner(tokenKey, true);
 			cron = new Cron(job, null, commandRunner, session);
 			cron.start();
-			Initrfs.getLogwolf().i("Cron started");
+			Core.getLogwolf().i("Cron started");
 		}
 	}
 
@@ -185,7 +185,7 @@ public class CronTab extends PluginBase implements Service, KernelAccess {
 	public void stopService() {
 		if((cron!=null)&&(cron.isAlive())) {
 			cron.interrupt();
-			Initrfs.getLogwolf().i("Cron stopped");
+			Core.getLogwolf().i("Cron stopped");
 		}
 	}
 	

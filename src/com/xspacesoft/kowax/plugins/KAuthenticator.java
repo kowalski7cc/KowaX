@@ -3,7 +3,7 @@ package com.xspacesoft.kowax.plugins;
 import java.io.Serializable;
 import java.util.List;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
@@ -38,15 +38,15 @@ public class KAuthenticator extends PluginBase implements KernelAccess, SystemEv
 		Stdio stdio = commandRunner.getSocketHelper();
 		switch(event) {
 		case SYSTEM_START:
-			if(!Initrfs.isTokenValid(tokenKey)) {
-				Initrfs.getLogwolf().e("AUTHENTICATOR - GRAVE: Invalid TokenKey!!!");
+			if(!Core.isTokenValid(tokenKey)) {
+				Core.getLogwolf().e("AUTHENTICATOR - GRAVE: Invalid TokenKey!!!");
 			} else {
-				Initrfs.getLogwolf().i("AUTHENTICATOR TokenKey OK, Loading config.");
+				Core.getLogwolf().i("AUTHENTICATOR TokenKey OK, Loading config.");
 			}
 			loadSettings();
 			break;
 		case USER_LOGIN_SUCCESS:
-			if(!Initrfs.isTokenValid(tokenKey)) {
+			if(!Core.isTokenValid(tokenKey)) {
 				stdio.println("Plugin not correctly configured, please contact system admin.");
 				stdio.println(new InsufficientPermissionsException().toString());
 				return;
@@ -93,7 +93,7 @@ public class KAuthenticator extends PluginBase implements KernelAccess, SystemEv
 
 	@Override
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
-		if(!Initrfs.isTokenValid(tokenKey)) {
+		if(!Core.isTokenValid(tokenKey)) {
 			stdio.println("Plugin not correctly configured, please contact system admin.");
 			stdio.println(new InsufficientPermissionsException().toString());
 			return;
