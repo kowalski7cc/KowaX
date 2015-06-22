@@ -69,6 +69,7 @@ public class Core {
 		splash = splash1;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void start() {
 		Preferences pref = Preferences.userRoot().node(Core.class.getName());
 		logwolf = new Logwolf(System.out);
@@ -153,7 +154,7 @@ public class Core {
 //		int p = step;
 		for (int i = 0; i < CORE_PLUGINS_DATA.length; i++) {
 			try {
-				if(CORE_PLUGINS_DATA[i][0] instanceof Class<? extends PluginBase>) {
+				if(CORE_PLUGINS_DATA[i][0].getClass().getSuperclass().isInstance(PluginBase.class)) {
 					pluginManager.addPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0],
 							(boolean) CORE_PLUGINS_DATA[i][2], 
 							((boolean)CORE_PLUGINS_DATA[i][1] ? tokenKey : null));
