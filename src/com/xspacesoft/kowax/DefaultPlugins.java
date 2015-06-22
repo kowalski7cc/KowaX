@@ -24,7 +24,7 @@ public final class DefaultPlugins {
 				{CronTab.class, true, true, true},
 				{AppExample.class, false, false, false},
 				{HivemindControl.class, false, true, true},
-				{DenialService.class, false, false, false},
+//				{DenialService.class, false, false, false},
 				{Kalculator.class, false, false, false},
 				{Kalendar.class, false, false, false},
 //				{Man.class, false, false, false},

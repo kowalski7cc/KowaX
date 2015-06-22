@@ -26,8 +26,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		OptionsParser ap = new OptionsParser(args);
-		splash = new Splash();
-		if(EXPERIMENTAL_GUI) {
+		if(EXPERIMENTAL_GUI&&(!ap.getTag("-forcecli"))) {
+			splash = new Splash();
 			try {
 				EventQueue.invokeAndWait(new Runnable() {
 					public void run() {
@@ -88,12 +88,14 @@ public class Main {
 			
 			// Do configuration wizard if first launch
 			if(!pref.getBoolean("configured", false)) {
-				splash.fadeOut();
+				if(splash!=null)
+					splash.fadeOut();
 				SetupWizard setupWizard = new SetupWizard(pref, out, DEFAULT_SYSTEM_IN);
 				setupWizard.start();
 				Core.sleep(1000);
 				Logwolf.updateSplash("Starting up...");
-				splash.fadeIn();
+				if(splash!=null)
+					splash.fadeIn();
 				pref.putBoolean("configured", true);
 				String a;
 				out.println();
