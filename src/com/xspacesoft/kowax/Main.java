@@ -14,7 +14,7 @@ public class Main {
 	/** Default system input */
 	private final static InputStream DEFAULT_SYSTEM_IN = System.in;
 	private final static PrintStream DEFAULT_SYSTEM_OUT = System.out;
-	private final static boolean EXPERIMENTAL_GUI = true;
+	private final static boolean EXPERIMENTAL_GUI = false;
 	public static Splash splash;
 	private final static String[] TITLE = {
 		"         ___  __    __   _   __  __",

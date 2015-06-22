@@ -40,7 +40,7 @@ public class ShellServer extends Thread {
 	
 	@Override
 	public void run() {
-		pid = taskManager.newTask("root", "Console (" + sockethelper.getRemoteAddress() + ")");
+		pid = taskManager.newTask("unlogged", "Console (" + sockethelper.getRemoteAddress() + ")");
 		Core.getLogwolf().i(sockethelper.getRemoteAddress() + " connected");
 		sockethelper.printTitle("Kowax Shell");
 		sockethelper.println();
