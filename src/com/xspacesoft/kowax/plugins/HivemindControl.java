@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
@@ -157,6 +158,7 @@ public class HivemindControl extends PluginBase implements Service {
 		@Override
 		public void run() {
 			running = true;
+			Core.getLogwolf().i("[Hivemind] - Service started. Ready to give orders!");
 			while (running) {
 				try {
 					if (this.hivemindManager.getMyRole() == HostRole.ALPHA) {
@@ -369,10 +371,10 @@ public class HivemindControl extends PluginBase implements Service {
 	public void startService() {
 		if(hivemindManager == null)
 			hivemindManager = new HivemindManager();
-		if (hivemindService==null)
-			hivemindService = new HivemindService(hivemindManager);		
-		if (!hivemindService.isAlive())
+		if ((hivemindService==null)||(!hivemindService.isAlive())) {
+			hivemindService = new HivemindService(hivemindManager);
 			hivemindService.start();
+		}
 	}
 
 	@Override
@@ -384,6 +386,6 @@ public class HivemindControl extends PluginBase implements Service {
 	
 	@Override
 	public String getServiceName() {
-		return "Hivemind Service";
+		return "HivemindService";
 	}
 }

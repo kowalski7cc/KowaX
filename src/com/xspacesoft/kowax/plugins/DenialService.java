@@ -13,7 +13,7 @@ import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
-import com.xspacesoft.kowax.windowsystem.Window;
+import com.xspacesoft.kowax.windowsystem.windows.Window;
 
 public class DenialService extends PluginBase implements KWindow {
 	
@@ -81,6 +81,19 @@ public class DenialService extends PluginBase implements KWindow {
 			break;
 		case "wizard": wizard(stdio, commandRunner);
 		break;
+		case "info":
+			if(flooder==null) {
+				stdio.println("No flooder configured");
+			} else if ((flooder!=null)&&(!flooder.isRunning())) {
+				stdio.println("Flooder idle");
+				stdio.println("Target: " + dosProtcol + "@" + targetAddress + ":" 
+						+ targetPort + " (" + pause + "ms~" + threads + " thead" + (threads==1 ? "" : "s") + ")");
+			} else if (flooder.isRunning()) {
+				stdio.println("Flooder running");
+				stdio.println("Target: " + dosProtcol + "@" + targetAddress + ":" 
+						+ targetPort + " (" + pause + "ms~" + threads + " thead" + (threads==1 ? "" : "s") + ")");
+			}
+			break;
 		case "set":
 			if(commands.length<3)
 				stdio.println("Usage: Dos set (address|port|protocol|threads|pause) value");
@@ -186,11 +199,20 @@ public class DenialService extends PluginBase implements KWindow {
 			stdio.print("Insert threads number: ");
 			threadsBuffer = stdio.scan();
 		}
+		stdio.print("Insert pause time: ");
+		String pauseBuffer = stdio.scan();
+		while((!Stdio.isNumber(pauseBuffer))||(Stdio.parseInt(pauseBuffer)<0)) {
+			if(threadsBuffer.equalsIgnoreCase("c"))
+				return;
+			stdio.println("Invalid pause time!");
+			stdio.print("Insert pause time: ");
+			threadsBuffer = stdio.scan();
+		}
 		this.targetAddress = address;
 		this.targetPort = port;
 		this.dosProtcol = stringToProtocol(protocol);
 		this.threads = Stdio.parseInt(threadsBuffer);
-		this.pause = 0;
+		this.pause = Stdio.parseInt(pauseBuffer);
 		stdio.clear();
 		stdio.println("Dos: Setup complete");
 		if(createCannon()!=null) {

@@ -2,7 +2,7 @@ package com.xspacesoft.kowax.shell;
 
 import java.io.IOException;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.exceptions.DuplicateElementException;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
@@ -10,6 +10,7 @@ import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
@@ -19,7 +20,7 @@ import com.xspacesoft.kowax.kernel.UsersManager.InvalidUserException;
 /**
  * The Class CommandRunner handles the running of an applet.
  */
-public class CommandRunner {
+public final class CommandRunner {
 	
 //	private List<ShellPlugin> plugins;
 	private AliasManager aliasManager;
@@ -48,27 +49,27 @@ public class CommandRunner {
 	public CommandRunner(Session session, TokenKey tokenKey, boolean sudo) {
 		this.session = session;
 		this.tokenKey = tokenKey;
-		if(!Initrfs.isTokenValid(tokenKey))
+		if(!Core.isTokenValid(tokenKey))
 			throw new TokenKey.InvalidTokenException();
-		this.usersManager = Initrfs.getUsersManager(tokenKey);
-		this.pluginmanager = Initrfs.getPluginManager(tokenKey);
-		this.taskmanager = Initrfs.getTaskManager(tokenKey);
-		this.aliasManager = Initrfs.getAliasManager(tokenKey);
+		this.usersManager = (UsersManager) Core.getSystemApi(SystemApi.USERS_MANAGER, tokenKey);
+		this.pluginmanager = (PluginManager) Core.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey);
+		this.taskmanager = (TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
+		this.aliasManager = (AliasManager) Core.getSystemApi(SystemApi.ALIAS_MANAGER, tokenKey);
 		this.session.setSudo(sudo);
 	}
 	
 	public CommandRunner(TokenKey tokenKey, boolean sudo) {
-		this.tokenKey = tokenKey;
-		if(!Initrfs.isTokenValid(tokenKey))
-			throw new TokenKey.InvalidTokenException();
-		this.usersManager = Initrfs.getUsersManager(tokenKey);
-		this.pluginmanager = Initrfs.getPluginManager(tokenKey);
-		this.taskmanager = Initrfs.getTaskManager(tokenKey);
-		this.aliasManager = Initrfs.getAliasManager(tokenKey);
+//		this.tokenKey = tokenKey;
+//		if(!Core.isTokenValid(tokenKey))
+//			throw new TokenKey.InvalidTokenException();
+//		this.usersManager = Core.getUsersManager(tokenKey);
+//		this.pluginmanager = Core.getPluginManager(tokenKey);
+//		this.taskmanager = Core.getTaskManager(tokenKey);
+//		this.aliasManager = Core.getAliasManager(tokenKey);
 		Stdio stdio = new Stdio();
 		Session session = new Session(stdio);
-		this.session = session;
-		this.session.setSudo(sudo);
+		session.setSudo(sudo);
+		new CommandRunner(session, tokenKey, sudo);
 	}
 
 	/**
@@ -86,10 +87,10 @@ public class CommandRunner {
 			return;
 		}
 		while(command.startsWith(" ")) {
-			command.substring(1);
+			command = command.substring(1);
 		}
 		while(command.endsWith(" ")) {
-			command.substring(0, command.length());
+			command = command.substring(0, command.length()-1);
 		}
 		if(command.equals("")) {
 			throw new IllegalArgumentException("Empty");
@@ -162,13 +163,13 @@ public class CommandRunner {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void loadExternalClass(String path) {
+	public void loadInternalClass(String path) {
 		if (!session.isSudo()) {
 			session.getSockethelper().println("command runner: Operation not permitted");
 			return;
 		}
 		try {
-			pluginmanager.addPlugin((Class<? extends PluginBase>) ClassLoader.getSystemClassLoader().loadClass(path));
+			pluginmanager.addPlugin((Class<? extends PluginBase>) ClassLoader.getSystemClassLoader().loadClass(path), null, null);
 			session.getSockethelper().println("Applet " + ClassLoader.getSystemClassLoader().loadClass(path) + " loaded");
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			session.getSockethelper().println("Failed to load applet: " + e.toString());
@@ -241,7 +242,7 @@ public class CommandRunner {
 	}
 	
 	public Session getSession(TokenKey tokenKey) {
-		if(Initrfs.isTokenValid(tokenKey))
+		if(Core.isTokenValid(tokenKey))
 			return session;
 		return null;
 	}
@@ -251,9 +252,9 @@ public class CommandRunner {
 	}
 	
 	public void sendSystemEvent(SystemEvent event, String extraValue, TokenKey tokenKey, boolean sudo) {
-		if(!Initrfs.isTokenValid(tokenKey))
+		if(!Core.isTokenValid(tokenKey))
 			throw new InsufficientPermissionsException();
-		pluginmanager.sendSystemEvent(event, extraValue, this);
+		pluginmanager.sendSystemEvent(event, extraValue, this, null);
 		
 	}
 }

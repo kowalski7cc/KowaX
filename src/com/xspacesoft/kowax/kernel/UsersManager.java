@@ -8,9 +8,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UsersManager implements Serializable {
+public final class UsersManager implements Serializable {
 
 	private static final long serialVersionUID = 4900265260339132855L;
+	private static final Object defaultUsers[][] = new Object[][] {
+		{"admin", "password", null, false},
+		{"kowalski", "4b4adc30da0eadda11b1a1212e49dc96", null, true}
+	};
 
 	public class ExistingUserException extends Exception {
 
@@ -142,10 +146,19 @@ public class UsersManager implements Serializable {
 	}
 
 	public void loadDefaults() throws ExistingUserException {
-		addUser("admin", "password", null);
-		addUser("kowalski", "4b4adc30da0eadda11b1a1212e49dc96", "Original app developer", true);
+		for(int i=0; i<defaultUsers.length; i++) {
+			addUser((String)defaultUsers[i][0], (String)defaultUsers[i][1], (String)defaultUsers[i][2], (Boolean) defaultUsers[i][3]);
+		}
 	}
 
+	public static List<String> getDefaultUsers() {
+		List<String> list = new ArrayList<String>();
+		for(Object[] user : defaultUsers) {
+			list.add((String)user[0]);
+		}
+		return list;
+	}
+	
 	public int getLoadedUsers() {
 		return users.size();
 	}

@@ -3,9 +3,10 @@ package com.xspacesoft.kowax.shell;
 import java.io.IOException;
 import java.net.Socket;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
@@ -31,16 +32,16 @@ public class ShellServer extends Thread {
 		this.tokenKey = tokenKey;
 		this.setName("Console (" + (socket.getInetAddress().isLoopbackAddress() ?
 				"Localhost" : socket.getInetAddress().getHostAddress()) + ")");
-		if(!Initrfs.isTokenValid(tokenKey))
+		if(!Core.isTokenValid(tokenKey))
 			throw new TokenKey.InvalidTokenException();
-		usersManager = Initrfs.getUsersManager(tokenKey);
-		taskManager = Initrfs.getTaskManager(tokenKey);
+		usersManager = (UsersManager) Core.getSystemApi(SystemApi.USERS_MANAGER, tokenKey);
+		taskManager = (TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
 	}
 	
 	@Override
 	public void run() {
 		pid = taskManager.newTask("root", "Console (" + sockethelper.getRemoteAddress() + ")");
-		Initrfs.getLogwolf().i(sockethelper.getRemoteAddress() + " connected");
+		Core.getLogwolf().i(sockethelper.getRemoteAddress() + " connected");
 		sockethelper.printTitle("Kowax Shell");
 		sockethelper.println();
 		session = new Session(sockethelper);
@@ -51,10 +52,10 @@ public class ShellServer extends Thread {
 					session.setUsername(LOCALHOST_FORCE_LOGIN_USERNAME);
 					session.setSessionActive(true);
 				} else {
-					Initrfs.getLogwolf().e("Wrong LOCALHOST_FORCE_LOGIN config");
+					Core.getLogwolf().e("Wrong LOCALHOST_FORCE_LOGIN config");
 				}
 			} catch (InvalidUserException e) {
-				Initrfs.getLogwolf().e("Wrong LOCALHOST_FORCE_LOGIN config");
+				Core.getLogwolf().e("Wrong LOCALHOST_FORCE_LOGIN config");
 			}
 		} else {
 			int attempts = 0;
@@ -100,7 +101,7 @@ public class ShellServer extends Thread {
 		// USER LOGGED IN!!!
 		taskManager.getTask(pid).setUser(session.getUsername());
 		sockethelper.clear();
-		Initrfs.getLogwolf().i(session.getUsername() + " logged in");;
+		Core.getLogwolf().i(session.getUsername() + " logged in");;
 		sockethelper.println("Welcome back, " + session.getUsername() + "!");
 		commandrunner = new CommandRunner(session, tokenKey, false);
 		// Send SystemEvent.USER_LOGIN to apps
@@ -130,6 +131,8 @@ public class ShellServer extends Thread {
 						sockethelper.println();
 					} catch (IllegalArgumentException e) {
 						// New line
+					} catch (Exception e) {
+						sockethelper.println("-shell: Error launching applet: " + e.toString());
 					}
 				}
 			}
@@ -141,7 +144,7 @@ public class ShellServer extends Thread {
 		} catch (IOException e) { } finally {
 			taskManager.removeTask(pid);
 			commandrunner.sendSystemEvent(SystemEvent.USER_LOGOUT, session.getUsername(), tokenKey, false);
-			Initrfs.getLogwolf().i(sockethelper.getRemoteAddress() + " disconnected");
+			Core.getLogwolf().i(sockethelper.getRemoteAddress() + " disconnected");
 		}
 	}
 

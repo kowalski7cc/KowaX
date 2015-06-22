@@ -1,6 +1,6 @@
 package com.xspacesoft.kowax.apis;
 
-import com.xspacesoft.kowax.windowsystem.Window;
+import com.xspacesoft.kowax.windowsystem.windows.Window;
 
 public interface KWindow {
 

@@ -10,16 +10,19 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-import com.xspacesoft.kowax.Initrfs;
+import com.xspacesoft.kowax.Core;
+import com.xspacesoft.kowax.Logwolf;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.kernel.PluginBase;
+import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
-import com.xspacesoft.kowax.windowsystem.Window;
+import com.xspacesoft.kowax.windowsystem.windows.Window;
 
 public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEventsListener, KWindow {
 
@@ -33,7 +36,7 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 	private static String version;
 	public KowaxUpdater() {
 		if(!DEBUG)
-			build = Initrfs.BUILD;
+			build = Core.BUILD;
 		else
 			build = "77b272edf73ca4490831253d0da7349bbd7f7328";
 	}
@@ -46,8 +49,11 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 	@Override
 	public void runIntent(SystemEvent event, String extraValue, CommandRunner commandRunner) {
 		if(event==SystemEvent.SYSTEM_START) {
+			Logwolf.updateSplash("[KowaxUpdate] - Checking for updates...");
 			if(isUpdateAvailable()) {
-				Initrfs.getLogwolf().i("[KowaxUpdate] - Use 'Update -upgrade' from shell or Start upgrade from GUI.");
+				Core.getLogwolf().i("[KowaxUpdate] - Use 'Update -upgrade' from shell or Start upgrade from GUI.");
+			} else {
+				Core.getLogwolf().i("[KowaxUpdate] - No update available");
 			}
 		}
 	}
@@ -81,21 +87,21 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 	}
 
 	private boolean isUpdateAvailable() {
-		if(build.equals("NA")) {
-			Initrfs.getLogwolf().w("[KowaxUpdate] - Can't get build version. Is a dev build?");
+		if(build==null) {
+			Core.getLogwolf().w("[KowaxUpdate] - Can't get build version. Is this a dev build?");
 			return false;
 		}
-		Initrfs.getLogwolf().i("[KowaxUpdate] - Checking for updates...");
+		Core.getLogwolf().i("[KowaxUpdate] - Checking for updates...");
 		String commit = getLastCommit();
 		if(commit==null) {
-			Initrfs.getLogwolf().w("Can't check for updates. Are you offline?");
+			Core.getLogwolf().w("Can't check for updates. Are you offline?");
 			return false;
 		}
 		lastBuild = commit;
-		Initrfs.getLogwolf().d("[KowaxUpdate] - My BUILD: '"+ build +"'");
-		Initrfs.getLogwolf().d("[KowaxUpdate] - Last BUILD: '" + lastBuild + "'");
+		Core.getLogwolf().d("[KowaxUpdate] - My BUILD: '"+ build.substring(0, 10) +"...'");
+		Core.getLogwolf().d("[KowaxUpdate] - Last BUILD: '" + lastBuild.substring(0, 10) + "'");
 		if (!commit.equals(build)) {
-			Initrfs.getLogwolf().i("[KowaxUpdate] - Update available!");
+			Core.getLogwolf().i("[KowaxUpdate] - Update available!");
 			return true;
 		} else {
 			return false;
@@ -171,7 +177,7 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 					response = response.split("<version>")[1].split("</version>")[0];
 					version = response;
 //					System.out.println(response);
-					Initrfs.getLogwolf().i("[KowaxUpdate] - Branch: " + response );
+					Core.getLogwolf().i("[KowaxUpdate] - Branch: " + response );
 					return response;
 				}
 				return null;
@@ -185,16 +191,16 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 
 	private boolean downloadUpdate() {
 		File file = new File("KowaX-" + version + "-update." + (System.getProperty("os.name").toLowerCase().contains("win") ? "exe" : "jar"));
-		Initrfs.getLogwolf().i("[KowaxUpdate] - Downloading file: " + file.getName());
+		Core.getLogwolf().i("[KowaxUpdate] - Downloading file: " + file.getName());
 		try {
 			downloadFileFromURL(BASEURL + "KowaX-AlphaPreview."
 					+ (System.getProperty("os.name").toLowerCase().contains("win") ? "exe" : "jar"), file);
-			Initrfs.getLogwolf().i("[KowaxUpdate] - Download complete!");
-			Initrfs.getLogwolf().i("[KowaxUpdate] - Path: " + file.getAbsolutePath());
+			Core.getLogwolf().i("[KowaxUpdate] - Download complete!");
+			Core.getLogwolf().i("[KowaxUpdate] - Path: " + file.getAbsolutePath());
 			this.update = file;
 			return true;
 		} catch (IOException e) {
-			Initrfs.getLogwolf().e("[KowaxUpdate] - Can't download update file: " + e.toString()); 
+			Core.getLogwolf().e("[KowaxUpdate] - Can't download update file: " + e.toString()); 
 			return false;
 		}
 	}
@@ -235,7 +241,10 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 			} else {
 				window.getContent().append("<h4>No update available.</h4>");
 				window.getContent().append("<ul>");
-				window.getContent().append("<li>Current build: '" + build + "'</li>");
+				if(build.equalsIgnoreCase("na"))
+					window.getContent().append("<li>Current build unaviable. Is this a dev build?</li>");
+				else
+					window.getContent().append("<li>Current build: '" + build + "'</li>");
 				window.getContent().append("</ul>");
 			}
 		}
@@ -256,8 +265,8 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 			update.renameTo(path);
 		}
 		update.delete();
-		Initrfs.getPluginManager(tokenKey).stopServices();
-		Initrfs.halt();
+		((PluginManager) Core.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).stopServices();
+		Core.halt();
 		System.out.println("3: "+update);
 		try {
 			if(Runtime.getRuntime().exec(new String[]{"java", "-jar", path.getAbsolutePath()}).isAlive())

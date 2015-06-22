@@ -27,11 +27,11 @@ public class TrayHelper {
 		if (!SystemTray.isSupported()) {
             throw new UnsupportedOperationException();
         }
-		String path = "/com/xspacesoft/kshell/tray.gif";
+		String path = "/com/xspacesoft/kowax/tray.gif";
         Image img = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource(path));
         PopupMenu popup = new PopupMenu();
         trayIcon = new TrayIcon(img);
-        MenuItem modeHint = new MenuItem("Project security");
+        MenuItem modeHint = new MenuItem(Core.SHELLNAME);
         modeHint.addActionListener(new ActionListener() {
             @Override
 			public void actionPerformed(ActionEvent e) {
@@ -43,7 +43,7 @@ public class TrayHelper {
 			myAddress = InetAddress.getLocalHost().toString();
 		} catch (UnknownHostException e) {
 			myAddress = "127.0.0.1";
-//			Initrfs.log.e("Error getting server ip (TrayIcon");
+//			Core.log.e("Error getting server ip (TrayIcon");
 		}
 		String address = new String(myAddress + ":" + port);
 		String passwordHint = new String("Password:");
@@ -63,15 +63,15 @@ public class TrayHelper {
 		popup.addSeparator();
 		popup.add(exit);
 		trayIcon.setPopupMenu(popup);
-		trayIcon.setToolTip("SOIC Dashboard");
+		trayIcon.setToolTip("Open up Dashboard");
 		try {
 			tray.add(trayIcon);
 		} catch (NullPointerException e) {
-//			Initrfs.log.e("Error finding image in jar. Is package damaged?");
+//			Core.log.e("Error finding image in jar. Is package damaged?");
 		} catch (AWTException e) {
-//			Initrfs.log.e("Error adding tray icon");
+//			Core.log.e("Error adding tray icon");
 		} catch (Exception e) {
-//			Initrfs.log.e("Error finding image in jar. Is package damaged?");
+//			Core.log.e("Error finding image in jar. Is package damaged?");
 		}
 	}
 	
