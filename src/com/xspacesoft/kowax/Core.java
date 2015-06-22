@@ -69,7 +69,6 @@ public class Core {
 		splash = splash1;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void start() {
 		Preferences pref = Preferences.userRoot().node(Core.class.getName());
 		logwolf = new Logwolf(System.out);
@@ -154,12 +153,16 @@ public class Core {
 //		int p = step;
 		for (int i = 0; i < CORE_PLUGINS_DATA.length; i++) {
 			try {
-				pluginManager.addPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0],
-						(boolean) CORE_PLUGINS_DATA[i][2], 
-						((boolean)CORE_PLUGINS_DATA[i][1] ? tokenKey : null));
-				Logwolf.updateSplash("Loading plugin " + ((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0]).getName() + ".class");
-				if((boolean) CORE_PLUGINS_DATA[i][3])
-					startupBlacklist.add((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0]);
+				if(CORE_PLUGINS_DATA[i][0] instanceof Class<? extends PluginBase>) {
+					pluginManager.addPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0],
+							(boolean) CORE_PLUGINS_DATA[i][2], 
+							((boolean)CORE_PLUGINS_DATA[i][1] ? tokenKey : null));
+					Logwolf.updateSplash("Loading plugin " + ((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0]).getName() + ".class");
+					if((boolean) CORE_PLUGINS_DATA[i][3])
+						startupBlacklist.add((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0]);
+				} else {
+					logwolf.e(CORE_PLUGINS_DATA[i][0] + " is not a valid plugin entry");
+				}
 //				splash.getProgressBar().setValue(p+=step);
 			Thread.sleep(50);
 			} catch (InstantiationException | IllegalAccessException e) {
