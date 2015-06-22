@@ -80,7 +80,8 @@ public class Core {
 		
 		// TOKEN KEY GENERATION
 		logwolf.v("Creating new TokenKey");
-		splash.getLblLogwolf().setText("Creating new TokenKey");
+		if(splash!=null)
+			splash.getLblLogwolf().setText("Creating new TokenKey");
 		tokenKey = TokenKey.newKey();
 		logwolf.d("TokenKey: ==" + tokenKey.getKey() + "==");
 		sleep(100);
@@ -195,8 +196,10 @@ public class Core {
 					logwolf.e("Failed to open server on port " + backupPort + ": " + e1.toString());
 				}
 			} else if (e.getMessage().contains("Address already in use")) {
-				splash.getProgressBar().setIndeterminate(false);
-				splash.getProgressBar().setValue(0);
+				if(splash!=null) {
+					splash.getProgressBar().setIndeterminate(false);
+					splash.getProgressBar().setValue(0);
+				}
 				logwolf.e("Is already a server running on port " + port + "? " + e.toString());
 				Logwolf.updateSplash("Is already a server running on port " + port + "? " + e.getMessage());
 				try {
@@ -209,9 +212,11 @@ public class Core {
 				System.exit(1);
 			} else {
 				Logwolf.updateSplash(e.toString());
-				splash.getProgressBar().setValue(0);
-				splash.getProgressBar().setIndeterminate(false);
-				splashFadeOut(5);
+				if(splash!=null) {
+					splash.getProgressBar().setValue(0);
+					splash.getProgressBar().setIndeterminate(false);
+					splashFadeOut(5);
+				}
 				logwolf.e(e.toString());
 				System.exit(1);
 			}
@@ -230,11 +235,14 @@ public class Core {
 		sleep(100);
 		try {
 			serverSocket.setSoTimeout(1000);
-			splash.getProgressBar().setIndeterminate(false);
-			splash.getProgressBar().setValue(splash.getProgressBar().getMaximum());
+			if(splash!=null) {
+				splash.getProgressBar().setIndeterminate(false);
+				splash.getProgressBar().setValue(splash.getProgressBar().getMaximum());
+			}
 			logwolf.i("Server ready!");
 			Logwolf.updateSplash("Server ready");
-			splashFadeOut(3);
+			if(splash!=null)
+				splashFadeOut(3);
 			while(serviceEnabled) {
 				try {
 					Socket socket = serverSocket.accept();
