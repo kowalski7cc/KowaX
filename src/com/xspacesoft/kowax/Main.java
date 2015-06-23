@@ -24,6 +24,7 @@ public class Main {
 		"\\/  \\/\\___/    \\/  \\/ \\_/ \\_//_/\\_\\",
 	};
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		OptionsParser ap = new OptionsParser(args);
 		if(EXPERIMENTAL_GUI&&(!ap.getTag("-forcecli"))) {
@@ -85,12 +86,12 @@ public class Main {
 			Thread.sleep(600);
 			System.out.println("----------------");
 			Thread.sleep(10);
-			
+			SetupWizard setupWizard = null;
 			// Do configuration wizard if first launch
 			if(!pref.getBoolean("configured", false)) {
 				if(splash!=null)
 					splash.fadeOut();
-				SetupWizard setupWizard = new SetupWizard(pref, out, DEFAULT_SYSTEM_IN);
+				setupWizard = new SetupWizard(pref, out, DEFAULT_SYSTEM_IN);
 				setupWizard.start();
 				Core.sleep(1000);
 				Logwolf.updateSplash("Starting up...");
@@ -127,6 +128,8 @@ public class Main {
 //			trayHelper.addTray();
 			Core init = new Core(home, telnet, http, debug, verbose, DEFAULT_SYSTEM_IN, DEFAULT_SYSTEM_OUT, splash);
 			out.flush();
+			if(setupWizard!=null)
+				init.setNewUser(setupWizard.getUsername(), setupWizard.getPassword());
 			init.start();
 		} catch (InterruptedException e) {
 			out.println("Unknown error in startup: " + e);
