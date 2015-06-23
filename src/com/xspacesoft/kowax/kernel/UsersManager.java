@@ -1,12 +1,22 @@
 package com.xspacesoft.kowax.kernel;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
+import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.xspacesoft.kowax.Core;
+import com.xspacesoft.kowax.SystemFolder;
 
 public final class UsersManager implements Serializable {
 
@@ -78,17 +88,33 @@ public final class UsersManager implements Serializable {
 	}
 	
 	private List<User> users;
+	private File usersFile;
 	
 	public UsersManager() {
 		users = new ArrayList<User>();
+		if(!(usersFile = new File(Core.getSystemFolder(SystemFolder.ETC, null, null), "UserManager")).exists())
+			usersFile.mkdirs();
+		if(!(usersFile = new File(usersFile, "users.dat")).exists())
+			try {
+				usersFile.createNewFile();
+			} catch (IOException e) {
+				Core.getLogwolf().e("[UsersManager] - Can't create users file.");
+			}
 	}
 	
 	public UsersManager(ArrayList<User> users) {
-		this.users = users;
+		if(users!=null)
+			this.users = users;
+		else
+			users = new ArrayList<User>();
+		if(!(usersFile = new File(Core.getSystemFolder(SystemFolder.ETC, null, null), "UserManager")).exists())
+			usersFile.mkdirs();
+		usersFile = new File(usersFile, "users.dat");
 	}
 	
 	public void addUser(String username, String password, String comment) throws ExistingUserException {
 		addUser(username, password, comment, false);
+		saveToFile();
 	}
 	
 	public void addUser(String username, String password, String comment, boolean hashedPassword)
@@ -102,12 +128,14 @@ public final class UsersManager implements Serializable {
 			throw new ExistingUserException(username);
 		}
 		users.add(user);
+		saveToFile();
 	}
 	
 	public void removeUser(String username) throws InvalidUserException {
 		for (User user : users)
 			if (user.username.equals(username)) {
 				users.remove(user);
+				saveToFile();
 				return;
 			}
 		throw new InvalidUserException(username);
@@ -163,10 +191,38 @@ public final class UsersManager implements Serializable {
 		return users.size();
 	}
 
-	public void loadFromFile(File usersFile) {
-		// TODO Auto-generated method stub
+	public void loadFromFile() {
+		try (BufferedReader br = new BufferedReader(
+				new FileReader(usersFile))) {
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				String[] cUserData = sCurrentLine.split(";");
+				if(cUserData.length==3) {
+					try {
+						addUser(cUserData[0], cUserData[1], cUserData[2], true);
+					} catch (ExistingUserException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} catch (IOException e) {
+			Core.getLogwolf().e("Users file read error: " + e);
+		}
 	}
-	
+
+	public void saveToFile() {
+		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(usersFile), "utf-8"))) {
+			writer.write("");
+			for(User cUser : users) {
+				writer.append(cUser.username + ";" + cUser.password + ";" + cUser.comment);
+				writer.newLine();
+			}
+		} catch (IOException ex) {
+			Core.getLogwolf().e("Can't save users");
+		} 
+	}
+
 	public String[] getUsersName() {
 		String[] allusers = new String[users.size()];
 		int i=0;

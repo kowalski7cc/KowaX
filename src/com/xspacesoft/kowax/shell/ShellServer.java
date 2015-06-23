@@ -16,7 +16,7 @@ import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 
 public class ShellServer extends Thread {
 	
-	private final static boolean LOCALHOST_FORCE_LOGIN_ADMIN = true;
+	private final static boolean LOCALHOST_FORCE_LOGIN_ADMIN = false;
 	private final static String LOCALHOST_FORCE_LOGIN_USERNAME = "admin";
 	private final static String LOCALHOST_FORCE_LOGIN_PASSWORD = "password";
 	private Stdio sockethelper;
@@ -38,6 +38,7 @@ public class ShellServer extends Thread {
 		taskManager = (TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
 	}
 	
+	@SuppressWarnings("unused")
 	@Override
 	public void run() {
 		pid = taskManager.newTask("unlogged", "Console (" + sockethelper.getRemoteAddress() + ")");
@@ -101,7 +102,7 @@ public class ShellServer extends Thread {
 		// USER LOGGED IN!!!
 		taskManager.getTask(pid).setUser(session.getUsername());
 		sockethelper.clear();
-		Core.getLogwolf().i(session.getUsername() + " logged in");;
+		Core.getLogwolf().i(session.getUsername() + " logged in (" + sockethelper.getRemoteAddress() + ")");
 		sockethelper.println("Welcome back, " + session.getUsername() + "!");
 		commandrunner = new CommandRunner(session, tokenKey, false);
 		// Send SystemEvent.USER_LOGIN to apps
@@ -144,7 +145,7 @@ public class ShellServer extends Thread {
 		} catch (IOException e) { } finally {
 			taskManager.removeTask(pid);
 			commandrunner.sendSystemEvent(SystemEvent.USER_LOGOUT, session.getUsername(), tokenKey, false);
-			Core.getLogwolf().i(sockethelper.getRemoteAddress() + " disconnected");
+			Core.getLogwolf().i(session.getUsername() + " disconnected (" + sockethelper.getRemoteAddress() + ")");
 		}
 	}
 

@@ -177,7 +177,7 @@ public class CronTab extends PluginBase implements Service, KernelAccess {
 			CommandRunner commandRunner = new CommandRunner(tokenKey, true);
 			cron = new Cron(job, null, commandRunner, session);
 			cron.start();
-			Core.getLogwolf().i("Cron started");
+			Core.getLogwolf().i("[Cron] - Service started");
 		}
 	}
 
@@ -185,7 +185,7 @@ public class CronTab extends PluginBase implements Service, KernelAccess {
 	public void stopService() {
 		if((cron!=null)&&(cron.isAlive())) {
 			cron.interrupt();
-			Core.getLogwolf().i("Cron stopped");
+			Core.getLogwolf().i("[Cron] - Service stopped");
 		}
 	}
 	

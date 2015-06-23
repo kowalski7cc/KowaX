@@ -42,6 +42,8 @@ public class Core {
 	private int http;
 	private boolean debug;
 	private boolean verbose;
+	private String newUser;
+	private String newPassword;
 	private static File kowaxHome;
 	private static InputStream shellInput;
 	private static PrintStream shellOutput;
@@ -67,6 +69,11 @@ public class Core {
 		shellInput = defalutSystemIn;
 		shellOutput = defaultSystemOut;
 		splash = splash1;
+	}
+	
+	public void setNewUser(String username, String password) {
+		this.newUser = username;
+		this.newPassword = password;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -103,22 +110,19 @@ public class Core {
 		logwolf.v("Loading UsersManager");
 		Logwolf.updateSplash("Loading UsersManager");
 		usersManager = new UsersManager();
-		File usersFile = new File(new File(new File(kowaxHome,"etc"), "users"), "users.kls");
-		logwolf.i("Users file path: " + usersFile.toURI().toString());
-		try {
-			if((usersFile!=null)&&(usersFile.exists())) {
-				usersManager.loadFromFile(usersFile);
+		usersManager.loadFromFile();
+		if(usersManager.getLoadedUsers()==0)
+			if((newUser!=null)&&(newPassword!=null)) {
+				try {
+					usersManager.addUser(newUser, newPassword, "First system administrator", false);
+				} catch (ExistingUserException e) { }
 			} else {
-				usersManager.loadDefaults();
+				try {
+					usersManager.loadDefaults();
+				} catch (ExistingUserException e2) { }
 			}
-			logwolf.d("UsersManager loaded");
-			logwolf.i("Registred users: " + usersManager.getLoadedUsers());
-			sleep(100);
-		} catch (ExistingUserException e1) {
-			logwolf.e("Error in loading users");
-			System.exit(1);
-		}
-
+		logwolf.d("UsersManager loaded");
+		logwolf.i("Registred users: " + usersManager.getLoadedUsers());
 		// Alias Manager
 		Logwolf.updateSplash("Loading AliasManager");
 		logwolf.v("Loading AliasManager");

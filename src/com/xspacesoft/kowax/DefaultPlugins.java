@@ -3,15 +3,12 @@ import com.xspacesoft.kowax.kernel.MacroManager;
 import com.xspacesoft.kowax.plugins.AppExample;
 import com.xspacesoft.kowax.plugins.BusyBox;
 import com.xspacesoft.kowax.plugins.CronTab;
-import com.xspacesoft.kowax.plugins.DenialService;
 import com.xspacesoft.kowax.plugins.Escalator;
 import com.xspacesoft.kowax.plugins.Fortune;
 import com.xspacesoft.kowax.plugins.HivemindControl;
 import com.xspacesoft.kowax.plugins.Kalculator;
 import com.xspacesoft.kowax.plugins.Kalendar;
 import com.xspacesoft.kowax.plugins.KowaxExplorer;
-import com.xspacesoft.kowax.plugins.KowaxUpdater;
-import com.xspacesoft.kowax.plugins.Man;
 import com.xspacesoft.kowax.plugins.ServiceManager;
 import com.xspacesoft.kowax.windowsystem.kenvironment.KowaxDisplayManager;
 

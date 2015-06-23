@@ -103,7 +103,8 @@ public class SetupWizard {
 		out.printf("Insert port for " + portName + " server[" + defaultValue +"]: ");
 		while((inBuffer = scn.nextLine())==null) {
 			inBuffer = scn.nextLine();
-			while(!((Stdio.isNumber(inBuffer))||(inBuffer.equals("")))) {
+			while(!((Stdio.isNumber(inBuffer))||(inBuffer.equals(""))
+					||(Stdio.parseInt(inBuffer)>65535)||(Stdio.parseInt(inBuffer)<1))) {
 				out.println("Invalid port");
 				out.printf("Insert port for " + portName + " server[" + defaultValue +"]: ");
 				while((inBuffer = scn.nextLine())==null) {
