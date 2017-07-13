@@ -326,16 +326,15 @@ public class TelegramServer extends PluginBase implements SystemEventsListener, 
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void stopService() {
 		if(isServiceRunning())
-			client.stop();
+			client.interrupt();
 	}
 
 	@Override
 	public String getServiceName() {
-		return "Telegram Bot Service";
+		return "TelegramBotService";
 	}
 
 	private class TelegramBotShell extends Thread {
@@ -391,6 +390,7 @@ public class TelegramServer extends PluginBase implements SystemEventsListener, 
 								userspace.stdio.print("Sorry, unsupported media");
 								continue;
 							}
+							
 							if(message.getText().equals("/stop")) {
 								userspace.session.setSessionActive(false);
 							}
@@ -474,7 +474,6 @@ public class TelegramServer extends PluginBase implements SystemEventsListener, 
 
 	public class TelegramUserspace {
 		private CommandRunner commandRunner;
-		private User user;
 		private Stdio stdio;
 		private Session session;
 
@@ -502,7 +501,7 @@ public class TelegramServer extends PluginBase implements SystemEventsListener, 
 
 		@Override
 		public void print(String string) {
-			sender.sendText(string, new PrivateChat(destination, "", "", ""), null);
+			sender.sendText(string, new PrivateChat(destination, ""), null);
 
 		}
 
