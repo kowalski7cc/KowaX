@@ -9,14 +9,16 @@ import java.util.Scanner;
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.kernel.AliasManager;
-import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TaskManager.Task;
 import com.xspacesoft.kowax.kernel.TokenKey;
+import com.xspacesoft.kowax.kernel.io.OutputWriter;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.shell.ShellIO;
 import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
 
 public class BusyBox extends PluginBase implements KernelAccess {
@@ -167,7 +169,11 @@ public class BusyBox extends PluginBase implements KernelAccess {
 			((PluginManager) Core.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).stopServices();
 			Core.getLogwolf().i("Closing server socket");
 			try {
-				stdio.getSocket(tokenKey).close();
+				OutputWriter outputWriter = stdio.getOutputWriter();
+				if(outputWriter instanceof ShellIO) {
+					ShellIO io = (ShellIO) outputWriter;
+					io.getSocket().close();
+				}
 			} catch (IOException e) {
 				Core.getLogwolf().e("IOException on shutdown: " + e);
 			} finally {

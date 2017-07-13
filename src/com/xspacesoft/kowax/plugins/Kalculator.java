@@ -2,7 +2,7 @@ package com.xspacesoft.kowax.plugins;
 
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.windows.Window;
 

@@ -8,9 +8,9 @@ import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
 import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TokenKey;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
 public class KAuthenticator extends PluginBase implements KernelAccess, SystemEventsListener {

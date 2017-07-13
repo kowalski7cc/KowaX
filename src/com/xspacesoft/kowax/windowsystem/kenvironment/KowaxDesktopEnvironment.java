@@ -1,7 +1,7 @@
 package com.xspacesoft.kowax.windowsystem.kenvironment;
 
 import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
 public class KowaxDesktopEnvironment extends PluginBase{

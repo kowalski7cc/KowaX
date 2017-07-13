@@ -119,9 +119,5 @@ public class Logwolf {
 	public void setLoggiongEnabled(boolean enableLogging) {
 		this.enableLogging = enableLogging;
 	}
-	
-	public static void updateSplash(String s) {
-		if((Core.splash!=null) && (Core.splash.isVisible()))
-			Core.splash.getLblLogwolf().setText(s);
-	}
+
 }

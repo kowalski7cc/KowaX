@@ -11,9 +11,9 @@ import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.kernel.ExplorerInterface;
 import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager.User;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.windows.Window;
 

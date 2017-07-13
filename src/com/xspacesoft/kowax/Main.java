@@ -1,58 +1,21 @@
 package com.xspacesoft.kowax;
 
-import java.awt.EventQueue;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.util.prefs.Preferences;
 
-import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 
 public class Main {
 	/** Default system input */
 	private final static InputStream DEFAULT_SYSTEM_IN = System.in;
-	private final static PrintStream DEFAULT_SYSTEM_OUT = System.out;
-	private final static boolean EXPERIMENTAL_GUI = false;
-	public static Splash splash;
-	private final static String[] TITLE = {
-		"         ___  __    __   _   __  __",
-		"  /\\ /\\ /___\\/ / /\\ \\ \\ /_\\  \\ \\/ /",
-		" / //_///  //\\ \\/  \\/ ///_\\\\  \\  / ",
-		"/ __ \\/ \\_//  \\  /\\  //  _  \\ /  \\ ",
-		"\\/  \\/\\___/    \\/  \\/ \\_/ \\_//_/\\_\\",
-	};
-
-	@SuppressWarnings("unused")
+	private final static PrintStream DEFAULT_SYSTEM_OUT = System.out;;
+	
 	public static void main(String[] args) {
 		OptionsParser ap = new OptionsParser(args);
-		if(EXPERIMENTAL_GUI&&(!ap.getTag("-forcecli"))) {
-			splash = new Splash();
-			try {
-				EventQueue.invokeAndWait(new Runnable() {
-					public void run() {
-						try {
-							Main.splash.setVisible(true);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
-				EventQueue.invokeAndWait(new Runnable() {
-					@Override
-					public void run() {
-						splash.fadeIn();
-						
-					}
-				});
-			} catch (InvocationTargetException | InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		Preferences pref = Preferences.userRoot().node(Core.class.getName());
-//		pref.putBoolean("configured", false);
 		PrintWriter out = new PrintWriter(DEFAULT_SYSTEM_OUT, true);
 //		out.flush();
 		if(ap.getTag("h")||ap.getTag("help")) {
@@ -63,13 +26,11 @@ public class Main {
 			Core.clear(DEFAULT_SYSTEM_OUT);
 			System.out.println();
 		}
-		for (String String : TITLE) {
-			System.out.println(String);
-		}
+		System.out.println("-------------------\n"
+				+ "Starting KowaX\n"
+				+ "-------------------");
 		try {
 			Thread.sleep(1000);
-			if(!pref.getBoolean("configured", false))
-				Logwolf.updateSplash("Preparing for first startup wizard");
 			int proc = Runtime.getRuntime().availableProcessors();
 			System.out.println();
 			for (int i = 0; i < proc; i++) {
@@ -89,14 +50,9 @@ public class Main {
 			SetupWizard setupWizard = null;
 			// Do configuration wizard if first launch
 			if(!pref.getBoolean("configured", false)) {
-				if(splash!=null)
-					splash.fadeOut();
 				setupWizard = new SetupWizard(pref, out, DEFAULT_SYSTEM_IN);
 				setupWizard.start();
 				Core.sleep(1000);
-				Logwolf.updateSplash("Starting up...");
-				if(splash!=null)
-					splash.fadeIn();
 				pref.putBoolean("configured", true);
 				String a;
 				out.println();
@@ -123,10 +79,8 @@ public class Main {
 			boolean verbose = ap.getTag("verbose") ? 
 					true : pref.getBoolean("force_verbose", BuildGet.stringToBoolean(BuildGet.getString("default.force.verbose")));
 			String home = pref.get("home_path", new File("").getAbsolutePath());
-			// TODO add tray
-//			TrayHelper trayHelper = new TrayHelper(telnet);
-//			trayHelper.addTray();
-			Core init = new Core(home, telnet, http, debug, verbose, DEFAULT_SYSTEM_IN, DEFAULT_SYSTEM_OUT, splash);
+
+			Core init = new Core(home, telnet, http, debug, verbose, DEFAULT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
 			out.flush();
 			if(setupWizard!=null)
 				init.setNewUser(setupWizard.getUsername(), setupWizard.getPassword());

@@ -3,13 +3,17 @@ import com.xspacesoft.kowax.kernel.MacroManager;
 import com.xspacesoft.kowax.plugins.AppExample;
 import com.xspacesoft.kowax.plugins.BusyBox;
 import com.xspacesoft.kowax.plugins.CronTab;
+import com.xspacesoft.kowax.plugins.Echo;
 import com.xspacesoft.kowax.plugins.Escalator;
 import com.xspacesoft.kowax.plugins.Fortune;
 import com.xspacesoft.kowax.plugins.HivemindControl;
 import com.xspacesoft.kowax.plugins.Kalculator;
 import com.xspacesoft.kowax.plugins.Kalendar;
 import com.xspacesoft.kowax.plugins.KowaxExplorer;
+import com.xspacesoft.kowax.plugins.No;
 import com.xspacesoft.kowax.plugins.ServiceManager;
+import com.xspacesoft.kowax.plugins.Yes;
+import com.xspacesoft.kowax.telegram.TelegramServer;
 import com.xspacesoft.kowax.windowsystem.kenvironment.KowaxDisplayManager;
 
 public final class DefaultPlugins {
@@ -32,6 +36,10 @@ public final class DefaultPlugins {
 				{Escalator.class, false, false, false},
 				{MacroManager.class, false, false, false},
 				{KowaxExplorer.class, true, false, false},
+				{TelegramServer.class, true, true, true},
+				{Yes.class, false, false, false},
+				{No.class, false, false, false},
+				{Echo.class, false, false, false},
 			};
 	}
 }

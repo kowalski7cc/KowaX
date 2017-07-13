@@ -2,7 +2,7 @@ package com.xspacesoft.kowax.shell;
 
 import java.util.Locale;
 
-import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 
 public class Session {
 
@@ -27,8 +27,8 @@ public class Session {
 	 * @return the username
 	 */
 	public String getUsername() {
-		if(sudo)
-			return "root";
+//		if(sudo)
+//			return "root";
 		return username;
 	}
 

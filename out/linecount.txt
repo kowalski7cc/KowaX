@@ -1,0 +1,550 @@
+===============================================================================
+EXTENSION NAME : linecount
+EXTENSION VERSION : 0.1.7
+-------------------------------------------------------------------------------
+count time : 2017-07-13 20:13:59
+count workspace : c:\Users\kowal\Documents\Git\kowax-experiment-legacy
+total files : 538
+total code lines : 68236
+total comment lines : 11524
+total blank lines : 2128
+
+.classpath, code is 21, comment is 0, blank is 0.
+.gitignore, code is 6, comment is 0, blank is 0.
+.gitignore~, code is 3, comment is 0, blank is 0.
+.project, code is 29, comment is 0, blank is 0.
+.settings\org.eclipse.jdt.core.prefs, code is 13, comment is 0, blank is 0.
+.settings\org.eclipse.m2e.core.prefs, code is 4, comment is 0, blank is 0.
+dependency-reduced-pom.xml, code is 153, comment is 0, blank is 1.
+pom.xml, code is 169, comment is 10, blank is 0.
+src\com\xspacesoft\kowax\apis\KernelAccess.java, code is 5, comment is 0, blank is 4.
+src\com\xspacesoft\kowax\apis\KWindow.java, code is 12, comment is 0, blank is 10.
+src\com\xspacesoft\kowax\apis\Pipeline.java, code is 4, comment is 0, blank is 4.
+src\com\xspacesoft\kowax\apis\RegistrableComponent.java, code is 3, comment is 3, blank is 3.
+src\com\xspacesoft\kowax\apis\Service.java, code is 7, comment is 0, blank is 6.
+src\com\xspacesoft\kowax\apis\SystemEventsListener.java, code is 7, comment is 3, blank is 4.
+src\com\xspacesoft\kowax\application.icns, it is a binary file.
+src\com\xspacesoft\kowax\application.ico, it is a binary file.
+src\com\xspacesoft\kowax\build.properties, code is 12, comment is 0, blank is 0.
+src\com\xspacesoft\kowax\BuildGet.java, code is 22, comment is 1, blank is 8.
+src\com\xspacesoft\kowax\Core.java, code is 375, comment is 41, blank is 34.
+src\com\xspacesoft\kowax\DefaultPlugins.java, code is 39, comment is 4, blank is 2.
+src\com\xspacesoft\kowax\eula.txt, code is 9, comment is 0, blank is 2.
+src\com\xspacesoft\kowax\exceptions\DuplicateElementException.java, code is 15, comment is 4, blank is 7.
+src\com\xspacesoft\kowax\exceptions\InsufficientPermissionsException.java, code is 4, comment is 0, blank is 3.
+src\com\xspacesoft\kowax\exceptions\MissingPluginCodeException.java, code is 19, comment is 8, blank is 8.
+src\com\xspacesoft\kowax\exceptions\UnsupportedIntentException.java, code is 4, comment is 0, blank is 3.
+src\com\xspacesoft\kowax\kernel\AliasManager.java, code is 82, comment is 61, blank is 17.
+src\com\xspacesoft\kowax\kernel\ApiManager.java, code is 63, comment is 0, blank is 11.
+src\com\xspacesoft\kowax\kernel\DisplayManager.java, code is 5, comment is 0, blank is 4.
+src\com\xspacesoft\kowax\kernel\ExplorerInterface.java, code is 9, comment is 0, blank is 6.
+src\com\xspacesoft\kowax\kernel\HostPlatform.java, code is 7, comment is 0, blank is 1.
+src\com\xspacesoft\kowax\kernel\io\InputReader.java, code is 11, comment is 0, blank is 9.
+src\com\xspacesoft\kowax\kernel\io\OutputWriter.java, code is 18, comment is 0, blank is 18.
+src\com\xspacesoft\kowax\kernel\io\Stdio.java, code is 80, comment is 0, blank is 24.
+src\com\xspacesoft\kowax\kernel\MacroManager.java, code is 29, comment is 1, blank is 10.
+src\com\xspacesoft\kowax\kernel\PluginBase.java, code is 20, comment is 7, blank is 8.
+src\com\xspacesoft\kowax\kernel\PluginManager.java, code is 140, comment is 10, blank is 20.
+src\com\xspacesoft\kowax\kernel\SystemApi.java, code is 13, comment is 0, blank is 2.
+src\com\xspacesoft\kowax\kernel\SystemEvent.java, code is 9, comment is 1, blank is 1.
+src\com\xspacesoft\kowax\kernel\TaskManager.java, code is 82, comment is 9, blank is 23.
+src\com\xspacesoft\kowax\kernel\TokenKey.java, code is 35, comment is 0, blank is 13.
+src\com\xspacesoft\kowax\kernel\UsersManager.java, code is 196, comment is 0, blank is 37.
+src\com\xspacesoft\kowax\Logwolf.java, code is 100, comment is 0, blank is 23.
+src\com\xspacesoft\kowax\Main.java, code is 93, comment is 4, blank is 7.
+src\com\xspacesoft\kowax\OptionsParser.java, code is 37, comment is 26, blank is 7.
+src\com\xspacesoft\kowax\Pause.java, code is 35, comment is 0, blank is 6.
+src\com\xspacesoft\kowax\plugins\.gitignore, code is 0, comment is 0, blank is 0.
+src\com\xspacesoft\kowax\plugins\AppExample.java, code is 47, comment is 3, blank is 18.
+src\com\xspacesoft\kowax\plugins\BusyBox.java, code is 209, comment is 1, blank is 24.
+src\com\xspacesoft\kowax\plugins\CronTab.java, code is 186, comment is 3, blank is 44.
+src\com\xspacesoft\kowax\plugins\DenialService.java, code is 419, comment is 2, blank is 44.
+src\com\xspacesoft\kowax\plugins\Echo.java, code is 30, comment is 0, blank is 9.
+src\com\xspacesoft\kowax\plugins\Escalator.java, code is 28, comment is 0, blank is 7.
+src\com\xspacesoft\kowax\plugins\Fortune.java, code is 119, comment is 5, blank is 23.
+src\com\xspacesoft\kowax\plugins\HivemindControl.java, code is 339, comment is 2, blank is 53.
+src\com\xspacesoft\kowax\plugins\Kalculator.java, code is 145, comment is 9, blank is 20.
+src\com\xspacesoft\kowax\plugins\Kalendar.java, code is 58, comment is 2, blank is 17.
+src\com\xspacesoft\kowax\plugins\KAuthenticator.java, code is 114, comment is 3, blank is 22.
+src\com\xspacesoft\kowax\plugins\KowaxExplorer.java, code is 302, comment is 5, blank is 31.
+src\com\xspacesoft\kowax\plugins\KowaxUpdater.java, code is 263, comment is 11, blank is 29.
+src\com\xspacesoft\kowax\plugins\KWindowManager.java, code is 93, comment is 0, blank is 25.
+src\com\xspacesoft\kowax\plugins\Man.java, code is 32, comment is 1, blank is 9.
+src\com\xspacesoft\kowax\plugins\No.java, code is 30, comment is 0, blank is 9.
+src\com\xspacesoft\kowax\plugins\ServiceManager.java, code is 124, comment is 0, blank is 14.
+src\com\xspacesoft\kowax\plugins\Yes.java, code is 30, comment is 0, blank is 9.
+src\com\xspacesoft\kowax\SetupWizard.java, code is 179, comment is 0, blank is 14.
+src\com\xspacesoft\kowax\shell\CommandRunner.java, code is 201, comment is 36, blank is 23.
+src\com\xspacesoft\kowax\shell\Session.java, code is 62, comment is 35, blank is 18.
+src\com\xspacesoft\kowax\shell\ShellIO.java, code is 235, comment is 0, blank is 36.
+src\com\xspacesoft\kowax\shell\ShellServer.java, code is 122, comment is 4, blank is 12.
+src\com\xspacesoft\kowax\Splash.png, it is a binary file.
+src\com\xspacesoft\kowax\SystemFolder.java, code is 9, comment is 0, blank is 1.
+src\com\xspacesoft\kowax\telegram\TelegramServer.java, code is 542, comment is 17, blank is 74.
+src\com\xspacesoft\kowax\tray.gif, it is a binary file.
+src\com\xspacesoft\kowax\TrayHelper.java, code is 70, comment is 5, blank is 6.
+src\com\xspacesoft\kowax\windowsystem\DisplayManager.java, code is 9, comment is 0, blank is 6.
+src\com\xspacesoft\kowax\windowsystem\HtmlDataLoader.java, code is 21, comment is 0, blank is 5.
+src\com\xspacesoft\kowax\windowsystem\HttpBuilder.java, code is 34, comment is 0, blank is 5.
+src\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxDesktopEnvironment.java, code is 31, comment is 7, blank is 11.
+src\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxDisplayManager.java, code is 290, comment is 16, blank is 33.
+src\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxWindowManager.java, code is 107, comment is 0, blank is 14.
+src\com\xspacesoft\kowax\windowsystem\kenvironment\package-info.java, code is 1, comment is 7, blank is 0.
+src\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw.java, code is 145, comment is 11, blank is 20.
+src\com\xspacesoft\kowax\windowsystem\package-info.java, code is 1, comment is 7, blank is 0.
+src\com\xspacesoft\kowax\windowsystem\WindowManager.java, code is 10, comment is 0, blank is 3.
+src\com\xspacesoft\kowax\windowsystem\windows\Window.java, code is 70, comment is 0, blank is 23.
+src\rebel.xml, code is 7, comment is 0, blank is 2.
+target\apidocs\allclasses-frame.html, code is 91, comment is 2, blank is 0.
+target\apidocs\allclasses-noframe.html, code is 91, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\class-use\KernelAccess.html, code is 224, comment is 40, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\class-use\KWindow.html, code is 243, comment is 40, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\class-use\Pipeline.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\class-use\RegistrableComponent.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\class-use\Service.html, code is 246, comment is 40, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\class-use\SystemEventsListener.html, code is 183, comment is 39, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\KernelAccess.html, code is 188, comment is 43, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\KWindow.html, code is 268, comment is 50, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\package-frame.html, code is 24, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\package-summary.html, code is 130, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\package-tree.html, code is 104, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\package-use.html, code is 245, comment is 42, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\Pipeline.html, code is 180, comment is 43, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\RegistrableComponent.html, code is 131, comment is 38, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\Service.html, code is 220, comment is 46, blank is 0.
+target\apidocs\com\xspacesoft\kowax\apis\SystemEventsListener.html, code is 207, comment is 44, blank is 0.
+target\apidocs\com\xspacesoft\kowax\BuildGet.html, code is 236, comment is 50, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\BuildGet.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\Core.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\DefaultPlugins.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\Logwolf.html, code is 129, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\Main.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\OptionsParser.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\Pause.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\SetupWizard.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\Splash.html, code is 151, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\SystemFolder.html, code is 153, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\class-use\TrayHelper.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\Core.html, code is 523, comment is 73, blank is 0.
+target\apidocs\com\xspacesoft\kowax\DefaultPlugins.html, code is 224, comment is 49, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\class-use\DuplicateElementException.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\class-use\InsufficientPermissionsException.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\class-use\MissingPluginCodeException.html, code is 156, comment is 38, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\class-use\UnsupportedIntentException.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\DuplicateElementException.html, code is 262, comment is 50, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\InsufficientPermissionsException.html, code is 227, comment is 47, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\MissingPluginCodeException.html, code is 269, comment is 51, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\package-frame.html, code is 22, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\package-summary.html, code is 120, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\package-tree.html, code is 122, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\package-use.html, code is 140, comment is 38, blank is 0.
+target\apidocs\com\xspacesoft\kowax\exceptions\UnsupportedIntentException.html, code is 227, comment is 47, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\AliasManager.Alias.html, code is 265, comment is 50, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\AliasManager.html, code is 349, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\ApiManager.Component.html, code is 306, comment is 53, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\ApiManager.ComponentAlreadyRegistredException.html, code is 231, comment is 47, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\ApiManager.html, code is 275, comment is 53, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\AliasManager.Alias.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\AliasManager.html, code is 131, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\ApiManager.Component.html, code is 162, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\ApiManager.ComponentAlreadyRegistredException.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\ApiManager.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\DisplayManager.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\ExplorerInterface.html, code is 129, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\HostPlatform.html, code is 138, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\MacroManager.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\PluginBase.html, code is 310, comment is 40, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\PluginManager.html, code is 131, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\Stdio.html, code is 348, comment is 41, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\SystemApi.html, code is 160, comment is 38, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\SystemEvent.html, code is 369, comment is 42, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\TaskManager.html, code is 131, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\TaskManager.Task.html, code is 142, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\TokenKey.html, code is 493, comment is 45, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\TokenKey.InvalidTokenException.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\UsersManager.ExistingUserException.html, code is 142, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\UsersManager.html, code is 131, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\UsersManager.InvalidUserException.html, code is 134, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\class-use\UsersManager.User.html, code is 179, comment is 38, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\DisplayManager.html, code is 193, comment is 46, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\ExplorerInterface.html, code is 210, comment is 45, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\HostPlatform.html, code is 313, comment is 54, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\io\class-use\InputReader.html, code is 196, comment is 39, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\io\class-use\OutputWriter.html, code is 196, comment is 39, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\io\class-use\Stdio.html, code is 366, comment is 41, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\io\InputReader.html, code is 268, comment is 50, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\io\OutputWriter.html, code is 352, comment is 57, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\io\package-frame.html, code is 24, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\io\package-summary.html, code is 127, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\io\package-tree.html, code is 108, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\io\package-use.html, code is 227, comment is 42, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\io\Stdio.html, code is 415, comment is 64, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\MacroManager.html, code is 347, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\package-frame.html, code is 42, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\package-summary.html, code is 199, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\package-tree.html, code is 160, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\package-use.html, code is 340, comment is 45, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\PluginBase.html, code is 334, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\PluginManager.html, code is 388, comment is 59, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\Stdio.html, code is 414, comment is 64, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\SystemApi.html, code is 379, comment is 60, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\SystemEvent.html, code is 335, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\TaskManager.html, code is 309, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\TaskManager.Task.html, code is 306, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\TokenKey.html, code is 248, comment is 49, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\TokenKey.InvalidTokenException.html, code is 242, comment is 48, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\UsersManager.ExistingUserException.html, code is 221, comment is 47, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\UsersManager.html, code is 438, comment is 63, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\UsersManager.InvalidUserException.html, code is 221, comment is 47, blank is 0.
+target\apidocs\com\xspacesoft\kowax\kernel\UsersManager.User.html, code is 301, comment is 54, blank is 0.
+target\apidocs\com\xspacesoft\kowax\Logwolf.html, code is 413, comment is 64, blank is 0.
+target\apidocs\com\xspacesoft\kowax\Main.html, code is 245, comment is 50, blank is 0.
+target\apidocs\com\xspacesoft\kowax\OptionsParser.html, code is 269, comment is 50, blank is 0.
+target\apidocs\com\xspacesoft\kowax\package-frame.html, code is 31, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\package-summary.html, code is 157, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\package-tree.html, code is 123, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\package-use.html, code is 125, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\Pause.html, code is 240, comment is 50, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\AppExample.html, code is 424, comment is 59, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\BusyBox.html, code is 368, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\AppExample.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\BusyBox.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\CronTab.Cron.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\CronTab.CronTabJob.html, code is 143, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\CronTab.html, code is 129, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\CronTab.Job.html, code is 129, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\DenialService.DosProtcol.html, code is 158, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\DenialService.Flooder.FlooderInstance.html, code is 146, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\DenialService.Flooder.html, code is 129, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\DenialService.Flooder.TcpFlooder.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\DenialService.Flooder.UdpFlooder.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\DenialService.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\Echo.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\Escalator.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\Fortune.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\HivemindControl.HivemindHost.html, code is 176, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\HivemindControl.HivemindManager.html, code is 127, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\HivemindControl.HivemindService.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\HivemindControl.HostRole.html, code is 176, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\HivemindControl.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\Kalculator.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\Kalendar.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\KAuthenticator.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\KowaxExplorer.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\KowaxExplorer.UserExplorer.html, code is 163, comment is 38, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\KowaxUpdater.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\KWindowManager.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\Man.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\No.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\ServiceManager.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\class-use\Yes.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\CronTab.Cron.html, code is 279, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\CronTab.CronTabJob.html, code is 280, comment is 53, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\CronTab.html, code is 497, comment is 65, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\CronTab.Job.html, code is 289, comment is 53, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\DenialService.DosProtcol.html, code is 328, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\DenialService.Flooder.FlooderInstance.html, code is 344, comment is 62, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\DenialService.Flooder.html, code is 318, comment is 58, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\DenialService.Flooder.TcpFlooder.html, code is 259, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\DenialService.Flooder.UdpFlooder.html, code is 259, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\DenialService.html, code is 469, comment is 63, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\Echo.html, code is 347, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\Escalator.html, code is 294, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\Fortune.html, code is 468, comment is 61, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\HivemindControl.HivemindHost.html, code is 280, comment is 53, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\HivemindControl.HivemindManager.html, code is 372, comment is 61, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\HivemindControl.HivemindService.html, code is 273, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\HivemindControl.HostRole.html, code is 317, comment is 54, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\HivemindControl.html, code is 445, comment is 61, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\Kalculator.html, code is 424, comment is 59, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\Kalendar.html, code is 424, comment is 59, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\KAuthenticator.html, code is 412, comment is 58, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\KowaxExplorer.html, code is 550, comment is 71, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\KowaxExplorer.UserExplorer.html, code is 197, comment is 46, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\KowaxUpdater.html, code is 484, comment is 62, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\KWindowManager.html, code is 476, comment is 62, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\Man.html, code is 347, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\No.html, code is 347, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\package-frame.html, code is 41, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\package-summary.html, code is 195, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\package-tree.html, code is 158, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\package-use.html, code is 167, comment is 38, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\ServiceManager.html, code is 382, comment is 57, blank is 0.
+target\apidocs\com\xspacesoft\kowax\plugins\Yes.html, code is 347, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\SetupWizard.html, code is 252, comment is 51, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\class-use\CommandRunner.CommandNotFoundException.html, code is 131, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\class-use\CommandRunner.html, code is 406, comment is 41, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\class-use\Session.html, code is 166, comment is 38, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\class-use\ShellIO.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\class-use\ShellServer.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\CommandRunner.CommandNotFoundException.html, code is 221, comment is 47, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\CommandRunner.html, code is 415, comment is 62, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\package-frame.html, code is 26, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\package-summary.html, code is 137, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\package-tree.html, code is 119, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\package-use.html, code is 228, comment is 42, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\Session.html, code is 400, comment is 60, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\ShellIO.html, code is 663, comment is 77, blank is 0.
+target\apidocs\com\xspacesoft\kowax\shell\ShellServer.html, code is 276, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\Splash.html, code is 400, comment is 69, blank is 0.
+target\apidocs\com\xspacesoft\kowax\SystemFolder.html, code is 335, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\class-use\TelegramServer.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\class-use\TelegramServer.TelegramReader.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\class-use\TelegramServer.TelegramUsersManager.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\class-use\TelegramServer.TelegramUserspace.html, code is 135, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\class-use\TelegramServer.TelegramWriter.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\class-use\Test.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\package-frame.html, code is 20, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\package-summary.html, code is 112, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\package-tree.html, code is 112, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\package-use.html, code is 122, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\TelegramServer.html, code is 517, comment is 65, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\TelegramServer.TelegramReader.html, code is 349, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\TelegramServer.TelegramUsersManager.html, code is 311, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\TelegramServer.TelegramUserspace.html, code is 206, comment is 46, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\TelegramServer.TelegramWriter.html, code is 463, comment is 63, blank is 0.
+target\apidocs\com\xspacesoft\kowax\telegram\Test.html, code is 224, comment is 49, blank is 0.
+target\apidocs\com\xspacesoft\kowax\TrayHelper.html, code is 236, comment is 50, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\class-use\DisplayManager.html, code is 178, comment is 38, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\class-use\HtmlDataLoader.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\class-use\HttpBuilder.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\class-use\KowaxDirectDraw.DesktopRedirect.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\class-use\KowaxDirectDraw.html, code is 131, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\class-use\KowaxDirectDraw.HttpApiHandler.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\class-use\KowaxDirectDraw.Logout.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\class-use\WindowManager.html, code is 129, comment is 37, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\DisplayManager.html, code is 219, comment is 46, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\HtmlDataLoader.html, code is 241, comment is 50, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\HttpBuilder.html, code is 295, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\kenvironment\class-use\KowaxDesktopEnvironment.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\kenvironment\class-use\KowaxDisplayManager.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\kenvironment\class-use\KowaxWindowManager.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxDesktopEnvironment.html, code is 347, comment is 55, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxDisplayManager.html, code is 564, comment is 67, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxWindowManager.html, code is 346, comment is 56, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\kenvironment\package-frame.html, code is 21, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\kenvironment\package-summary.html, code is 120, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\kenvironment\package-tree.html, code is 109, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\kenvironment\package-use.html, code is 90, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw.DesktopRedirect.html, code is 240, comment is 49, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw.html, code is 401, comment is 63, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw.HttpApiHandler.html, code is 240, comment is 49, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw.Logout.html, code is 240, comment is 49, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\package-frame.html, code is 26, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\package-summary.html, code is 139, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\package-tree.html, code is 117, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\package-use.html, code is 161, comment is 39, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\WindowManager.html, code is 236, comment is 47, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\windows\class-use\Window.html, code is 350, comment is 40, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\windows\package-frame.html, code is 19, comment is 2, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\windows\package-summary.html, code is 108, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\windows\package-tree.html, code is 103, comment is 36, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\windows\package-use.html, code is 176, comment is 40, blank is 0.
+target\apidocs\com\xspacesoft\kowax\windowsystem\windows\Window.html, code is 412, comment is 64, blank is 0.
+target\apidocs\constant-values.html, code is 117, comment is 38, blank is 0.
+target\apidocs\deprecated-list.html, code is 144, comment is 38, blank is 0.
+target\apidocs\help-doc.html, code is 195, comment is 36, blank is 0.
+target\apidocs\index-all.html, code is 1862, comment is 60, blank is 0.
+target\apidocs\index.html, code is 74, comment is 2, blank is 0.
+target\apidocs\overview-frame.html, code is 30, comment is 2, blank is 0.
+target\apidocs\overview-summary.html, code is 144, comment is 36, blank is 0.
+target\apidocs\overview-tree.html, code is 260, comment is 36, blank is 0.
+target\apidocs\package-list, code is 11, comment is 0, blank is 0.
+target\apidocs\script.js, code is 29, comment is 0, blank is 1.
+target\apidocs\serialized-form.html, code is 266, comment is 48, blank is 0.
+target\apidocs\stylesheet.css, code is 533, comment is 31, blank is 10.
+target\classes\com\xspacesoft\kowax\apis\KernelAccess.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\apis\KernelAccess.java, code is 5, comment is 0, blank is 4.
+target\classes\com\xspacesoft\kowax\apis\KWindow.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\apis\KWindow.java, code is 12, comment is 0, blank is 10.
+target\classes\com\xspacesoft\kowax\apis\Pipeline.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\apis\Pipeline.java, code is 4, comment is 0, blank is 4.
+target\classes\com\xspacesoft\kowax\apis\RegistrableComponent.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\apis\RegistrableComponent.java, code is 3, comment is 3, blank is 3.
+target\classes\com\xspacesoft\kowax\apis\Service.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\apis\Service.java, code is 7, comment is 0, blank is 6.
+target\classes\com\xspacesoft\kowax\apis\SystemEventsListener.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\apis\SystemEventsListener.java, code is 7, comment is 3, blank is 4.
+target\classes\com\xspacesoft\kowax\application.icns, it is a binary file.
+target\classes\com\xspacesoft\kowax\application.ico, it is a binary file.
+target\classes\com\xspacesoft\kowax\build.properties, code is 12, comment is 0, blank is 0.
+target\classes\com\xspacesoft\kowax\BuildGet.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\BuildGet.java, code is 22, comment is 1, blank is 8.
+target\classes\com\xspacesoft\kowax\Core.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\Core.java, code is 375, comment is 41, blank is 34.
+target\classes\com\xspacesoft\kowax\DefaultPlugins.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\DefaultPlugins.java, code is 39, comment is 4, blank is 2.
+target\classes\com\xspacesoft\kowax\eula.txt, code is 9, comment is 0, blank is 2.
+target\classes\com\xspacesoft\kowax\exceptions\DuplicateElementException.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\exceptions\DuplicateElementException.java, code is 15, comment is 4, blank is 7.
+target\classes\com\xspacesoft\kowax\exceptions\InsufficientPermissionsException.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\exceptions\InsufficientPermissionsException.java, code is 4, comment is 0, blank is 3.
+target\classes\com\xspacesoft\kowax\exceptions\MissingPluginCodeException.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\exceptions\MissingPluginCodeException.java, code is 19, comment is 8, blank is 8.
+target\classes\com\xspacesoft\kowax\exceptions\UnsupportedIntentException.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\exceptions\UnsupportedIntentException.java, code is 4, comment is 0, blank is 3.
+target\classes\com\xspacesoft\kowax\kernel\AliasManager$Alias.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\AliasManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\AliasManager.java, code is 82, comment is 61, blank is 17.
+target\classes\com\xspacesoft\kowax\kernel\ApiManager$Component.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\ApiManager$ComponentAlreadyRegistredException.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\ApiManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\ApiManager.java, code is 63, comment is 0, blank is 11.
+target\classes\com\xspacesoft\kowax\kernel\DisplayManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\DisplayManager.java, code is 5, comment is 0, blank is 4.
+target\classes\com\xspacesoft\kowax\kernel\ExplorerInterface.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\ExplorerInterface.java, code is 9, comment is 0, blank is 6.
+target\classes\com\xspacesoft\kowax\kernel\HostPlatform.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\HostPlatform.java, code is 7, comment is 0, blank is 1.
+target\classes\com\xspacesoft\kowax\kernel\io\InputReader.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\io\InputReader.java, code is 11, comment is 0, blank is 9.
+target\classes\com\xspacesoft\kowax\kernel\io\OutputWriter.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\io\OutputWriter.java, code is 18, comment is 0, blank is 18.
+target\classes\com\xspacesoft\kowax\kernel\io\Stdio.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\io\Stdio.java, code is 80, comment is 0, blank is 24.
+target\classes\com\xspacesoft\kowax\kernel\MacroManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\MacroManager.java, code is 29, comment is 1, blank is 10.
+target\classes\com\xspacesoft\kowax\kernel\PluginBase.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\PluginBase.java, code is 20, comment is 7, blank is 8.
+target\classes\com\xspacesoft\kowax\kernel\PluginManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\PluginManager.java, code is 140, comment is 10, blank is 20.
+target\classes\com\xspacesoft\kowax\kernel\SystemApi.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\SystemApi.java, code is 13, comment is 0, blank is 2.
+target\classes\com\xspacesoft\kowax\kernel\SystemEvent.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\SystemEvent.java, code is 9, comment is 1, blank is 1.
+target\classes\com\xspacesoft\kowax\kernel\TaskManager$Task.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\TaskManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\TaskManager.java, code is 82, comment is 9, blank is 23.
+target\classes\com\xspacesoft\kowax\kernel\TokenKey$InvalidTokenException.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\TokenKey.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\TokenKey.java, code is 35, comment is 0, blank is 13.
+target\classes\com\xspacesoft\kowax\kernel\UsersManager$ExistingUserException.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\UsersManager$InvalidUserException.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\UsersManager$User.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\UsersManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\kernel\UsersManager.java, code is 196, comment is 0, blank is 37.
+target\classes\com\xspacesoft\kowax\Logwolf.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\Logwolf.java, code is 100, comment is 0, blank is 23.
+target\classes\com\xspacesoft\kowax\Main.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\Main.java, code is 93, comment is 4, blank is 7.
+target\classes\com\xspacesoft\kowax\OptionsParser.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\OptionsParser.java, code is 37, comment is 26, blank is 7.
+target\classes\com\xspacesoft\kowax\Pause.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\Pause.java, code is 35, comment is 0, blank is 6.
+target\classes\com\xspacesoft\kowax\plugins\AppExample.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\AppExample.java, code is 47, comment is 3, blank is 18.
+target\classes\com\xspacesoft\kowax\plugins\BusyBox.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\BusyBox.java, code is 209, comment is 1, blank is 24.
+target\classes\com\xspacesoft\kowax\plugins\CronTab$Cron.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\CronTab$CronTabJob.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\CronTab$Job.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\CronTab.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\CronTab.java, code is 186, comment is 3, blank is 44.
+target\classes\com\xspacesoft\kowax\plugins\DenialService$DosProtcol.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\DenialService$Flooder$FlooderInstance.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\DenialService$Flooder$TcpFlooder.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\DenialService$Flooder$UdpFlooder.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\DenialService$Flooder.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\DenialService.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\DenialService.java, code is 419, comment is 2, blank is 44.
+target\classes\com\xspacesoft\kowax\plugins\Echo.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\Echo.java, code is 30, comment is 0, blank is 9.
+target\classes\com\xspacesoft\kowax\plugins\Escalator.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\Escalator.java, code is 28, comment is 0, blank is 7.
+target\classes\com\xspacesoft\kowax\plugins\Fortune.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\Fortune.java, code is 119, comment is 5, blank is 23.
+target\classes\com\xspacesoft\kowax\plugins\HivemindControl$HivemindHost.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\HivemindControl$HivemindManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\HivemindControl$HivemindService.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\HivemindControl$HostRole.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\HivemindControl.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\HivemindControl.java, code is 339, comment is 2, blank is 53.
+target\classes\com\xspacesoft\kowax\plugins\Kalculator.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\Kalculator.java, code is 145, comment is 9, blank is 20.
+target\classes\com\xspacesoft\kowax\plugins\Kalendar.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\Kalendar.java, code is 58, comment is 2, blank is 17.
+target\classes\com\xspacesoft\kowax\plugins\KAuthenticator$UserConfig.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\KAuthenticator.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\KAuthenticator.java, code is 114, comment is 3, blank is 22.
+target\classes\com\xspacesoft\kowax\plugins\KowaxExplorer$UserExplorer.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\KowaxExplorer.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\KowaxExplorer.java, code is 302, comment is 5, blank is 31.
+target\classes\com\xspacesoft\kowax\plugins\KowaxUpdater.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\KowaxUpdater.java, code is 263, comment is 11, blank is 29.
+target\classes\com\xspacesoft\kowax\plugins\KWindowManager$KOrg.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\KWindowManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\KWindowManager.java, code is 93, comment is 0, blank is 25.
+target\classes\com\xspacesoft\kowax\plugins\Man.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\Man.java, code is 32, comment is 1, blank is 9.
+target\classes\com\xspacesoft\kowax\plugins\No.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\No.java, code is 30, comment is 0, blank is 9.
+target\classes\com\xspacesoft\kowax\plugins\ServiceManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\ServiceManager.java, code is 124, comment is 0, blank is 14.
+target\classes\com\xspacesoft\kowax\plugins\Yes.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\plugins\Yes.java, code is 30, comment is 0, blank is 9.
+target\classes\com\xspacesoft\kowax\SetupWizard.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\SetupWizard.java, code is 179, comment is 0, blank is 14.
+target\classes\com\xspacesoft\kowax\shell\CommandRunner$CommandNotFoundException.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\shell\CommandRunner.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\shell\CommandRunner.java, code is 201, comment is 36, blank is 23.
+target\classes\com\xspacesoft\kowax\shell\Session.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\shell\Session.java, code is 62, comment is 35, blank is 18.
+target\classes\com\xspacesoft\kowax\shell\ShellIO.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\shell\ShellIO.java, code is 235, comment is 0, blank is 36.
+target\classes\com\xspacesoft\kowax\shell\ShellServer.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\shell\ShellServer.java, code is 122, comment is 4, blank is 12.
+target\classes\com\xspacesoft\kowax\Splash.png, it is a binary file.
+target\classes\com\xspacesoft\kowax\SystemFolder.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\SystemFolder.java, code is 9, comment is 0, blank is 1.
+target\classes\com\xspacesoft\kowax\telegram\TelegramServer$TelegramBotShell.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\telegram\TelegramServer$TelegramReader.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\telegram\TelegramServer$TelegramUsersManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\telegram\TelegramServer$TelegramUserspace.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\telegram\TelegramServer$TelegramWriter.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\telegram\TelegramServer.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\telegram\TelegramServer.java, code is 542, comment is 17, blank is 74.
+target\classes\com\xspacesoft\kowax\tray.gif, it is a binary file.
+target\classes\com\xspacesoft\kowax\TrayHelper$1.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\TrayHelper$2.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\TrayHelper.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\TrayHelper.java, code is 70, comment is 5, blank is 6.
+target\classes\com\xspacesoft\kowax\windowsystem\DisplayManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\DisplayManager.java, code is 9, comment is 0, blank is 6.
+target\classes\com\xspacesoft\kowax\windowsystem\HtmlDataLoader.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\HtmlDataLoader.java, code is 21, comment is 0, blank is 5.
+target\classes\com\xspacesoft\kowax\windowsystem\HttpBuilder.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\HttpBuilder.java, code is 34, comment is 0, blank is 5.
+target\classes\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxDesktopEnvironment.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxDesktopEnvironment.java, code is 31, comment is 7, blank is 11.
+target\classes\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxDisplayManager$InterfaceSession.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxDisplayManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxDisplayManager.java, code is 290, comment is 16, blank is 33.
+target\classes\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxWindowManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\kenvironment\KowaxWindowManager.java, code is 107, comment is 0, blank is 14.
+target\classes\com\xspacesoft\kowax\windowsystem\kenvironment\package-info.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\kenvironment\package-info.java, code is 1, comment is 7, blank is 0.
+target\classes\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw$1.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw$DesktopRedirect.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw$HttpApiHandler.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw$Logout.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\KowaxDirectDraw.java, code is 145, comment is 11, blank is 20.
+target\classes\com\xspacesoft\kowax\windowsystem\package-info.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\package-info.java, code is 1, comment is 7, blank is 0.
+target\classes\com\xspacesoft\kowax\windowsystem\WindowManager.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\WindowManager.java, code is 10, comment is 0, blank is 3.
+target\classes\com\xspacesoft\kowax\windowsystem\windows\Window.class, it is a binary file.
+target\classes\com\xspacesoft\kowax\windowsystem\windows\Window.java, code is 70, comment is 0, blank is 23.
+target\classes\rebel.xml, code is 7, comment is 0, blank is 2.
+target\javadoc-bundle-options\javadoc-options-javadoc-resources.xml, code is 10, comment is 0, blank is 0.
+target\javadoc-bundle-options\package-list, code is 209, comment is 0, blank is 0.
+target\KowaX-ReleasePreview-javadoc.jar, it is a binary file.
+target\KowaX-ReleasePreview-shaded.jar, it is a binary file.
+target\KowaX-ReleasePreview-sources.jar, it is a binary file.
+target\KowaX-ReleasePreview.exe, it is a binary file.
+target\KowaX-ReleasePreview.jar, it is a binary file.
+target\maven-archiver\pom.properties, code is 5, comment is 0, blank is 0.
+target\maven-status\maven-compiler-plugin\compile\default-compile\createdFiles.lst, code is 7, comment is 0, blank is 0.
+target\maven-status\maven-compiler-plugin\compile\default-compile\inputFiles.lst, code is 71, comment is 0, blank is 0.
+target\original-KowaX-ReleasePreview.jar, it is a binary file.
+===============================================================================

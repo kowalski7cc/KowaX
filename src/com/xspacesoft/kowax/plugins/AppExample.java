@@ -2,7 +2,7 @@ package com.xspacesoft.kowax.plugins;
 
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.windows.Window;
 
@@ -14,8 +14,7 @@ public class AppExample extends PluginBase implements KWindow {
 	
 	@Override
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
-		stdio.println("Ciao mondo!");
-		commandRunner.sudo(null);
+		stdio.println("Hello, " + commandRunner.getUsername() + "!");
 	}
 
 	@Override
@@ -25,7 +24,7 @@ public class AppExample extends PluginBase implements KWindow {
 
 	@Override
 	public String getAppletName() {
-		return "Test";
+		return "Hello";
 	}
 
 	@Override

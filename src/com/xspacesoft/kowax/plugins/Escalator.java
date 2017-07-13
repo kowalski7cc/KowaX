@@ -1,7 +1,7 @@
 package com.xspacesoft.kowax.plugins;
 
 import com.xspacesoft.kowax.Core;
-import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
 public class Escalator extends CronTab {

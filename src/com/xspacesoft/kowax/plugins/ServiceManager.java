@@ -10,10 +10,10 @@ import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.PluginManager;
-import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TaskManager.Task;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.shell.CommandRunner;
 

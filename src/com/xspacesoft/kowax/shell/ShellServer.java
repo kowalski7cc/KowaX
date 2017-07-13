@@ -5,30 +5,29 @@ import java.net.Socket;
 
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
-import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.InvalidUserException;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 
 public class ShellServer extends Thread {
-	
-	private final static boolean LOCALHOST_FORCE_LOGIN_ADMIN = false;
-	private final static String LOCALHOST_FORCE_LOGIN_USERNAME = "admin";
-	private final static String LOCALHOST_FORCE_LOGIN_PASSWORD = "password";
-	private Stdio sockethelper;
+
+	private ShellIO sockethelper;
+	private Stdio stdio;
 	private TokenKey tokenKey;
 	private UsersManager usersManager;
 	private CommandRunner commandrunner;
 	private TaskManager taskManager;
 	private Session session;
 	private int pid;
-	
+
 	public ShellServer(Socket socket, TokenKey tokenKey) throws IOException {
-		sockethelper = new Stdio(socket);
+		sockethelper = new ShellIO(socket);
+		stdio = new Stdio(sockethelper, sockethelper);
 		this.tokenKey = tokenKey;
 		this.setName("Console (" + (socket.getInetAddress().isLoopbackAddress() ?
 				"Localhost" : socket.getInetAddress().getHostAddress()) + ")");
@@ -37,88 +36,75 @@ public class ShellServer extends Thread {
 		usersManager = (UsersManager) Core.getSystemApi(SystemApi.USERS_MANAGER, tokenKey);
 		taskManager = (TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
 	}
-	
-	@SuppressWarnings("unused")
+
 	@Override
 	public void run() {
+		
 		pid = taskManager.newTask("unlogged", "Console (" + sockethelper.getRemoteAddress() + ")");
 		Core.getLogwolf().i(sockethelper.getRemoteAddress() + " connected");
-		sockethelper.printTitle("Kowax Shell");
-		sockethelper.println();
-		session = new Session(sockethelper);
-		if(LOCALHOST_FORCE_LOGIN_ADMIN && sockethelper.getSocket(tokenKey).getInetAddress().isLoopbackAddress()) {
-			try {
-				if(usersManager.isPasswordValid(LOCALHOST_FORCE_LOGIN_USERNAME, LOCALHOST_FORCE_LOGIN_PASSWORD)) {
-					session.setAuthenticated(true);
-					session.setUsername(LOCALHOST_FORCE_LOGIN_USERNAME);
-					session.setSessionActive(true);
-				} else {
-					Core.getLogwolf().e("Wrong LOCALHOST_FORCE_LOGIN config");
-				}
-			} catch (InvalidUserException e) {
-				Core.getLogwolf().e("Wrong LOCALHOST_FORCE_LOGIN config");
+		stdio.printTitle("Kowax Shell");
+		stdio.println();
+		session = new Session(stdio);
+
+		int attempts = 0;
+		while(!session.isAuthenticated()) {
+			sockethelper.print("Username: ");
+			String username = stdio.scan();
+			if(username==null) {
+				try {
+					sockethelper.getSocket().close();
+				} catch (IOException e) { }
+				return;
 			}
-		} else {
-			int attempts = 0;
-			while(!session.isAuthenticated()) {
-				sockethelper.print("Username: ");
-				String username = sockethelper.scan();
-				if(username==null) {
-					try {
-						sockethelper.getSocket(tokenKey).close();
-					} catch (IOException e) { }
-					return;
-				}
-				sockethelper.print("Password: ");
-				String password = sockethelper.scan();
-				if(password==null) {
-					try {
-						sockethelper.getSocket(tokenKey).close();
-					} catch (IOException e) { }
-					return;
-				}
-				if (usersManager.existsUser(username)) {
-					try {
-						if(usersManager.isPasswordValid(username, password)) {
-							session.setAuthenticated(true);
-							session.setUsername(username);
-							session.setSessionActive(true);
-							break;
-						}
-					} catch (InvalidUserException e) { }
-				}
-				sockethelper.println("Invalid username or password. " + ++attempts + " of 3 attempts.");
-				sockethelper.println();
-				if(attempts>2) {
-					try {
-						sockethelper.getSocket(tokenKey).close();
-					} catch (IOException e) { }
-					return;
-				}
+			sockethelper.print("Password: ");
+			String password = stdio.scan();
+			if(password==null) {
+				try {
+					sockethelper.getSocket().close();
+				} catch (IOException e) { }
+				return;
+			}
+			if (usersManager.existsUser(username)) {
+				try {
+					if(usersManager.isPasswordValid(username, password)) {
+						session.setAuthenticated(true);
+						session.setUsername(username);
+						session.setSessionActive(true);
+						break;
+					}
+				} catch (InvalidUserException e) { }
+			}
+			sockethelper.println("Invalid username or password. " + ++attempts + " of 3 attempts.");
+			sockethelper.println();
+			if(attempts>2) {
+				try {
+					sockethelper.getSocket().close();
+				} catch (IOException e) { }
+				return;
 			}
 		}
-		
-		
+
+
 		// USER LOGGED IN!!!
 		taskManager.getTask(pid).setUser(session.getUsername());
-		sockethelper.clear();
+		stdio.clear();
 		Core.getLogwolf().i(session.getUsername() + " logged in (" + sockethelper.getRemoteAddress() + ")");
 		sockethelper.println("Welcome back, " + session.getUsername() + "!");
 		commandrunner = new CommandRunner(session, tokenKey, false);
 		// Send SystemEvent.USER_LOGIN to apps
 		commandrunner.sendSystemEvent(SystemEvent.USER_LOGIN_SUCCESS, session.getUsername(), tokenKey, false);
 		while(session.isSessionActive()) {
-			if(!session.getSockethelper().isOpen()){
+			if(!sockethelper.isOpen()){
 				session.setSessionActive(false);
 			} else {
 				if(session.isSudo())
-					sockethelper.print("root@kowax:-# ");
+					stdio.print("root@kowax:-# ");
 				else
-					sockethelper.print(session.getUsername() + "@kowax:-$ ");
-				String userInput = sockethelper.scan();
+					stdio.print(session.getUsername() + "@kowax:-$ ");
+				String userInput = stdio.scan();
 				if(userInput==null) {
 					try {
-						session.getSockethelper().getSocket(tokenKey).close();
+						sockethelper.getSocket().close();
 					} catch (IOException e) { }
 					session.setSessionActive(false);
 				} else {
@@ -138,10 +124,10 @@ public class ShellServer extends Thread {
 				}
 			}
 		}
-		
+
 		// User disconnect
 		try {
-			sockethelper.getSocket(tokenKey).close();
+			sockethelper.getSocket().close();
 		} catch (IOException e) { } finally {
 			taskManager.removeTask(pid);
 			commandrunner.sendSystemEvent(SystemEvent.USER_LOGOUT, session.getUsername(), tokenKey, false);

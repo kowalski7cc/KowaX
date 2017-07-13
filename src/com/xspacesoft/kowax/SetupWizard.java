@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.prefs.Preferences;
 
-import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.UsersManager;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 
 public class SetupWizard {
 	

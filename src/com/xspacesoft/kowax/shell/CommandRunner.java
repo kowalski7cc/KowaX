@@ -9,13 +9,13 @@ import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginManager;
 import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.InvalidUserException;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 
 /**
  * The Class CommandRunner handles the running of an applet.
@@ -188,7 +188,7 @@ public final class CommandRunner {
 			if(session.isSudoExpired()) {
 				stdio.print("[sudo] password for " + session.getUsername() +": ");
 				String response = session.getSockethelper().scan();
-				if ((response.equalsIgnoreCase(""))||(response.equalsIgnoreCase("c")))
+				if (response.equalsIgnoreCase(""))
 					return;
 				try {
 					if(usersManager.isPasswordValid(session.getUsername(), response)) {

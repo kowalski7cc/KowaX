@@ -8,8 +8,9 @@ import java.util.List;
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.Stdio;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.shell.ShellIO;
 
 public class HivemindControl extends PluginBase implements Service {
 	
@@ -85,7 +86,8 @@ public class HivemindControl extends PluginBase implements Service {
 				if ((hivemindHost.getRole() == HostRole.BETA)||(hivemindHost.getRole() == HostRole.GAMMA)) {
 					try {
 						Socket socket = new Socket(hivemindHost.getAddress(), hivemindHost.getPort());
-						Stdio hostio = new Stdio(socket);
+						ShellIO shellIO = new ShellIO(socket);
+						Stdio hostio = new Stdio(shellIO, shellIO);
 						hostio.println(string);
 					} catch (IOException e) {
 						
@@ -99,7 +101,8 @@ public class HivemindControl extends PluginBase implements Service {
 				if ((hivemindHost.getRole() == HostRole.BETA)||(hivemindHost.getRole() == HostRole.GAMMA)) {
 					try {
 						Socket socket = new Socket(hivemindHost.getAddress(), hivemindHost.getPort());
-						Stdio hostio = new Stdio(socket);
+						ShellIO shellIO = new ShellIO(socket);
+						Stdio hostio = new Stdio(shellIO, shellIO);
 						hostio.println(string);
 						hostio.println("Hive  run " + string);
 					} catch (IOException e) {

@@ -11,16 +11,15 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
 import com.xspacesoft.kowax.Core;
-import com.xspacesoft.kowax.Logwolf;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.KernelAccess;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.PluginManager;
-import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TokenKey;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.windows.Window;
 
@@ -49,7 +48,6 @@ public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEven
 	@Override
 	public void runIntent(SystemEvent event, String extraValue, CommandRunner commandRunner) {
 		if(event==SystemEvent.SYSTEM_START) {
-			Logwolf.updateSplash("[KowaxUpdate] - Checking for updates...");
 			if(isUpdateAvailable()) {
 				Core.getLogwolf().i("[KowaxUpdate] - Use 'Update -upgrade' from shell or Start upgrade from GUI.");
 			} else {

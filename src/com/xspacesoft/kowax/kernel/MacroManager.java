@@ -1,5 +1,6 @@
 package com.xspacesoft.kowax.kernel;
 
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
 public class MacroManager extends PluginBase {

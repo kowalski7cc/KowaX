@@ -4,39 +4,36 @@ import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class Man extends PluginBase {
+public class Echo extends PluginBase {
 
 	@Override
 	public String getAppletName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "echo";
 	}
 
 	@Override
 	public String getAppletVersion() {
-		return "1.0A";
+		return "1.0";
 	}
 
 	@Override
 	public String getAppletAuthor() {
-		return "Kowalski";
+		return "kowalski7cc";
 	}
 
 	@Override
 	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
-		if((command==null)||(command.length()<1)) {
-			stdio.print(getHint());
-		}
+		stdio.println(command==null?"":command);
 	}
 
 	@Override
 	public String getDescription() {
-		return "Get help about plugins";
+		return "Prints a given text on the standard output";
 	}
 
 	@Override
 	public String getHint() {
-		return "man (page)";
+		return "Prints a given text on the standard output";
 	}
 
 }

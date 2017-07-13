@@ -4,6 +4,13 @@
 	<groupId>com.xspacesoft.kowax</groupId>
 	<artifactId>KowaX</artifactId>
 	<version>ReleasePreview</version>
+	<repositories>
+    	<repository>
+        	<id>xspacesoft-com</id>
+        	<name>XSpaceSoft test repository</name>
+        	<url>http://xspacesoft.altervista.org/maven/</url>
+   		</repository>
+	</repositories>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
@@ -42,7 +49,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<!-- Maven Shade Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -158,4 +164,16 @@
 		<connection>scm:git:git@bitbucket.org:xspacesoft/kowax.git</connection>
 		<developerConnection>scm:git:git@bitbucket.org:xspacesoft/kowax.git</developerConnection>
 	</scm>
+	<dependencies>
+		<dependency>
+			<groupId>com.kowalski7cc</groupId>
+			<artifactId>botclient</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>us.monoid.web</groupId>
+			<artifactId>resty</artifactId>
+			<version>0.3.2</version>
+		</dependency>
+	</dependencies>
 </project>

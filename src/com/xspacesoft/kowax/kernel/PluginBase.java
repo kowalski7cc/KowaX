@@ -1,6 +1,7 @@
 package com.xspacesoft.kowax.kernel;
 
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
 public abstract class PluginBase {

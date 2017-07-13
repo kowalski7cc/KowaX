@@ -1,11 +1,9 @@
 package com.xspacesoft.kowax;
 
-import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -18,13 +16,13 @@ import java.util.prefs.Preferences;
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.PluginManager;
-import com.xspacesoft.kowax.kernel.Stdio;
 import com.xspacesoft.kowax.kernel.SystemApi;
 import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
+import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.ShellServer;
 import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
 
@@ -55,12 +53,11 @@ public class Core {
 	private static UsersManager usersManager;
 	private static ServerSocket serverSocket;
 	private static KowaxDirectDraw kowaxDirectDraw;
-	protected static Splash splash;
 	private static boolean serviceEnabled;
 	
 	private static final Object[][] CORE_PLUGINS_DATA = DefaultPlugins.getDefaults();
 	
-	public Core(String home, int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut, Splash splash1) {
+	public Core(String home, int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
 		this.port = port;
 		this.http = http;
 		this.debug = debug;
@@ -68,7 +65,6 @@ public class Core {
 		kowaxHome = new File(home);
 		shellInput = defalutSystemIn;
 		shellOutput = defaultSystemOut;
-		splash = splash1;
 	}
 	
 	public void setNewUser(String username, String password) {
@@ -82,19 +78,15 @@ public class Core {
 		logwolf = new Logwolf(System.out);
 		logwolf.setDebug(debug);
 		logwolf.setVerbose(verbose);
-		logwolf.i("Started loading initrfs");
-		Logwolf.updateSplash("Logwolf started");
+		logwolf.i("Init started");
 		
 		// TOKEN KEY GENERATION
 		logwolf.v("Creating new TokenKey");
-		if(splash!=null)
-			splash.getLblLogwolf().setText("Creating new TokenKey");
 		tokenKey = TokenKey.newKey();
 		logwolf.d("TokenKey: ==" + tokenKey.getKey() + "==");
 		sleep(100);
 		
 		// TASK MANAGER LOAD-UP
-		Logwolf.updateSplash("Starting TaksManager");
 		logwolf.v("Starting TaksManager");
 		taskManager = new TaskManager();
 		taskManager.newTask("root", "KInit");
@@ -102,13 +94,11 @@ public class Core {
 		sleep(100);
 		
 		// GET CURRENT WORK FOLDER AND FILE VARS
-		Logwolf.updateSplash("Checking system folders");
 		checkFolderTree();
 		sleep(100);
 		
 		// User Manager
 		logwolf.v("Loading UsersManager");
-		Logwolf.updateSplash("Loading UsersManager");
 		usersManager = new UsersManager();
 		usersManager.loadFromFile();
 		if(usersManager.getLoadedUsers()==0)
@@ -124,7 +114,6 @@ public class Core {
 		logwolf.d("UsersManager loaded");
 		logwolf.i("Registred users: " + usersManager.getLoadedUsers());
 		// Alias Manager
-		Logwolf.updateSplash("Loading AliasManager");
 		logwolf.v("Loading AliasManager");
 		aliasManager = new AliasManager();
 		logwolf.v("AliasManager loaded");
@@ -134,7 +123,6 @@ public class Core {
 		// Start KWindowSystem
 		if(pref.getBoolean("autostart_http", true)) {
 			try {
-				Logwolf.updateSplash("Starting KowaxDirectDraw Server");
 				logwolf.v("Starting KowaxDirectDraw Server");
 				kowaxDirectDraw = new KowaxDirectDraw(http, tokenKey, null);
 				kowaxDirectDraw.startServer();
@@ -146,24 +134,18 @@ public class Core {
 		}
 
 		// START PLUGIN MANAGER AND LOAD PLUGINS
-		Logwolf.updateSplash("Starting PluginManager");
 		logwolf.v("Starting PluginManager");
 		pluginManager = new PluginManager(tokenKey);
 		logwolf.v("PluginManager Started");
 		logwolf.v("Loading default plugins");
 		List<Class<? extends PluginBase>> startupBlacklist = new ArrayList<Class<? extends PluginBase>>();
 		logwolf.d("-----------------------");
-//		splash.getProgressBar().setValue(0);
-//		splash.getProgressBar().setIndeterminate(false);
-//		int step = CORE_PLUGINS_DATA.length/100;
-//		int p = step;
 		for (int i = 0; i < CORE_PLUGINS_DATA.length; i++) {
 			try {
 				if(CORE_PLUGINS_DATA[i][0].getClass().getSuperclass().isInstance(PluginBase.class)) {
 					pluginManager.addPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0],
 							(boolean) CORE_PLUGINS_DATA[i][2], 
 							((boolean)CORE_PLUGINS_DATA[i][1] ? tokenKey : null));
-					Logwolf.updateSplash("Loading plugin " + ((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0]).getName() + ".class");
 					if((boolean) CORE_PLUGINS_DATA[i][3])
 						startupBlacklist.add((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0]);
 				} else {
@@ -186,7 +168,6 @@ public class Core {
 		// Server open
 		serviceEnabled = true;
 		logwolf.i("Preparing shell server");
-		Logwolf.updateSplash("Preparing shell server");
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (BindException e) {
@@ -200,27 +181,15 @@ public class Core {
 					logwolf.e("Failed to open server on port " + backupPort + ": " + e1.toString());
 				}
 			} else if (e.getMessage().contains("Address already in use")) {
-				if(splash!=null) {
-					splash.getProgressBar().setIndeterminate(false);
-					splash.getProgressBar().setValue(0);
-				}
 				logwolf.e("Is already a server running on port " + port + "? " + e.toString());
-				Logwolf.updateSplash("Is already a server running on port " + port + "? " + e.getMessage());
 				try {
 					Thread.sleep(10);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				splashFadeOut(5);
 				System.exit(1);
 			} else {
-				Logwolf.updateSplash(e.toString());
-				if(splash!=null) {
-					splash.getProgressBar().setValue(0);
-					splash.getProgressBar().setIndeterminate(false);
-					splashFadeOut(5);
-				}
 				logwolf.e(e.toString());
 				System.exit(1);
 			}
@@ -233,20 +202,12 @@ public class Core {
 			System.exit(1);
 		}
 		sleep(100);
-		Logwolf.updateSplash("Broadcasting system event startup");
 		logwolf.v("Broadcasting system event startup");
 		pluginManager.sendSystemEvent(SystemEvent.SYSTEM_START, null, tokenKey, startupBlacklist);
 		sleep(100);
 		try {
 			serverSocket.setSoTimeout(1000);
-			if(splash!=null) {
-				splash.getProgressBar().setIndeterminate(false);
-				splash.getProgressBar().setValue(splash.getProgressBar().getMaximum());
-			}
 			logwolf.i("Server ready!");
-			Logwolf.updateSplash("Server ready");
-			if(splash!=null)
-				splashFadeOut(3);
 			while(serviceEnabled) {
 				try {
 					Socket socket = serverSocket.accept();
@@ -459,30 +420,6 @@ public class Core {
 		try {
 			Thread.sleep(i);
 		} catch (InterruptedException e) { }
-	}
-	
-	public void splashFadeOut(final int i) {
-		try {
-			Thread.sleep(10);
-			EventQueue.invokeAndWait(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						Thread.sleep(i*1000);
-					} catch (InterruptedException e) { }
-					splash.fadeOut();
-				}
-			});
-		} catch (InvocationTargetException | InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				splash.setVisible(false);
-			}
-		});
 	}
 	
 	public static File getSystemFolder(SystemFolder folder, String user, TokenKey tokenKey) {
