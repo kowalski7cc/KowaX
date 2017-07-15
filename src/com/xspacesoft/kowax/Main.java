@@ -6,27 +6,39 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.prefs.Preferences;
 
+import com.xspacesoft.kowax.ArgumentParser.ArgumentParserFactory;
 import com.xspacesoft.kowax.kernel.io.Stdio;
 
 public class Main {
 	/** Default system input */
 	private final static InputStream DEFAULT_SYSTEM_IN = System.in;
-	private final static PrintStream DEFAULT_SYSTEM_OUT = System.out;;
+	private final static PrintStream DEFAULT_SYSTEM_OUT = System.out;
 	
 	public static void main(String[] args) {
-		OptionsParser ap = new OptionsParser(args);
-		Preferences pref = Preferences.userRoot().node(Core.class.getName());
+		ArgumentParserFactory parserFactory = new ArgumentParserFactory();
+		parserFactory.addPairFilter("home");
+		ArgumentParser argumentParser = parserFactory.buildArgumentParser(args);
+		
+		if(argumentParser.hasSwitch("-h")||argumentParser.hasSwitch("-help"))
+			printHelp();
+		
+//		printHelp();
+//		System.exit(1);;
+		
+//		OptionsParser ap = new OptionsParser(args);
+//		Preferences pref = Preferences.userRoot().node(Core.class.getName());
 		PrintWriter out = new PrintWriter(DEFAULT_SYSTEM_OUT, true);
 //		out.flush();
-		if(ap.getTag("h")||ap.getTag("help")) {
-//			Core.printHelp();
-			System.exit(0);
-		}
-		if(!BuildGet.stringToBoolean(BuildGet.getString("default.force.debug"))) {
-			Core.clear(DEFAULT_SYSTEM_OUT);
-			System.out.println();
-		}
-		System.out.println("-------------------\n"
+//		if(ap.getTag("h")||ap.getTag("help")) {
+////			Core.printHelp();
+//			System.exit(0);
+//		}
+//		if(!BuildGet.stringToBoolean(BuildGet.getString("default.force.debug"))) {
+//			Core.clear(DEFAULT_SYSTEM_OUT);
+//			System.out.println();
+//		}
+		System.out.println(
+				"-------------------\n"
 				+ "Starting KowaX\n"
 				+ "-------------------");
 		try {
@@ -47,48 +59,38 @@ public class Main {
 			Thread.sleep(600);
 			System.out.println("----------------");
 			Thread.sleep(10);
-			SetupWizard setupWizard = null;
-			// Do configuration wizard if first launch
-			if(!pref.getBoolean("configured", false)) {
-				setupWizard = new SetupWizard(pref, out, DEFAULT_SYSTEM_IN);
-				setupWizard.start();
-				Core.sleep(1000);
-				pref.putBoolean("configured", true);
-				String a;
-				out.println();
-				out.println(a = "Starting up!");
-				for(int i=0;i<a.length();i++) {
-					out.printf("-");
-				}
-			}
-			
-			int telnet = pref.getInt("telnet_port", Stdio.parseInt(BuildGet.getString("default.telnet")));
-			if(ap.getArgument("telnet")!=null) {
-				if(Stdio.isNumber(ap.getArgument("telnet"))) {
-					telnet = Stdio.parseInt(ap.getArgument("telnet"));
-				}
-			}
-			int http = pref.getInt("http_port", Stdio.parseInt(BuildGet.getString("default.http")));
-			if(ap.getArgument("httpport")!=null) {
-				if(Stdio.isNumber(ap.getArgument("httpport"))) {
-					http = Stdio.parseInt(ap.getArgument("httpport"));
-				}
-			}
-			boolean debug = ap.getTag("debug") ? 
-					true : pref.getBoolean("force_debug", BuildGet.stringToBoolean(BuildGet.getString("default.force.debug")));
-			boolean verbose = ap.getTag("verbose") ? 
-					true : pref.getBoolean("force_verbose", BuildGet.stringToBoolean(BuildGet.getString("default.force.verbose")));
-			String home = pref.get("home_path", new File("").getAbsolutePath());
-
+//			SetupWizard setupWizard = null;
+			int telnet = 21;
+			int http = 8080;
+			boolean debug = true;
+			boolean verbose = true;
+			File home = argumentParser.hasPair("home")?new File(argumentParser.getPair("home")):findRootFS();
 			Core init = new Core(home, telnet, http, debug, verbose, DEFAULT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
 			out.flush();
-			if(setupWizard!=null)
-				init.setNewUser(setupWizard.getUsername(), setupWizard.getPassword());
+//			if(setupWizard!=null)
+//				init.setNewUser(setupWizard.getUsername(), setupWizard.getPassword());
 			init.start();
 		} catch (InterruptedException e) {
 			out.println("Unknown error in startup: " + e);
 			System.exit(1);
 		}
+	}
+	
+	/**
+	 * Search for KowaX RootFS.
+	 * It can be either in
+	 * 1) Same directory as KowaX executable
+	 * 2) Host system user's home folder
+	 * @return
+	 */
+	public static File findRootFS() {
+		String rootName = "KowaX";
+		File root;
+		if((root = new File(rootName)).isDirectory())
+			return root;
+		if((root = new File(new File(System.getProperty("user.home")), "KowaX")).isDirectory())
+			return root;
+		return null;
 	}
 	
 	public static void printScroll(PrintWriter out, String string, int pause) throws InterruptedException {
@@ -100,5 +102,21 @@ public class Main {
 		}
 		out.flush();
 		out.println();
+	}
+	
+	public static void printHelp() {
+		String[] helpText = {
+			Core.SHELLNAME + " help menu:",
+			Core.BUILD==null ? "" : (" (" + Core.BUILD.substring(0,8) + "...)" ),
+			"",
+			"-h -help:\t\tShow help",
+			"-root (path)\t\tProvide manually RootFS path",
+		};
+		
+		for(String string : helpText) {
+			System.out.println(string);
+		}
+		
+		System.exit(0);
 	}
 }

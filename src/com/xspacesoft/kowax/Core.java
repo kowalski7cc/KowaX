@@ -35,7 +35,7 @@ public class Core {
 	public final static String BUILD = BuildGet.getString("build.number").startsWith("$") ? 
 			null : BuildGet.getString("build.number"); //$NON-NLS-1$
 	public final static int API = Stdio.parseInt(BuildGet.getString("build.apilevel"));
-	
+
 	private int port;
 	private int http;
 	private boolean debug;
@@ -54,49 +54,48 @@ public class Core {
 	private static ServerSocket serverSocket;
 	private static KowaxDirectDraw kowaxDirectDraw;
 	private static boolean serviceEnabled;
-	
+
 	private static final Object[][] CORE_PLUGINS_DATA = DefaultPlugins.getDefaults();
-	
-	public Core(String home, int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
+
+	public Core(File home, int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
 		this.port = port;
 		this.http = http;
 		this.debug = debug;
 		this.verbose = verbose;
-		kowaxHome = new File(home);
+		kowaxHome = home;
 		shellInput = defalutSystemIn;
 		shellOutput = defaultSystemOut;
 	}
-	
+
 	public void setNewUser(String username, String password) {
 		this.newUser = username;
 		this.newPassword = password;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void start() {
-		Preferences pref = Preferences.userRoot().node(Core.class.getName());
 		logwolf = new Logwolf(System.out);
 		logwolf.setDebug(debug);
 		logwolf.setVerbose(verbose);
 		logwolf.i("Init started");
-		
+
 		// TOKEN KEY GENERATION
 		logwolf.v("Creating new TokenKey");
 		tokenKey = TokenKey.newKey();
 		logwolf.d("TokenKey: ==" + tokenKey.getKey() + "==");
 		sleep(100);
-		
+
 		// TASK MANAGER LOAD-UP
 		logwolf.v("Starting TaksManager");
 		taskManager = new TaskManager();
 		taskManager.newTask("root", "KInit");
 		logwolf.i("Task manager started");
 		sleep(100);
-		
+
 		// GET CURRENT WORK FOLDER AND FILE VARS
 		checkFolderTree();
 		sleep(100);
-		
+
 		// User Manager
 		logwolf.v("Loading UsersManager");
 		usersManager = new UsersManager();
@@ -121,16 +120,14 @@ public class Core {
 		logwolf.i(aliasManager.getLoadedAliases() + " aliases loaded");
 
 		// Start KWindowSystem
-		if(pref.getBoolean("autostart_http", true)) {
-			try {
-				logwolf.v("Starting KowaxDirectDraw Server");
-				kowaxDirectDraw = new KowaxDirectDraw(http, tokenKey, null);
-				kowaxDirectDraw.startServer();
-				logwolf.i("KowaxDirectDraw server is now up");
-			} catch (Exception e) {
-				logwolf.e("Error in KDD: "+ e.getMessage());
-				logwolf.e("Continuing without GUI...");
-			}
+		try {
+			logwolf.v("Starting KowaxDirectDraw Server");
+			kowaxDirectDraw = new KowaxDirectDraw(http, tokenKey, null);
+			kowaxDirectDraw.startServer();
+			logwolf.i("KowaxDirectDraw server is now up");
+		} catch (Exception e) {
+			logwolf.e("Error in KDD: "+ e.getMessage());
+			logwolf.e("Continuing without GUI...");
 		}
 
 		// START PLUGIN MANAGER AND LOAD PLUGINS
@@ -151,20 +148,20 @@ public class Core {
 				} else {
 					logwolf.e(CORE_PLUGINS_DATA[i][0] + " is not a valid plugin entry");
 				}
-//				splash.getProgressBar().setValue(p+=step);
-			Thread.sleep(50);
+				//				splash.getProgressBar().setValue(p+=step);
+				Thread.sleep(50);
 			} catch (InstantiationException | IllegalAccessException e) {
 				logwolf.e("Unknown error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			} catch (InterruptedException e) {
-				
+
 			}
 		}
-//		splash.getProgressBar().setValue(1);
-//		splash.getProgressBar().setIndeterminate(true);
+		//		splash.getProgressBar().setValue(1);
+		//		splash.getProgressBar().setIndeterminate(true);
 		logwolf.d("-----------------------");
 		logwolf.d("Default plugins load complete");
 		sleep(100);
-		
+
 		// Server open
 		serviceEnabled = true;
 		logwolf.i("Preparing shell server");
@@ -193,7 +190,7 @@ public class Core {
 				logwolf.e(e.toString());
 				System.exit(1);
 			}
-			
+
 		} catch (IOException e) {
 			logwolf.e(e.toString());
 			System.exit(1);
@@ -229,17 +226,17 @@ public class Core {
 			logwolf.e(e.toString());
 		}
 		logwolf.i("Server stopped");
-//		Pause pause = new Pause(System.in, System.out);
-//		try {
-//			pause.showPause();
-//		} catch (IOException e) { } finally {
-//			System.exit(0);
-//		}
+		//		Pause pause = new Pause(System.in, System.out);
+		//		try {
+		//			pause.showPause();
+		//		} catch (IOException e) { } finally {
+		//			System.exit(0);
+		//		}
 		System.exit(0);
 	}
-	
+
 	private void checkFolderTree() {
-//		currentDirectory = new File("");
+		//		currentDirectory = new File("");
 		if (!new File(kowaxHome, "bin").exists())
 			new File(kowaxHome, "bin").mkdir();
 		if (!new File(kowaxHome, "etc").exists())
@@ -277,7 +274,7 @@ public class Core {
 		logwolf.w("[SEKowaX] - Invalid token recived (getPluginManager)");
 		return null;
 	}
-	
+
 	@Deprecated
 	public static KowaxDirectDraw getKowaxDirectDraw(TokenKey token) {
 		if(token==null)
@@ -287,7 +284,7 @@ public class Core {
 		logwolf.w("[SEKowaX] - Invalid token recived (getKowaxDirectDraw)");
 		return null;
 	}
-	
+
 	public static boolean wizardReset(TokenKey token) {
 		if(tokenKey == null)
 			return false;
@@ -317,7 +314,7 @@ public class Core {
 		logwolf.w("[SEKowaX] - Invalid token recived (getUsersManager)");
 		return null;
 	}
-	
+
 	public static boolean isTokenValid(TokenKey token) {
 		if(token==null)
 			return false;
@@ -325,86 +322,70 @@ public class Core {
 			return true;
 		return false;
 	}
-	
+
 	public static void clear() {
 		if(shellOutput!=null)
 			clear(shellOutput);
 	}
-	
+
 	public static void clear(PrintStream printStream) {
-//		boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
-//		boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
-//		boolean isOsx = System.getProperty("os.name").toLowerCase().contains("osx");
-//		try {
-//			if(isWindows)
-//				Runtime.getRuntime().exec("cls");
-//			else if(isLinux||isOsx)
-//				Runtime.getRuntime().exec("clear");
-//			else {
-//				printStream.print("\u001b[2J");
-//				printStream.flush();
-//			}
-//		} catch (IOException e) {
-//			printStream.print("\u001b[2J");
-//			printStream.flush();
-//		}
-//		printStream.print("\u001b[2J");
+		//		printStream.print("\u001b[2J");
 		for(int c=0; c<1000; c++) {
 			printStream.println("\b");
 		}
 		printStream.flush();
 	}
-	
-	public static Object getSystemApi(SystemApi api, TokenKey tokenKey) {
+
+	public static <T> T getSystemApi(SystemApi api, TokenKey tokenKey) {
 		if(api==null)
 			throw new IllegalArgumentException("SystemApi is null");
 		if((tokenKey!=null)&&(!isTokenValid(tokenKey)))
-				throw new TokenKey.InvalidTokenException();
+			throw new TokenKey.InvalidTokenException();
 		switch(api) {
 		case ALIAS_MANAGER:
 			if(isTokenValid(tokenKey))
-				return aliasManager;
+				return (T) aliasManager;
 			break;
 		case HTTP_DISPLAY:
 			if(isTokenValid(tokenKey))
-				return kowaxDirectDraw;
+				return (T) kowaxDirectDraw;
 			break;
 		case INPUT_STREAM:
 			if(isTokenValid(tokenKey))
-				return shellInput;
+				return (T) shellInput;
 			break;
 		case KOWAX_HOME:
 			if(isTokenValid(tokenKey))
-				return kowaxHome;
+				return (T) kowaxHome;
 			break;
 		case LOGWOLF:
-			return logwolf;
+			return (T) logwolf;
 		case OUTPUT_STREAM:
 			if(isTokenValid(tokenKey))
-				return shellOutput;
+				return (T) shellOutput;
 			break;
 		case PLUGIN_MANAGER:
 			if(isTokenValid(tokenKey))
-				return pluginManager;
+				return (T) pluginManager;
 			break;
 		case SERVER_SOCKET:
 			if(isTokenValid(tokenKey))
-				return serverSocket;
+				return (T) serverSocket;
 			break;
 		case TASK_MANAGER:
 			if(isTokenValid(tokenKey))
-				return taskManager;
+				return (T) taskManager;
 			break;
 		case USERS_MANAGER:
 			if(isTokenValid(tokenKey))
-				return usersManager;
+				return (T) usersManager;
 			break;
 		default:
 			return null;
 		}
 		return null;
 	}
-	
+
 	public static void stopShellSocket() {
 		serviceEnabled = false;
 	}
@@ -415,13 +396,13 @@ public class Core {
 		kowaxDirectDraw.stopServer();
 		System.exit(0);
 	}
-	
+
 	public static void sleep(int i) {
 		try {
 			Thread.sleep(i);
 		} catch (InterruptedException e) { }
 	}
-	
+
 	public static File getSystemFolder(SystemFolder folder, String user, TokenKey tokenKey) {
 		switch (folder) {
 		case BIN:
