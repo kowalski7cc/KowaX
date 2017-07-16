@@ -109,7 +109,7 @@ public final class PluginManager {
 		} else {
 			logwolf.d("[PluginManager] - " + pluginName + " doesn't support services");
 		}
-		logwolf.d("[PluginManager] - Plugin " + pluginName + " load complete");
+		logwolf.i("[PluginManager] - Plugin " + pluginName + " load complete");
 	}
 
 	public String[] getPluginsName() {

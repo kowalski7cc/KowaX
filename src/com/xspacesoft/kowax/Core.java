@@ -150,10 +150,16 @@ public class Core {
 				}
 				//				splash.getProgressBar().setValue(p+=step);
 				Thread.sleep(50);
-			} catch (InstantiationException | IllegalAccessException e) {
-				logwolf.e("Unknown error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+			} catch (InstantiationException e) {
+				logwolf.e("InstantiationException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+			} catch (IllegalAccessException e) {
+				logwolf.e("IllegalAccessException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			} catch (InterruptedException e) {
 
+			} catch (NoClassDefFoundError e) {
+				logwolf.e("NoClassDefFoundError error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+			} catch (Exception e) {
+				logwolf.e("Unknown error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			}
 		}
 		//		splash.getProgressBar().setValue(1);

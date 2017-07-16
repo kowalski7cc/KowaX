@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.prefs.Preferences;
 
 import com.xspacesoft.kowax.ArgumentParser.ArgumentParserFactory;
 import com.xspacesoft.kowax.kernel.io.Stdio;
