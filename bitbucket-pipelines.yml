@@ -1,0 +1,24 @@
+image: maven:3-jdk-8
+
+pipelines:
+  custom:
+    build:
+    - step:
+        caches:
+          - maven
+        script:
+          - mvn install
+        
+  branches:
+    master:
+    - step:
+        caches:
+          - maven
+        script:
+          - mvn install
+    develop:
+    - step:
+        caches:
+          - maven
+        script:
+          - mvn install
