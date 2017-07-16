@@ -103,7 +103,7 @@ public class Core {
 		for (int i = 0; i < CORE_PLUGINS_DATA.length; i++) {
 			try {
 				if(CORE_PLUGINS_DATA[i][0].getClass().getSuperclass().isInstance(PluginBase.class)) {
-					pluginManager.addPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0],
+					pluginManager.loadPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0],
 							(boolean) CORE_PLUGINS_DATA[i][2], 
 							((boolean)CORE_PLUGINS_DATA[i][1] ? tokenKey : null));
 					if((boolean) CORE_PLUGINS_DATA[i][3])

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.xspacesoft.kowax.Core;
-import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.PrivilegedAcces;
 import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
@@ -19,7 +19,7 @@ import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 
-public class ServiceManager extends PluginBase implements KernelAccess {
+public class ServiceManager extends PluginBase implements PrivilegedAcces {
 
 	private TokenKey tokenKey;
 	private List<String> blacklist;

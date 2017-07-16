@@ -169,7 +169,7 @@ public final class CommandRunner {
 			return;
 		}
 		try {
-			pluginmanager.addPlugin((Class<? extends PluginBase>) ClassLoader.getSystemClassLoader().loadClass(path), null, null);
+			pluginmanager.loadPlugin((Class<? extends PluginBase>) ClassLoader.getSystemClassLoader().loadClass(path), null, null);
 			session.getSockethelper().println("Applet " + ClassLoader.getSystemClassLoader().loadClass(path) + " loaded");
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			session.getSockethelper().println("Failed to load applet: " + e.toString());

@@ -2,7 +2,7 @@ package com.xspacesoft.kowax.apis;
 
 import com.xspacesoft.kowax.kernel.TokenKey;
 
-public interface KernelAccess {
+public interface PrivilegedAcces {
 
 	public void setTokenKey(TokenKey tokenKey);
 	

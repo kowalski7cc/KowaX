@@ -12,7 +12,7 @@ import java.nio.channels.ReadableByteChannel;
 
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.KWindow;
-import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.PrivilegedAcces;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.PluginManager;
@@ -23,7 +23,7 @@ import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.windows.Window;
 
-public class KowaxUpdater extends PluginBase implements KernelAccess, SystemEventsListener, KWindow {
+public class KowaxUpdater extends PluginBase implements PrivilegedAcces, SystemEventsListener, KWindow {
 
 	private TokenKey tokenKey;
 	private File update;

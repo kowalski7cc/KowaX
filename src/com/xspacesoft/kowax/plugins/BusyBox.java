@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.xspacesoft.kowax.Core;
-import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.PrivilegedAcces;
 import com.xspacesoft.kowax.kernel.AliasManager;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.PluginManager;
@@ -20,7 +20,7 @@ import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.shell.ShellIO;
 
-public class BusyBox extends PluginBase implements KernelAccess {
+public class BusyBox extends PluginBase implements PrivilegedAcces {
 	
 	private static final String EULA = "eula.txt";
 	private TokenKey tokenKey;

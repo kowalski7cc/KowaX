@@ -19,7 +19,7 @@ import com.kowalski7cc.botclient.types.User;
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.Logwolf;
 import com.xspacesoft.kowax.SystemFolder;
-import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.PrivilegedAcces;
 import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
@@ -37,7 +37,7 @@ import us.monoid.json.JSONArray;
 import us.monoid.json.JSONException;
 import us.monoid.json.JSONObject;
 
-public class TelegramServer extends PluginBase implements SystemEventsListener, KernelAccess, Service {
+public class TelegramServer extends PluginBase implements SystemEventsListener, PrivilegedAcces, Service {
 
 	private TokenKey token;
 	private TelegramBotShell client;

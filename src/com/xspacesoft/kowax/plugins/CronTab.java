@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.xspacesoft.kowax.Core;
-import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.PrivilegedAcces;
 import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.PluginBase;
@@ -15,7 +15,7 @@ import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 import com.xspacesoft.kowax.shell.Session;
 
-public class CronTab extends PluginBase implements Service, KernelAccess {
+public class CronTab extends PluginBase implements Service, PrivilegedAcces {
 	
 	public class Job implements Serializable {
 

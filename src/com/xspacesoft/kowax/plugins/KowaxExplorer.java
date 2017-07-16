@@ -8,7 +8,7 @@ import java.util.List;
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.SystemFolder;
 import com.xspacesoft.kowax.apis.KWindow;
-import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.PrivilegedAcces;
 import com.xspacesoft.kowax.kernel.ExplorerInterface;
 import com.xspacesoft.kowax.kernel.PluginBase;
 import com.xspacesoft.kowax.kernel.TokenKey;
@@ -17,7 +17,7 @@ import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.windows.Window;
 
-public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerInterface, KWindow {
+public class KowaxExplorer extends PluginBase implements PrivilegedAcces, ExplorerInterface, KWindow {
 
 	public KowaxExplorer() {
 		explorers = new ArrayList<UserExplorer>();

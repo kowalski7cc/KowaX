@@ -6,11 +6,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.Logwolf;
-import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.PrivilegedAcces;
 import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.exceptions.DuplicateElementException;
@@ -18,42 +19,40 @@ import com.xspacesoft.kowax.shell.CommandRunner;
 
 public final class PluginManager {
 
+	private List<Class<? extends PluginBase>> availablePlugins;
 	private List<PluginBase> enabledPlugins;
 	private List<Service> loadedServices;
-	private List<PluginBase> rootPlugins;
+	private List<PluginBase> privilegedPlugins;
 	private TaskManager taskManager;
 	private Logwolf logwolf;
 
 	public PluginManager(TokenKey tokenKey) {
-		enabledPlugins = new ArrayList<PluginBase>();
-		loadedServices = new ArrayList<Service>();
-		rootPlugins = new ArrayList<PluginBase>();
+		availablePlugins = new LinkedList<Class<? extends PluginBase>>();
+		enabledPlugins = new LinkedList<PluginBase>();
+		loadedServices = new LinkedList<Service>();
+		privilegedPlugins = new LinkedList<PluginBase>();
 		taskManager = (TaskManager) Core.getSystemApi(SystemApi.TASK_MANAGER, tokenKey);
 		logwolf = Core.getLogwolf();
 	}
 
-	public void filePluginLoad(File file, Boolean startService, TokenKey tokenKey) throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, IOException {
+	public void loadPluginFromClassFile(File file, Boolean startService, TokenKey tokenKey) throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, IOException {
 		URL[] urls = null;
 		URL url = file.toURI().toURL();
 		urls = new URL[] { url };
 		URLClassLoader ucl = new URLClassLoader(urls);
 		Class<? extends PluginBase> obj = ucl.loadClass(file.getName()).asSubclass(PluginBase.class);
 		if(obj.isInstance(PluginBase.class)) {
-			addPlugin(obj, startService, tokenKey);
+			loadPlugin(obj, startService, tokenKey);
 		}
 		ucl.close();
 	}
-//
-//	public void addPlugin(Class<? extends PluginBase> loadPlugin)
-//			throws InstantiationException, IllegalAccessException {
-//		addPlugin(loadPlugin, null, null);
-//	}
 
-	public void addPlugin(Class<? extends PluginBase> loadPlugin, Boolean startService, TokenKey tokenKey)
+	public void loadPlugin(Class<? extends PluginBase> loadPlugin, Boolean startService, TokenKey tokenKey)
 			throws InstantiationException, IllegalAccessException {
 		Core.getLogwolf().d("[PluginManager] - Trying to load class " + loadPlugin.getName() +".");
 		PluginBase newPlugin = loadPlugin.newInstance();
 		String pluginName = loadPlugin.getSimpleName();
+		
 		// Check if has valid plug-in name
 		if(newPlugin.getAppletName() == null) {
 			logwolf.e("[PluginManager] - Invalid shell name in plugin " + pluginName + ". Stopped loadup.");
@@ -69,16 +68,16 @@ public final class PluginManager {
 		enabledPlugins.add(newPlugin);
 		
 		// Give permissions
-		if(newPlugin instanceof KernelAccess) {
+		if(newPlugin instanceof PrivilegedAcces) {
 			if(tokenKey!=null) {
 				if(Core.isTokenValid(tokenKey)) {
-					KernelAccess kernelAccess = (KernelAccess) newPlugin;
+					PrivilegedAcces kernelAccess = (PrivilegedAcces) newPlugin;
 					try {
 						kernelAccess.setTokenKey(tokenKey);
-						logwolf.d("[PluginManager] - Plugin " + pluginName + " loaded at kernel level");
-						rootPlugins.add(newPlugin);
+						logwolf.d("[PluginManager] - Plugin " + pluginName + " loaded with privileged access");
+						privilegedPlugins.add(newPlugin);
 					} catch (Exception e) {
-						logwolf.e("[PluginManager] - Plugin " + pluginName + " failed to load at kernel level");
+						logwolf.e("[PluginManager] - Plugin " + pluginName + " failed to load with privileged access");
 						logwolf.e("[PluginManager] - " + e.toString());
 					}
 				} else {
@@ -86,7 +85,7 @@ public final class PluginManager {
 				}
 			}
 		} else {
-			logwolf.d("[PluginManager] - " + pluginName + " doesn't support load at kernel level.");
+			logwolf.d("[PluginManager] - " + pluginName + " doesn't support load with privileged access.");
 		}
 		
 		// Start service
@@ -163,8 +162,8 @@ public final class PluginManager {
 		return loadedServices;
 	}
 	
-	public List<PluginBase> getRootPlugins() {
-		return rootPlugins;
+	public List<PluginBase> getPrivilegedPlugins() {
+		return privilegedPlugins;
 	}
 
 }

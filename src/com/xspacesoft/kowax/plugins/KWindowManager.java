@@ -1,6 +1,6 @@
 package com.xspacesoft.kowax.plugins;
 
-import com.xspacesoft.kowax.apis.KernelAccess;
+import com.xspacesoft.kowax.apis.PrivilegedAcces;
 import com.xspacesoft.kowax.apis.Service;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
 import com.xspacesoft.kowax.kernel.PluginBase;
@@ -9,7 +9,7 @@ import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 
-public class KWindowManager extends PluginBase implements SystemEventsListener, Service, KernelAccess {
+public class KWindowManager extends PluginBase implements SystemEventsListener, Service, PrivilegedAcces {
 
 	private class KOrg extends Thread {
 
