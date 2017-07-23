@@ -203,7 +203,7 @@ public final class UsersManager implements Serializable{
 				JSONObject user = usersArray.getJSONObject(i);
 				if(user.has("username")&&user.has("password")) {
 					users.add(new User(user.getString("username"),
-							user.getString("password"),
+							user.getString("password").toLowerCase(),
 							user.has("comment")?user.getString("comment"):""));
 				}
 			}
