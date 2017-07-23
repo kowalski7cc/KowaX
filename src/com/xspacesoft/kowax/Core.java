@@ -24,7 +24,6 @@ import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
 import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.ShellServer;
-import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
 
 
 public class Core {
@@ -37,7 +36,6 @@ public class Core {
 	public final static int API = Stdio.parseInt(BuildGet.getString("build.apilevel"));
 
 	private int port;
-	private int http;
 	private boolean debug;
 	private boolean verbose;
 	private String newUser;
@@ -52,14 +50,12 @@ public class Core {
 	private static TaskManager taskManager;
 	private static UsersManager usersManager;
 	private static ServerSocket serverSocket;
-	private static KowaxDirectDraw kowaxDirectDraw;
 	private static boolean serviceEnabled;
 
 	private static final Object[][] CORE_PLUGINS_DATA = DefaultPlugins.getDefaults();
 
 	public Core(File home, int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
 		this.port = port;
-		this.http = http;
 		this.debug = debug;
 		this.verbose = verbose;
 		kowaxHome = home;
@@ -119,16 +115,6 @@ public class Core {
 		aliasManager.loadDefaults();
 		logwolf.i(aliasManager.getLoadedAliases() + " aliases loaded");
 
-		// Start KWindowSystem
-		try {
-			logwolf.v("Starting KowaxDirectDraw Server");
-			kowaxDirectDraw = new KowaxDirectDraw(http, tokenKey, null);
-			kowaxDirectDraw.startServer();
-			logwolf.i("KowaxDirectDraw server is now up");
-		} catch (Exception e) {
-			logwolf.e("Error in KDD: "+ e.getMessage());
-			logwolf.e("Continuing without GUI...");
-		}
 
 		// START PLUGIN MANAGER AND LOAD PLUGINS
 		logwolf.v("Starting PluginManager");
@@ -281,16 +267,6 @@ public class Core {
 		return null;
 	}
 
-	@Deprecated
-	public static KowaxDirectDraw getKowaxDirectDraw(TokenKey token) {
-		if(token==null)
-			return null;
-		if(tokenKey.equals(token))
-			return kowaxDirectDraw;
-		logwolf.w("[SEKowaX] - Invalid token recived (getKowaxDirectDraw)");
-		return null;
-	}
-
 	public static boolean wizardReset(TokenKey token) {
 		if(tokenKey == null)
 			return false;
@@ -352,10 +328,6 @@ public class Core {
 			if(isTokenValid(tokenKey))
 				return (T) aliasManager;
 			break;
-		case HTTP_DISPLAY:
-			if(isTokenValid(tokenKey))
-				return (T) kowaxDirectDraw;
-			break;
 		case INPUT_STREAM:
 			if(isTokenValid(tokenKey))
 				return (T) shellInput;
@@ -399,7 +371,6 @@ public class Core {
 	public static void halt() {
 		serviceEnabled = false;
 		pluginManager.stopServices();
-		kowaxDirectDraw.stopServer();
 		System.exit(0);
 	}
 

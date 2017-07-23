@@ -19,7 +19,6 @@ import com.xspacesoft.kowax.kernel.io.OutputWriter;
 import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner;
 import com.xspacesoft.kowax.shell.ShellIO;
-import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
 
 public class BusyBox extends PluginBase implements KernelAccess {
 	
@@ -60,11 +59,6 @@ public class BusyBox extends PluginBase implements KernelAccess {
 			showEula(stdio);
 		} else if (job[0].equalsIgnoreCase("about")) {
 			showAbout(stdio);
-		} else if (job[0].equalsIgnoreCase("startx")) {
-			KowaxDirectDraw kowaxDirectDraw = (KowaxDirectDraw) Core.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey);
-			if(kowaxDirectDraw.isRunning())
-				return;
-			kowaxDirectDraw.startServer();
 		} else if (job[0].equalsIgnoreCase("ls")) {
 			listApplets();
 		} else if (job[0].equalsIgnoreCase("sudo")) {
@@ -177,7 +171,6 @@ public class BusyBox extends PluginBase implements KernelAccess {
 			} catch (IOException e) {
 				Core.getLogwolf().e("IOException on shutdown: " + e);
 			} finally {
-				((KowaxDirectDraw) Core.getSystemApi(SystemApi.HTTP_DISPLAY, tokenKey)).stopServer();
 				Core.stopShellSocket();
 			}
 		}

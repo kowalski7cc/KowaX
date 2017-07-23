@@ -14,7 +14,6 @@ import com.xspacesoft.kowax.plugins.No;
 import com.xspacesoft.kowax.plugins.ServiceManager;
 import com.xspacesoft.kowax.plugins.Yes;
 import com.xspacesoft.kowax.telegram.TelegramServer;
-import com.xspacesoft.kowax.windowsystem.kenvironment.KowaxDisplayManager;
 
 public final class DefaultPlugins {
 
@@ -30,7 +29,6 @@ public final class DefaultPlugins {
 				{Kalendar.class, false, false, false},
 //				{Man.class, false, false, false},
 				{Fortune.class, false, false, false},
-				{KowaxDisplayManager.class, true, true, true},
 //				{KowaxUpdater.class, true, true, true},
 				{ServiceManager.class, true, false, false},
 				{Escalator.class, false, false, false},
