@@ -17,25 +17,10 @@ public class Main {
 		ArgumentParserFactory parserFactory = new ArgumentParserFactory();
 		parserFactory.addPairFilter("home");
 		ArgumentParser argumentParser = parserFactory.buildArgumentParser(args);
-		
 		if(argumentParser.hasSwitch("-h")||argumentParser.hasSwitch("-help"))
 			printHelp();
-		
-//		printHelp();
-//		System.exit(1);;
-		
-//		OptionsParser ap = new OptionsParser(args);
-//		Preferences pref = Preferences.userRoot().node(Core.class.getName());
 		PrintWriter out = new PrintWriter(DEFAULT_SYSTEM_OUT, true);
-//		out.flush();
-//		if(ap.getTag("h")||ap.getTag("help")) {
-////			Core.printHelp();
-//			System.exit(0);
-//		}
-//		if(!BuildGet.stringToBoolean(BuildGet.getString("default.force.debug"))) {
-//			Core.clear(DEFAULT_SYSTEM_OUT);
-//			System.out.println();
-//		}
+
 		System.out.println(
 				"-------------------\n"
 				+ "Starting KowaX\n"
@@ -58,16 +43,10 @@ public class Main {
 			Thread.sleep(600);
 			System.out.println("----------------");
 			Thread.sleep(10);
-//			SetupWizard setupWizard = null;
-			int telnet = 21;
-			int http = 8080;
 			boolean debug = true;
 			boolean verbose = true;
 			File home = argumentParser.hasPair("home")?new File(argumentParser.getPair("home")):findRootFS();
-			Core init = new Core(home, telnet, http, debug, verbose, DEFAULT_SYSTEM_IN, DEFAULT_SYSTEM_OUT);
-			out.flush();
-//			if(setupWizard!=null)
-//				init.setNewUser(setupWizard.getUsername(), setupWizard.getPassword());
+			Core init = new Core(home);
 			init.start();
 		} catch (InterruptedException e) {
 			out.println("Unknown error in startup: " + e);

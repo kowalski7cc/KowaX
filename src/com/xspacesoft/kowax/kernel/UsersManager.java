@@ -1,29 +1,27 @@
 package com.xspacesoft.kowax.kernel;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.SystemFolder;
 
-public final class UsersManager implements Serializable {
+import us.monoid.json.JSONArray;
+import us.monoid.json.JSONException;
+import us.monoid.json.JSONObject;
+
+public final class UsersManager implements Serializable{
 
 	private static final long serialVersionUID = 4900265260339132855L;
-	private static final Object defaultUsers[][] = new Object[][] {
-		{"admin", "password", null, false},
-		{"kowalski", "4b4adc30da0eadda11b1a1212e49dc96", null, true}
-	};
 
 	public class ExistingUserException extends Exception {
 
@@ -32,9 +30,9 @@ public final class UsersManager implements Serializable {
 		}
 
 		private static final long serialVersionUID = -6436734724155448151L;
-		
+
 	}
-	
+
 	public class InvalidUserException extends Exception {
 
 		private static final long serialVersionUID = -2766701834016750572L;
@@ -45,14 +43,14 @@ public final class UsersManager implements Serializable {
 
 	}
 
-	public class User implements Serializable {
+	public class User implements Serializable, Comparable<User> {
 
 		private static final long serialVersionUID = 9120226704038657463L;
 		private String username;
 		private String password;
 		private Date creation;
 		private String comment;
-		
+
 		public User(String username, String password, String comment) {
 			this.username = username;
 			this.password = password;
@@ -83,12 +81,29 @@ public final class UsersManager implements Serializable {
 		public Date getCreation() {
 			return creation;
 		}
-		
+
+		@Override
+		public boolean equals(Object obj) {
+			if(this==obj)
+				return true;
+			if(obj instanceof User)
+				if(((User)obj).getUsername().equals(this.username))
+					return true;
+			return false;
+		}
+
+		@Override
+		public int compareTo(User o) {
+			if(this.username.equals(o))
+				return 0;
+			return 1;
+		}
+
 	}
-	
+
 	private List<User> users;
 	private File usersFile;
-	
+
 	public UsersManager() {
 		users = new ArrayList<User>();
 		if(!(usersFile = new File(Core.getSystemFolder(SystemFolder.ETC, null, null), "UserManager")).exists())
@@ -96,40 +111,35 @@ public final class UsersManager implements Serializable {
 		if(!(usersFile = new File(usersFile, "users.dat")).exists())
 			try {
 				usersFile.createNewFile();
+				saveToFile();
 			} catch (IOException e) {
 				Core.getLogwolf().e("[UsersManager] - Can't create users file.");
+				throw new RuntimeException("[UsersManager] - Can't create users file.");
 			}
 	}
-	
-	public UsersManager(ArrayList<User> users) {
-		if(users!=null)
-			this.users = users;
-		else
-			users = new ArrayList<User>();
-		if(!(usersFile = new File(Core.getSystemFolder(SystemFolder.ETC, null, null), "UserManager")).exists())
-			usersFile.mkdirs();
-		usersFile = new File(usersFile, "users.dat");
-	}
-	
-	public void addUser(String username, String password, String comment) throws ExistingUserException {
-		addUser(username, password, comment, false);
-		saveToFile();
-	}
-	
-	public void addUser(String username, String password, String comment, boolean hashedPassword)
+
+	//	public UsersManager(ArrayList<User> users) {
+	//		if(users!=null)
+	//			this.users = users;
+	//		else
+	//			users = new ArrayList<User>();
+	//		if(!(usersFile = new File(Core.getSystemFolder(SystemFolder.ETC, null, null), "UserManager")).exists())
+	//			usersFile.mkdirs();
+	//		usersFile = new File(usersFile, "users.dat");
+	//	}
+
+
+	public void addUser(String username, String password, String comment)
 			throws ExistingUserException {
 		User user;
-		if(hashedPassword)
-			user = new User(username, password, comment);
-		else
-			user = new User(username, md5(password), comment);
+		user = new User(username, password, comment);
 		if(existsUser(username)) {
 			throw new ExistingUserException(username);
 		}
 		users.add(user);
 		saveToFile();
 	}
-	
+
 	public void removeUser(String username) throws InvalidUserException {
 		for (User user : users)
 			if (user.username.equals(username)) {
@@ -139,14 +149,14 @@ public final class UsersManager implements Serializable {
 			}
 		throw new InvalidUserException(username);
 	}
-	
+
 	public boolean existsUser(String username) {
 		for (User user : users)
 			if (user.username.equals(username))
 				return true;
 		return false;
 	}
-	
+
 	public boolean isPasswordValid(String username, String password) throws InvalidUserException {
 		for (User user : users)
 			if (user.username.equals(username)) {
@@ -156,8 +166,8 @@ public final class UsersManager implements Serializable {
 			}
 		throw new InvalidUserException(username);
 	}
-	
-	public String md5(String original) {
+
+	public static String md5(String original) {
 		MessageDigest md;
 		try {
 			md = MessageDigest.getInstance("MD5");
@@ -172,54 +182,62 @@ public final class UsersManager implements Serializable {
 		return null;	
 	}
 
-	public void loadDefaults() throws ExistingUserException {
-		for(int i=0; i<defaultUsers.length; i++) {
-			addUser((String)defaultUsers[i][0], (String)defaultUsers[i][1], (String)defaultUsers[i][2], (Boolean) defaultUsers[i][3]);
-		}
-	}
-
-	public static List<String> getDefaultUsers() {
-		List<String> list = new ArrayList<String>();
-		for(Object[] user : defaultUsers) {
-			list.add((String)user[0]);
-		}
-		return list;
-	}
-	
 	public int getLoadedUsers() {
 		return users.size();
 	}
 
-	public void loadFromFile() {
-		try (BufferedReader br = new BufferedReader(
-				new FileReader(usersFile))) {
-			String sCurrentLine;
-			while ((sCurrentLine = br.readLine()) != null) {
-				String[] cUserData = sCurrentLine.split(";");
-				if(cUserData.length==3) {
-					try {
-						addUser(cUserData[0], cUserData[1], cUserData[2], true);
-					} catch (ExistingUserException e) {
-						e.printStackTrace();
-					}
+	public boolean loadFromFile()  {
+		StringBuilder input = new StringBuilder();
+		try (Scanner scanner = new Scanner(usersFile)){
+			scanner.forEachRemaining(s -> input.append(s));
+			scanner.close();
+		} catch (FileNotFoundException e1) {
+			Core.getLogwolf().e("Can't laod file: " + e1.getMessage());
+			return false;
+		}
+		
+		JSONArray usersArray;
+		try {
+			usersArray = new JSONArray(input.toString());
+			for(int i = 0; i < usersArray.length(); i++) {
+				JSONObject user = usersArray.getJSONObject(i);
+				if(user.has("username")&&user.has("password")) {
+					users.add(new User(user.getString("username"),
+							user.getString("password"),
+							user.has("comment")?user.getString("comment"):""));
 				}
 			}
-		} catch (IOException e) {
-			Core.getLogwolf().e("Users file read error: " + e);
+		} catch (JSONException e) {
+			Core.getLogwolf().e("[UsersManager] - Can't load users: " + e.getMessage());
+			return false;
 		}
+		return true;
 	}
 
-	public void saveToFile() {
-		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(usersFile), "utf-8"))) {
-			writer.write("");
-			for(User cUser : users) {
-				writer.append(cUser.username + ";" + cUser.password + ";" + cUser.comment);
-				writer.newLine();
+	public boolean saveToFile() {
+		JSONArray usersArray = new JSONArray();
+		boolean success = true;
+		for (User user : users) {
+			JSONObject thisUser = new JSONObject();
+
+			try {
+				thisUser.put("username", user.username);
+				thisUser.put("password", user.password);
+				thisUser.put("comment", user.comment);
+			} catch (JSONException e) {
+				Core.getLogwolf().e("[UsersManager] - Can't save user " + user.username);
+				success = false;
 			}
-		} catch (IOException ex) {
-			Core.getLogwolf().e("Can't save users");
-		} 
+			usersArray.put(thisUser);
+		}
+		try (PrintWriter printWriter = new PrintWriter(usersFile);) {
+			printWriter.println(usersArray.toString());
+		} catch (FileNotFoundException e) {
+			Core.getLogwolf().e("[UsersManager] - Error on save: " + e.getMessage());
+			return false;
+		}
+		
+		return success;
 	}
 
 	public String[] getUsersName() {
@@ -230,4 +248,5 @@ public final class UsersManager implements Serializable {
 		}
 		return allusers;
 	}
+
 }
