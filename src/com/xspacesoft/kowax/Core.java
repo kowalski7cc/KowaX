@@ -35,11 +35,6 @@ public class Core {
 			null : BuildGet.getString("build.number"); //$NON-NLS-1$
 	public final static int API = Stdio.parseInt(BuildGet.getString("build.apilevel"));
 
-	private int port;
-	private boolean debug;
-	private boolean verbose;
-	private String newUser;
-	private String newPassword;
 	private static File kowaxHome;
 	private static InputStream shellInput;
 	private static PrintStream shellOutput;
@@ -54,37 +49,26 @@ public class Core {
 
 	private static final Object[][] CORE_PLUGINS_DATA = DefaultPlugins.getDefaults();
 
-	public Core(File home, int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
-		this.port = port;
-		this.debug = debug;
-		this.verbose = verbose;
+	public Core(File home) {
 		kowaxHome = home;
-		shellInput = defalutSystemIn;
-		shellOutput = defaultSystemOut;
-	}
-
-	public void setNewUser(String username, String password) {
-		this.newUser = username;
-		this.newPassword = password;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void start() {
 		logwolf = new Logwolf(System.out);
-		logwolf.setDebug(debug);
-		logwolf.setVerbose(verbose);
-		logwolf.i("Init started");
+		logwolf.setDebug(true);
+		logwolf.setVerbose(true);
+		logwolf.i("Initialization started");
 
 		// TOKEN KEY GENERATION
-		logwolf.v("Creating new TokenKey");
+		logwolf.v("Creating new Token");
 		tokenKey = TokenKey.newKey();
-		logwolf.d("TokenKey: ==" + tokenKey.getKey() + "==");
 		sleep(100);
 
 		// TASK MANAGER LOAD-UP
 		logwolf.v("Starting TaksManager");
 		taskManager = new TaskManager();
-		taskManager.newTask("root", "KInit");
+		taskManager.newTask("system", "Core");
 		logwolf.i("Task manager started");
 		sleep(100);
 
@@ -95,17 +79,10 @@ public class Core {
 		// User Manager
 		logwolf.v("Loading UsersManager");
 		usersManager = new UsersManager();
-		usersManager.loadFromFile();
-		if(usersManager.getLoadedUsers()==0)
-			if((newUser!=null)&&(newPassword!=null)) {
-				try {
-					usersManager.addUser(newUser, newPassword, "First system administrator", false);
-				} catch (ExistingUserException e) { }
-			} else {
-				try {
-					usersManager.loadDefaults();
-				} catch (ExistingUserException e2) { }
-			}
+		if(!usersManager.loadFromFile()) {
+			logwolf.f("Can't load users from configuration");
+		}
+		
 		logwolf.d("UsersManager loaded");
 		logwolf.i("Registred users: " + usersManager.getLoadedUsers());
 		// Alias Manager
@@ -158,11 +135,11 @@ public class Core {
 		serviceEnabled = true;
 		logwolf.i("Preparing shell server");
 		try {
-			serverSocket = new ServerSocket(port);
+			serverSocket = new ServerSocket(23);
 		} catch (BindException e) {
 			if (e.getMessage().equalsIgnoreCase("Permission denied")){
 				logwolf.e("Is server running as root? " + e.toString());
-				String backupPort = port + "" + port;
+				String backupPort = 23 + "" + 23;
 				logwolf.i("Trying to open server on port " + backupPort);
 				try {
 					serverSocket = new ServerSocket(Stdio.parseInt(backupPort));
@@ -170,7 +147,7 @@ public class Core {
 					logwolf.e("Failed to open server on port " + backupPort + ": " + e1.toString());
 				}
 			} else if (e.getMessage().contains("Address already in use")) {
-				logwolf.e("Is already a server running on port " + port + "? " + e.toString());
+				logwolf.e("Is already a server running on port " + 23 + "? " + e.toString());
 				try {
 					Thread.sleep(10);
 				} catch (InterruptedException e1) {

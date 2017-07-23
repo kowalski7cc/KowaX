@@ -59,7 +59,11 @@ public class Logwolf {
 	}
 	
 	public void e(String message) {
-		log(message, "ERRO");
+		log(message, "ERROR");
+	}
+	
+	public void f(String message) {
+		log(message, "FATAL");
 	}
 	
 	public void e(Exception e) {
