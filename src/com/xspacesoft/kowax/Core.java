@@ -62,6 +62,7 @@ public class Core {
 
 		// TOKEN KEY GENERATION
 		logwolf.v("Creating new Token");
+		tokenKey = TokenKey.newKey();
 		sleep(100);
 
 		// TASK MANAGER LOAD-UP
