@@ -1,17 +1,11 @@
 package com.xspacesoft.kowax;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 
 import com.xspacesoft.kowax.ArgumentParser.ArgumentParserFactory;
 import com.xspacesoft.kowax.kernel.io.Stdio;
 
 public class Main {
-	/** Default system input */
-	private final static InputStream DEFAULT_SYSTEM_IN = System.in;
-	private final static PrintStream DEFAULT_SYSTEM_OUT = System.out;
 	
 	public static void main(String[] args) {
 		ArgumentParserFactory parserFactory = new ArgumentParserFactory();
@@ -19,7 +13,6 @@ public class Main {
 		ArgumentParser argumentParser = parserFactory.buildArgumentParser(args);
 		if(argumentParser.hasSwitch("-h")||argumentParser.hasSwitch("-help"))
 			printHelp();
-		PrintWriter out = new PrintWriter(DEFAULT_SYSTEM_OUT, true);
 
 		System.out.println(
 				"-------------------\n"
@@ -35,21 +28,19 @@ public class Main {
 			}
 			System.out.println();
 			if(Stdio.isNumber(Core.VERSION.charAt(0)))
-				printScroll(out, "Welcome to " + Core.SHELLNAME + " Version " + Core.VERSION + "!" + 
+				printScroll("Welcome to " + Core.SHELLNAME + " Version " + Core.VERSION + "!" + 
 			(Core.BUILD==null ? "" : (" (" + Core.BUILD.substring(0,8) + "...)" )) , 20);
 			else
-				printScroll(out, "Welcome to " + Core.SHELLNAME + " \"" + Core.VERSION + "\" release!" + 
+				printScroll("Welcome to " + Core.SHELLNAME + " \"" + Core.VERSION + "\" release!" + 
 						(Core.BUILD==null ? "" : (" (" + Core.BUILD.substring(0, 8) + "...)" )) , 20);
 			Thread.sleep(600);
 			System.out.println("----------------");
 			Thread.sleep(10);
-			boolean debug = true;
-			boolean verbose = true;
 			File home = argumentParser.hasPair("home")?new File(argumentParser.getPair("home")):findRootFS();
 			Core init = new Core(home);
 			init.start();
 		} catch (InterruptedException e) {
-			out.println("Unknown error in startup: " + e);
+			System.out.println("Unknown error in startup: " + e);
 			System.exit(1);
 		}
 	}
@@ -71,15 +62,12 @@ public class Main {
 		return null;
 	}
 	
-	public static void printScroll(PrintWriter out, String string, int pause) throws InterruptedException {
-		char[] output = string.toCharArray();
-		out.flush();
-		for (int i = 0; i < output.length; i++) {
-			System.out.print(output[i]);
+	public static void printScroll(String string, int pause) throws InterruptedException {
+		for (int i = 0; i < string.length(); i++) {
+			System.out.print(string.charAt(i));
 			Thread.sleep(pause);
 		}
-		out.flush();
-		out.println();
+		System.out.println();
 	}
 	
 	public static void printHelp() {

@@ -280,7 +280,7 @@ public class KowaxExplorer extends PluginBase implements KernelAccess, ExplorerI
 		if(username.equals("root")) {
 			newExplorer.userHome = Core.getSystemFolder(SystemFolder.ROOT, null, tokenKey);
 		} else {
-			newExplorer.userHome = Core.getSystemFolder(SystemFolder.USER_HOME, username, tokenKey);
+			newExplorer.userHome = Core.getSystemFolder(SystemFolder.USER_HOME, username , tokenKey);
 		}
 		newExplorer.currentPath = newExplorer.userHome;
 		return newExplorer;
