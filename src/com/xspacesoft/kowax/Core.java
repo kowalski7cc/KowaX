@@ -19,6 +19,7 @@ import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.Console;
+import com.xspacesoft.kowax.shell.ConsoleIO;
 
 
 public class Core {
@@ -169,6 +170,8 @@ public class Core {
 
 		System.out.println();
 		try {
+			ConsoleIO consoleIO = new ConsoleIO();
+			Stdio stdio = new Stdio(consoleIO, consoleIO);
 			Console console = new Console(tokenKey);
 			console.start();
 		} catch (IOException e) {

@@ -9,6 +9,11 @@ public class Stdio {
 	private OutputWriter outputWriter;
 	private InputReader inputReader;
 
+	public <T extends OutputWriter & InputReader> Stdio(T t) throws IOException {
+		this.inputReader = (InputReader) t;
+		this.outputWriter = (OutputWriter) t;
+	}
+	
 	public Stdio(OutputWriter outputWriter, InputReader inputReader) throws IOException {
 		this.inputReader = inputReader;
 		this.outputWriter = outputWriter;

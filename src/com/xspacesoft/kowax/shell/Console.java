@@ -13,16 +13,15 @@ import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 
 public class Console {
 	
-	private ConsoleIO consoleIO;
+	//private ConsoleIO consoleIO;
 	private Stdio stdio;
 	private Session session;
 	private CommandRunner commandRunner;
 	private TokenKey tokenKey;
 	private UsersManager usersManager;
 
-	public Console(TokenKey tokenKey) throws IOException {		
-		consoleIO = new ConsoleIO();
-		stdio = new Stdio(consoleIO, consoleIO);
+	public Console(TokenKey tokenKey, Stdio stdio) throws IOException {
+		this.stdio = stdio;
 		session = new Session(stdio);
 		this.tokenKey = tokenKey;
 		usersManager = (UsersManager) Core.getSystemApi(SystemApi.USERS_MANAGER, tokenKey);
