@@ -229,7 +229,7 @@ public class TelegramServer extends PluginBase implements SystemEventsListener, 
 	@Override
 	public void startService() {
 		Logwolf log = Core.getLogwolf();
-		File etc = Core.getSystemFolder(SystemFolder.ETC, null, token);
+		File etc = Core.getSystemFolder(SystemFolder.CONFIGURATIONS, null, token);
 		File config = new File(etc, "TelegramBotServer");
 		boolean folder = true;
 		if(!config.exists() || !config.isDirectory())

@@ -21,7 +21,6 @@ import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
-import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
 import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.ShellServer;
 
@@ -195,29 +194,15 @@ public class Core {
 			logwolf.e(e.toString());
 		}
 		logwolf.i("Server stopped");
-		//		Pause pause = new Pause(System.in, System.out);
-		//		try {
-		//			pause.showPause();
-		//		} catch (IOException e) { } finally {
-		//			System.exit(0);
-		//		}
 		System.exit(0);
 	}
 
 	private void checkFolderTree() {
-		//		currentDirectory = new File("");
-		if (!new File(kowaxHome, "bin").exists())
-			new File(kowaxHome, "bin").mkdir();
-		if (!new File(kowaxHome, "etc").exists())
-			new File(kowaxHome, "etc").mkdir();
-		if (!new File(kowaxHome, "home").exists())
-			new File(kowaxHome, "home").mkdir();
-		if (!new File(kowaxHome, "temp").exists())
-			new File(kowaxHome, "temp").mkdir();
-		if (!new File(kowaxHome, "root").exists())
-			new File(kowaxHome, "root").mkdir();
-		if (!new File(kowaxHome, "dev").exists())
-			new File(kowaxHome, "dev").mkdir();
+		SystemFolder[] folders = SystemFolder.values();
+		File cfile;
+		for(SystemFolder folder : folders)
+			if (!(cfile = new File(kowaxHome, folder.getPathName())).exists())
+				cfile.mkdirs();
 	}
 
 	public static Logwolf getLogwolf() {
@@ -295,7 +280,7 @@ public class Core {
 		printStream.flush();
 	}
 
-	public static <T> T getSystemApi(SystemApi api, TokenKey tokenKey) {
+	public static <T> Object getSystemApi(SystemApi api, TokenKey tokenKey) {
 		if(api==null)
 			throw new IllegalArgumentException("SystemApi is null");
 		if((tokenKey!=null)&&(!isTokenValid(tokenKey)))
@@ -303,37 +288,37 @@ public class Core {
 		switch(api) {
 		case ALIAS_MANAGER:
 			if(isTokenValid(tokenKey))
-				return (T) aliasManager;
+				return aliasManager;
 			break;
 		case INPUT_STREAM:
 			if(isTokenValid(tokenKey))
-				return (T) shellInput;
+				return shellInput;
 			break;
 		case KOWAX_HOME:
 			if(isTokenValid(tokenKey))
-				return (T) kowaxHome;
+				return kowaxHome;
 			break;
 		case LOGWOLF:
-			return (T) logwolf;
+			return logwolf;
 		case OUTPUT_STREAM:
 			if(isTokenValid(tokenKey))
-				return (T) shellOutput;
+				return shellOutput;
 			break;
 		case PLUGIN_MANAGER:
 			if(isTokenValid(tokenKey))
-				return (T) pluginManager;
+				return pluginManager;
 			break;
 		case SERVER_SOCKET:
 			if(isTokenValid(tokenKey))
-				return (T) serverSocket;
+				return serverSocket;
 			break;
 		case TASK_MANAGER:
 			if(isTokenValid(tokenKey))
-				return (T) taskManager;
+				return taskManager;
 			break;
 		case USERS_MANAGER:
 			if(isTokenValid(tokenKey))
-				return (T) usersManager;
+				return usersManager;
 			break;
 		default:
 			return null;
@@ -356,27 +341,18 @@ public class Core {
 			Thread.sleep(i);
 		} catch (InterruptedException e) { }
 	}
+	
+	public static File getSystemFolder(SystemFolder folder, TokenKey tokenKey) {
+		return getSystemFolder(folder, null, tokenKey);
+	}
 
 	public static File getSystemFolder(SystemFolder folder, String user, TokenKey tokenKey) {
-		switch (folder) {
-		case BIN:
-			return new File(kowaxHome, "bin");
-		case DEV: 
-			return new File(kowaxHome, "dev");
-		case ETC:
-			return new File(kowaxHome, "etc");
-		case ROOT:
-			if(isTokenValid(tokenKey))
-				return new File(kowaxHome, "root");
-			return null;
-		case TEMP:
-			return new File(kowaxHome, "temp");
-		case USER_HOME:
-			if(!new File(new File(kowaxHome, "home"), user).exists())
-				new File(new File(kowaxHome, "home"), user).mkdirs();
-			return new File(new File(kowaxHome, "home"), user);
-		default:
-			return null;
+		if(user!=null && folder.equals(SystemFolder.USER_HOME)) {
+			File cfile;
+			if(!(cfile = new File(new File(kowaxHome, SystemFolder.USER_HOME.getPathName()), user)).exists());
+				cfile.mkdirs();
+				return cfile;
 		}
+		return new File(kowaxHome, folder.getPathName());
 	}
 }

@@ -106,7 +106,7 @@ public final class UsersManager implements Serializable{
 
 	public UsersManager() {
 		users = new ArrayList<User>();
-		if(!(usersFile = new File(Core.getSystemFolder(SystemFolder.ETC, null, null), "UserManager")).exists())
+		if(!(usersFile = new File(Core.getSystemFolder(SystemFolder.CONFIGURATIONS, null, null), "UserManager")).exists())
 			usersFile.mkdirs();
 		if(!(usersFile = new File(usersFile, "users.dat")).exists())
 			try {
