@@ -4,11 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.BindException;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -22,7 +18,7 @@ import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.ShellServer;
+import com.xspacesoft.kowax.shell.Console;
 
 
 public class Core {
@@ -57,18 +53,18 @@ public class Core {
 		logwolf = new Logwolf(System.out);
 		logwolf.setDebug(true);
 		logwolf.setVerbose(true);
-		logwolf.i("Initialization started");
+		logwolf.i("[Core] - Initialization started");
 
 		// TOKEN KEY GENERATION
-		logwolf.v("Creating new Token");
+		logwolf.v("[Core] - Creating new Token");
 		tokenKey = TokenKey.newKey();
 		sleep(100);
 
 		// TASK MANAGER LOAD-UP
-		logwolf.v("Starting TaksManager");
+		logwolf.v("[Core] - Starting TaksManager");
 		taskManager = new TaskManager();
 		taskManager.newTask("system", "Core");
-		logwolf.i("Task manager started");
+		logwolf.i("[Core] - Task manager started");
 		sleep(100);
 
 		// GET CURRENT WORK FOLDER AND FILE VARS
@@ -76,27 +72,27 @@ public class Core {
 		sleep(100);
 
 		// User Manager
-		logwolf.v("Loading UsersManager");
+		logwolf.v("[Core] - Loading UsersManager");
 		usersManager = new UsersManager();
 		if(!usersManager.loadFromFile()) {
-			logwolf.f("Can't load users from configuration");
+			logwolf.f("[Core] - Can't load users from configuration");
 		}
 		
-		logwolf.d("UsersManager loaded");
-		logwolf.i("Registred users: " + usersManager.getLoadedUsers());
+		logwolf.d("[Core] - UsersManager loaded");
+		logwolf.i("[Core] - Registred users: " + usersManager.getLoadedUsers());
 		// Alias Manager
-		logwolf.v("Loading AliasManager");
+		logwolf.v("[Core] - Loading AliasManager");
 		aliasManager = new AliasManager();
-		logwolf.v("AliasManager loaded");
+		logwolf.v("[Core] - AliasManager loaded");
 		aliasManager.loadDefaults();
-		logwolf.i(aliasManager.getLoadedAliases() + " aliases loaded");
+		logwolf.i("[Core] - " + aliasManager.getLoadedAliases() + " aliases loaded");
 
 
 		// START PLUGIN MANAGER AND LOAD PLUGINS
-		logwolf.v("Starting PluginManager");
+		logwolf.v("[Core] - Starting PluginManager");
 		pluginManager = new PluginManager(tokenKey);
-		logwolf.v("PluginManager Started");
-		logwolf.v("Loading default plugins");
+		logwolf.v("[Core] - PluginManager Started");
+		logwolf.v("[Core] - Loading default plugins");
 		List<Class<? extends PluginBase>> startupBlacklist = new ArrayList<Class<? extends PluginBase>>();
 		logwolf.d("-----------------------");
 		for (int i = 0; i < CORE_PLUGINS_DATA.length; i++) {
@@ -113,86 +109,97 @@ public class Core {
 				//				splash.getProgressBar().setValue(p+=step);
 				Thread.sleep(50);
 			} catch (InstantiationException e) {
-				logwolf.e("InstantiationException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+				logwolf.e("[Core] - InstantiationException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			} catch (IllegalAccessException e) {
-				logwolf.e("IllegalAccessException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+				logwolf.e("[Core] - IllegalAccessException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			} catch (InterruptedException e) {
 
 			} catch (NoClassDefFoundError e) {
-				logwolf.e("NoClassDefFoundError error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+				logwolf.e("[Core] - NoClassDefFoundError error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			} catch (Exception e) {
-				logwolf.e("Unknown error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+				logwolf.e("[Core] - Unknown error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			}
 		}
 		//		splash.getProgressBar().setValue(1);
 		//		splash.getProgressBar().setIndeterminate(true);
 		logwolf.d("-----------------------");
-		logwolf.d("Default plugins load complete");
+		logwolf.d("[Core] - Default plugins load complete");
 		sleep(100);
 
 		// Server open
-		serviceEnabled = true;
-		logwolf.i("Preparing shell server");
-		try {
-			serverSocket = new ServerSocket(23);
-		} catch (BindException e) {
-			if (e.getMessage().equalsIgnoreCase("Permission denied")){
-				logwolf.e("Is server running as root? " + e.toString());
-				String backupPort = 23 + "" + 23;
-				logwolf.i("Trying to open server on port " + backupPort);
-				try {
-					serverSocket = new ServerSocket(Stdio.parseInt(backupPort));
-				} catch (IOException e1) {
-					logwolf.e("Failed to open server on port " + backupPort + ": " + e1.toString());
-				}
-			} else if (e.getMessage().contains("Address already in use")) {
-				logwolf.e("Is already a server running on port " + 23 + "? " + e.toString());
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				System.exit(1);
-			} else {
-				logwolf.e(e.toString());
-				System.exit(1);
-			}
-
-		} catch (IOException e) {
-			logwolf.e(e.toString());
-			System.exit(1);
-		}
-		if (serverSocket == null) {
-			System.exit(1);
-		}
+//		serviceEnabled = true;
+//		logwolf.i("[Core] - Preparing shell server");
+//		try {
+//			serverSocket = new ServerSocket(23);
+//		} catch (BindException e) {
+//			if (e.getMessage().equalsIgnoreCase("Permission denied")){
+//				logwolf.e("[Core] - Is server running as root? " + e.toString());
+//				String backupPort = 23 + "" + 23;
+//				logwolf.i("[Core] - Trying to open server on port " + backupPort);
+//				try {
+//					serverSocket = new ServerSocket(Stdio.parseInt(backupPort));
+//				} catch (IOException e1) {
+//					logwolf.e("[Core] - Failed to open server on port " + backupPort + ": " + e1.toString());
+//				}
+//			} else if (e.getMessage().contains("Address already in use")) {
+//				logwolf.e("[Core] - Is already a server running on port " + 23 + "? " + e.toString());
+//				try {
+//					Thread.sleep(10);
+//				} catch (InterruptedException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//				System.exit(1);
+//			} else {
+//				logwolf.e(e.toString());
+//				System.exit(1);
+//			}
+//
+//		} catch (IOException e) {
+//			logwolf.e(e.toString());
+//			System.exit(1);
+//		}
+//		if (serverSocket == null) {
+//			System.exit(1);
+//		}
 		sleep(100);
-		logwolf.v("Broadcasting system event startup");
+		logwolf.v("[Core] - Broadcasting system event startup");
 		pluginManager.sendSystemEvent(SystemEvent.SYSTEM_START, null, tokenKey, startupBlacklist);
 		sleep(100);
+
+		System.out.println();
 		try {
-			serverSocket.setSoTimeout(1000);
-			logwolf.i("Server ready!");
-			while(serviceEnabled) {
-				try {
-					Socket socket = serverSocket.accept();
-					if(socket!=null) {
-						ShellServer shellServer = new ShellServer(socket, tokenKey);
-						shellServer.start();
-					}
-				} catch (SocketTimeoutException e) {
-					// Wait for it
-				} catch (IOException e) {
-					logwolf.e("Connection failed: " + e.toString());
-				}
-				Thread.sleep(1);
-			}
-		} catch (InterruptedException e) {
-			// Stop service
-			serviceEnabled = false;
-		} catch (SocketException e) {
-			logwolf.e(e.toString());
+			Console console = new Console(tokenKey);
+			console.start();
+		} catch (IOException e) {
+			logwolf.e("[Core] - Error during console start: " + e.getMessage());
 		}
+		
+		
+		
+//		try {
+//			serverSocket.setSoTimeout(1000);
+//			logwolf.i("Server ready!");
+//			while(serviceEnabled) {
+//				try {
+//					Socket socket = serverSocket.accept();
+//					if(socket!=null) {
+//						ShellServer shellServer = new ShellServer(socket, tokenKey);
+//						shellServer.start();
+//					}
+//				} catch (SocketTimeoutException e) {
+//					// Wait for it
+//				} catch (IOException e) {
+//					logwolf.e("Connection failed: " + e.toString());
+//				}
+//				Thread.sleep(1);
+//			}
+//		} catch (InterruptedException e) {
+//			// Stop service
+//			serviceEnabled = false;
+//		} catch (SocketException e) {
+//			logwolf.e(e.toString());
+//		}
 		logwolf.i("Server stopped");
 		System.exit(0);
 	}

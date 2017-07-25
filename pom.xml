@@ -4,7 +4,7 @@
 	<groupId>com.xspacesoft.kowalski7cc.kowax</groupId>
 	<artifactId>KowaX</artifactId>
 	<version>0.1.0</version>
-	
+
 	<developers>
 		<developer>
 			<id>kowalski7cc</id>
@@ -16,7 +16,7 @@
 	</developers>
 
 	<build>
-	
+
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
@@ -26,7 +26,7 @@
 				</excludes>
 			</resource>
 		</resources>
-		
+
 		<plugins>
 			<!-- Build with Java 8 -->
 			<plugin>
@@ -59,12 +59,16 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
-					<archive>      
-						<manifest>         
+					<archive>
+						      
+						<manifest>
+							         
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>libs/</classpathPrefix>
-							<mainClass>com.xspacesoft.kowax.Main</mainClass>           
-						</manifest>      
+							<mainClass>com.xspacesoft.kowax.Main</mainClass>
+							           
+						</manifest>
+						      
 					</archive>
 				</configuration>
 			</plugin>
@@ -127,7 +131,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- Attach sources.jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -141,7 +145,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- JavaDoc generation plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -155,7 +159,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 	<!-- Other data -->
@@ -184,10 +188,17 @@
 			<artifactId>botclient</artifactId>
 			<version>0.1.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>us.monoid.web</groupId>
 			<artifactId>resty</artifactId>
 			<version>0.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jline</groupId>
+			<artifactId>jline</artifactId>
+			<version>2.14.2</version>
 		</dependency>
 	</dependencies>
 </project>
