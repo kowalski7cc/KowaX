@@ -41,7 +41,6 @@ public class Core {
 	private static TaskManager taskManager;
 	private static UsersManager usersManager;
 	private static ServerSocket serverSocket;
-	private static boolean serviceEnabled;
 
 	private static final Object[][] CORE_PLUGINS_DATA = DefaultPlugins.getDefaults();
 
@@ -171,8 +170,8 @@ public class Core {
 		System.out.println();
 		try {
 			ConsoleIO consoleIO = new ConsoleIO();
-			Stdio stdio = new Stdio(consoleIO, consoleIO);
-			Console console = new Console(tokenKey);
+			Stdio stdio = new Stdio(consoleIO);
+			Console console = new Console(tokenKey, stdio);
 			console.start();
 		} catch (IOException e) {
 			logwolf.e("[Core] - Error during console start: " + e.getMessage());
@@ -336,12 +335,7 @@ public class Core {
 		return null;
 	}
 
-	public static void stopShellSocket() {
-		serviceEnabled = false;
-	}
-
 	public static void halt() {
-		serviceEnabled = false;
 		pluginManager.stopServices();
 		System.exit(0);
 	}

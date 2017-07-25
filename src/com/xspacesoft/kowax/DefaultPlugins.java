@@ -1,7 +1,7 @@
 package com.xspacesoft.kowax;
 import com.xspacesoft.kowax.kernel.MacroManager;
 import com.xspacesoft.kowax.plugins.AppExample;
-import com.xspacesoft.kowax.plugins.BusyBox;
+import com.xspacesoft.kowax.plugins.KowaBox;
 import com.xspacesoft.kowax.plugins.CronTab;
 import com.xspacesoft.kowax.plugins.Echo;
 import com.xspacesoft.kowax.plugins.Escalator;
@@ -20,7 +20,7 @@ public final class DefaultPlugins {
 	public static Object[][] getDefaults() {
 		return new Object [][] {
 				// ClassName, RootAccess, AutostartService, Run@Boot, 
-				{BusyBox.class, true, true, true},
+				{KowaBox.class, true, true, true},
 				{CronTab.class, true, true, true},
 				{AppExample.class, false, false, false},
 				{HivemindControl.class, false, true, true},

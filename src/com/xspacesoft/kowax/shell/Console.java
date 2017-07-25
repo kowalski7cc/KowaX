@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
 import com.xspacesoft.kowax.kernel.SystemApi;
+import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.UsersManager.InvalidUserException;
@@ -45,6 +46,7 @@ public class Console {
 				session.setSessionActive(true);
 				stdio.println("Welcome back, " + session.getUsername() + "!");
 				commandRunner = new CommandRunner(session, tokenKey, false);
+				commandRunner.sendSystemEvent(SystemEvent.USER_LOGIN_SUCCESS, session.getUsername(), tokenKey, false);
 				while(session.isSessionActive()) {
 					if(session.isSudo())
 						stdio.print("root@kowax:-# ");
