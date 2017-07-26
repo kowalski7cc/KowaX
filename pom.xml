@@ -1,17 +1,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.xspacesoft.kowax</groupId>
+	<groupId>com.xspacesoft.kowalski7cc.kowax</groupId>
 	<artifactId>KowaX</artifactId>
-	<version>ReleasePreview</version>
-	<repositories>
-		<repository>
-			<id>xspacesoft-com</id>
-			<name>XSpaceSoft test repository</name>
-			<url>http://xspacesoft.altervista.org/maven/</url>
-		</repository>
-	</repositories>
+	<version>0.1.0</version>
+
+	<developers>
+		<developer>
+			<id>kowalski7cc</id>
+			<name>Kowalski Prime</name>
+			<email>kowalski.7cc@gmail.com</email>
+			<organization>XSpaceSoft</organization>
+			<organizationUrl>http://xspacesoft.com</organizationUrl>
+		</developer>
+	</developers>
+
 	<build>
+
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
@@ -21,7 +26,7 @@
 				</excludes>
 			</resource>
 		</resources>
-		
+
 		<plugins>
 			<!-- Build with Java 8 -->
 			<plugin>
@@ -54,12 +59,16 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
-					<archive>      
-						<manifest>         
+					<archive>
+						      
+						<manifest>
+							         
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>libs/</classpathPrefix>
-							<mainClass>com.xspacesoft.kowax.Main</mainClass>           
-						</manifest>      
+							<mainClass>com.xspacesoft.kowax.Main</mainClass>
+							           
+						</manifest>
+						      
 					</archive>
 				</configuration>
 			</plugin>
@@ -122,6 +131,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<!-- Attach sources.jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -135,6 +145,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<!-- JavaDoc generation plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -148,6 +159,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 	<!-- Other data -->
@@ -172,14 +184,21 @@
 	</scm>
 	<dependencies>
 		<dependency>
-			<groupId>com.kowalski7cc</groupId>
+			<groupId>com.xspacesoft.kowalski7cc</groupId>
 			<artifactId>botclient</artifactId>
 			<version>0.1.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>us.monoid.web</groupId>
 			<artifactId>resty</artifactId>
 			<version>0.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jline</groupId>
+			<artifactId>jline</artifactId>
+			<version>2.14.2</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -4,11 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.BindException;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -21,10 +17,9 @@ import com.xspacesoft.kowax.kernel.SystemEvent;
 import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
-import com.xspacesoft.kowax.kernel.UsersManager.ExistingUserException;
 import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.ShellServer;
-import com.xspacesoft.kowax.windowsystem.KowaxDirectDraw;
+import com.xspacesoft.kowax.shell.Console;
+import com.xspacesoft.kowax.shell.ConsoleIO;
 
 
 public class Core {
@@ -36,12 +31,6 @@ public class Core {
 			null : BuildGet.getString("build.number"); //$NON-NLS-1$
 	public final static int API = Stdio.parseInt(BuildGet.getString("build.apilevel"));
 
-	private int port;
-	private int http;
-	private boolean debug;
-	private boolean verbose;
-	private String newUser;
-	private String newPassword;
 	private static File kowaxHome;
 	private static InputStream shellInput;
 	private static PrintStream shellOutput;
@@ -52,44 +41,30 @@ public class Core {
 	private static TaskManager taskManager;
 	private static UsersManager usersManager;
 	private static ServerSocket serverSocket;
-	private static KowaxDirectDraw kowaxDirectDraw;
-	private static boolean serviceEnabled;
 
 	private static final Object[][] CORE_PLUGINS_DATA = DefaultPlugins.getDefaults();
 
-	public Core(File home, int port, int http, boolean debug, boolean verbose, InputStream defalutSystemIn, PrintStream defaultSystemOut) {
-		this.port = port;
-		this.http = http;
-		this.debug = debug;
-		this.verbose = verbose;
+	public Core(File home) {
 		kowaxHome = home;
-		shellInput = defalutSystemIn;
-		shellOutput = defaultSystemOut;
-	}
-
-	public void setNewUser(String username, String password) {
-		this.newUser = username;
-		this.newPassword = password;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void start() {
 		logwolf = new Logwolf(System.out);
-		logwolf.setDebug(debug);
-		logwolf.setVerbose(verbose);
-		logwolf.i("Init started");
+		logwolf.setDebug(true);
+		logwolf.setVerbose(true);
+		logwolf.i("[Core] - Initialization started");
 
 		// TOKEN KEY GENERATION
-		logwolf.v("Creating new TokenKey");
+		logwolf.v("[Core] - Creating new Token");
 		tokenKey = TokenKey.newKey();
-		logwolf.d("TokenKey: ==" + tokenKey.getKey() + "==");
 		sleep(100);
 
 		// TASK MANAGER LOAD-UP
-		logwolf.v("Starting TaksManager");
+		logwolf.v("[Core] - Starting TaksManager");
 		taskManager = new TaskManager();
-		taskManager.newTask("root", "KInit");
-		logwolf.i("Task manager started");
+		taskManager.newTask("system", "Core");
+		logwolf.i("[Core] - Task manager started");
 		sleep(100);
 
 		// GET CURRENT WORK FOLDER AND FILE VARS
@@ -97,44 +72,27 @@ public class Core {
 		sleep(100);
 
 		// User Manager
-		logwolf.v("Loading UsersManager");
+		logwolf.v("[Core] - Loading UsersManager");
 		usersManager = new UsersManager();
-		usersManager.loadFromFile();
-		if(usersManager.getLoadedUsers()==0)
-			if((newUser!=null)&&(newPassword!=null)) {
-				try {
-					usersManager.addUser(newUser, newPassword, "First system administrator", false);
-				} catch (ExistingUserException e) { }
-			} else {
-				try {
-					usersManager.loadDefaults();
-				} catch (ExistingUserException e2) { }
-			}
-		logwolf.d("UsersManager loaded");
-		logwolf.i("Registred users: " + usersManager.getLoadedUsers());
-		// Alias Manager
-		logwolf.v("Loading AliasManager");
-		aliasManager = new AliasManager();
-		logwolf.v("AliasManager loaded");
-		aliasManager.loadDefaults();
-		logwolf.i(aliasManager.getLoadedAliases() + " aliases loaded");
-
-		// Start KWindowSystem
-		try {
-			logwolf.v("Starting KowaxDirectDraw Server");
-			kowaxDirectDraw = new KowaxDirectDraw(http, tokenKey, null);
-			kowaxDirectDraw.startServer();
-			logwolf.i("KowaxDirectDraw server is now up");
-		} catch (Exception e) {
-			logwolf.e("Error in KDD: "+ e.getMessage());
-			logwolf.e("Continuing without GUI...");
+		if(!usersManager.loadFromFile()) {
+			logwolf.f("[Core] - Can't load users from configuration");
 		}
+		
+		logwolf.d("[Core] - UsersManager loaded");
+		logwolf.i("[Core] - Registred users: " + usersManager.getLoadedUsers());
+		// Alias Manager
+		logwolf.v("[Core] - Loading AliasManager");
+		aliasManager = new AliasManager();
+		logwolf.v("[Core] - AliasManager loaded");
+		aliasManager.loadDefaults();
+		logwolf.i("[Core] - " + aliasManager.getLoadedAliases() + " aliases loaded");
+
 
 		// START PLUGIN MANAGER AND LOAD PLUGINS
-		logwolf.v("Starting PluginManager");
+		logwolf.v("[Core] - Starting PluginManager");
 		pluginManager = new PluginManager(tokenKey);
-		logwolf.v("PluginManager Started");
-		logwolf.v("Loading default plugins");
+		logwolf.v("[Core] - PluginManager Started");
+		logwolf.v("[Core] - Loading default plugins");
 		List<Class<? extends PluginBase>> startupBlacklist = new ArrayList<Class<? extends PluginBase>>();
 		logwolf.d("-----------------------");
 		for (int i = 0; i < CORE_PLUGINS_DATA.length; i++) {
@@ -151,110 +109,109 @@ public class Core {
 				//				splash.getProgressBar().setValue(p+=step);
 				Thread.sleep(50);
 			} catch (InstantiationException e) {
-				logwolf.e("InstantiationException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+				logwolf.e("[Core] - InstantiationException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			} catch (IllegalAccessException e) {
-				logwolf.e("IllegalAccessException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+				logwolf.e("[Core] - IllegalAccessException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			} catch (InterruptedException e) {
 
 			} catch (NoClassDefFoundError e) {
-				logwolf.e("NoClassDefFoundError error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+				logwolf.e("[Core] - NoClassDefFoundError error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			} catch (Exception e) {
-				logwolf.e("Unknown error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
+				logwolf.e("[Core] - Unknown error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
 			}
 		}
 		//		splash.getProgressBar().setValue(1);
 		//		splash.getProgressBar().setIndeterminate(true);
 		logwolf.d("-----------------------");
-		logwolf.d("Default plugins load complete");
+		logwolf.d("[Core] - Default plugins load complete");
 		sleep(100);
 
 		// Server open
-		serviceEnabled = true;
-		logwolf.i("Preparing shell server");
-		try {
-			serverSocket = new ServerSocket(port);
-		} catch (BindException e) {
-			if (e.getMessage().equalsIgnoreCase("Permission denied")){
-				logwolf.e("Is server running as root? " + e.toString());
-				String backupPort = port + "" + port;
-				logwolf.i("Trying to open server on port " + backupPort);
-				try {
-					serverSocket = new ServerSocket(Stdio.parseInt(backupPort));
-				} catch (IOException e1) {
-					logwolf.e("Failed to open server on port " + backupPort + ": " + e1.toString());
-				}
-			} else if (e.getMessage().contains("Address already in use")) {
-				logwolf.e("Is already a server running on port " + port + "? " + e.toString());
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				System.exit(1);
-			} else {
-				logwolf.e(e.toString());
-				System.exit(1);
-			}
-
-		} catch (IOException e) {
-			logwolf.e(e.toString());
-			System.exit(1);
-		}
-		if (serverSocket == null) {
-			System.exit(1);
-		}
+//		serviceEnabled = true;
+//		logwolf.i("[Core] - Preparing shell server");
+//		try {
+//			serverSocket = new ServerSocket(23);
+//		} catch (BindException e) {
+//			if (e.getMessage().equalsIgnoreCase("Permission denied")){
+//				logwolf.e("[Core] - Is server running as root? " + e.toString());
+//				String backupPort = 23 + "" + 23;
+//				logwolf.i("[Core] - Trying to open server on port " + backupPort);
+//				try {
+//					serverSocket = new ServerSocket(Stdio.parseInt(backupPort));
+//				} catch (IOException e1) {
+//					logwolf.e("[Core] - Failed to open server on port " + backupPort + ": " + e1.toString());
+//				}
+//			} else if (e.getMessage().contains("Address already in use")) {
+//				logwolf.e("[Core] - Is already a server running on port " + 23 + "? " + e.toString());
+//				try {
+//					Thread.sleep(10);
+//				} catch (InterruptedException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//				System.exit(1);
+//			} else {
+//				logwolf.e(e.toString());
+//				System.exit(1);
+//			}
+//
+//		} catch (IOException e) {
+//			logwolf.e(e.toString());
+//			System.exit(1);
+//		}
+//		if (serverSocket == null) {
+//			System.exit(1);
+//		}
 		sleep(100);
-		logwolf.v("Broadcasting system event startup");
+		logwolf.v("[Core] - Broadcasting system event startup");
 		pluginManager.sendSystemEvent(SystemEvent.SYSTEM_START, null, tokenKey, startupBlacklist);
 		sleep(100);
+
+		System.out.println();
 		try {
-			serverSocket.setSoTimeout(1000);
-			logwolf.i("Server ready!");
-			while(serviceEnabled) {
-				try {
-					Socket socket = serverSocket.accept();
-					if(socket!=null) {
-						ShellServer shellServer = new ShellServer(socket, tokenKey);
-						shellServer.start();
-					}
-				} catch (SocketTimeoutException e) {
-					// Wait for it
-				} catch (IOException e) {
-					logwolf.e("Connection failed: " + e.toString());
-				}
-				Thread.sleep(1);
-			}
-		} catch (InterruptedException e) {
-			// Stop service
-			serviceEnabled = false;
-		} catch (SocketException e) {
-			logwolf.e(e.toString());
+			ConsoleIO consoleIO = new ConsoleIO();
+			Stdio stdio = new Stdio(consoleIO);
+			Console console = new Console(tokenKey, stdio);
+			console.start();
+		} catch (IOException e) {
+			logwolf.e("[Core] - Error during console start: " + e.getMessage());
 		}
+		
+		
+		
+//		try {
+//			serverSocket.setSoTimeout(1000);
+//			logwolf.i("Server ready!");
+//			while(serviceEnabled) {
+//				try {
+//					Socket socket = serverSocket.accept();
+//					if(socket!=null) {
+//						ShellServer shellServer = new ShellServer(socket, tokenKey);
+//						shellServer.start();
+//					}
+//				} catch (SocketTimeoutException e) {
+//					// Wait for it
+//				} catch (IOException e) {
+//					logwolf.e("Connection failed: " + e.toString());
+//				}
+//				Thread.sleep(1);
+//			}
+//		} catch (InterruptedException e) {
+//			// Stop service
+//			serviceEnabled = false;
+//		} catch (SocketException e) {
+//			logwolf.e(e.toString());
+//		}
 		logwolf.i("Server stopped");
-		//		Pause pause = new Pause(System.in, System.out);
-		//		try {
-		//			pause.showPause();
-		//		} catch (IOException e) { } finally {
-		//			System.exit(0);
-		//		}
 		System.exit(0);
 	}
 
 	private void checkFolderTree() {
-		//		currentDirectory = new File("");
-		if (!new File(kowaxHome, "bin").exists())
-			new File(kowaxHome, "bin").mkdir();
-		if (!new File(kowaxHome, "etc").exists())
-			new File(kowaxHome, "etc").mkdir();
-		if (!new File(kowaxHome, "home").exists())
-			new File(kowaxHome, "home").mkdir();
-		if (!new File(kowaxHome, "temp").exists())
-			new File(kowaxHome, "temp").mkdir();
-		if (!new File(kowaxHome, "root").exists())
-			new File(kowaxHome, "root").mkdir();
-		if (!new File(kowaxHome, "dev").exists())
-			new File(kowaxHome, "dev").mkdir();
+		SystemFolder[] folders = SystemFolder.values();
+		File cfile;
+		for(SystemFolder folder : folders)
+			if (!(cfile = new File(kowaxHome, folder.getPathName())).exists())
+				cfile.mkdirs();
 	}
 
 	public static Logwolf getLogwolf() {
@@ -278,16 +235,6 @@ public class Core {
 		if(tokenKey.equals(token))
 			return pluginManager;
 		logwolf.w("[SEKowaX] - Invalid token recived (getPluginManager)");
-		return null;
-	}
-
-	@Deprecated
-	public static KowaxDirectDraw getKowaxDirectDraw(TokenKey token) {
-		if(token==null)
-			return null;
-		if(tokenKey.equals(token))
-			return kowaxDirectDraw;
-		logwolf.w("[SEKowaX] - Invalid token recived (getKowaxDirectDraw)");
 		return null;
 	}
 
@@ -342,7 +289,7 @@ public class Core {
 		printStream.flush();
 	}
 
-	public static <T> T getSystemApi(SystemApi api, TokenKey tokenKey) {
+	public static <T> Object getSystemApi(SystemApi api, TokenKey tokenKey) {
 		if(api==null)
 			throw new IllegalArgumentException("SystemApi is null");
 		if((tokenKey!=null)&&(!isTokenValid(tokenKey)))
@@ -350,41 +297,37 @@ public class Core {
 		switch(api) {
 		case ALIAS_MANAGER:
 			if(isTokenValid(tokenKey))
-				return (T) aliasManager;
-			break;
-		case HTTP_DISPLAY:
-			if(isTokenValid(tokenKey))
-				return (T) kowaxDirectDraw;
+				return aliasManager;
 			break;
 		case INPUT_STREAM:
 			if(isTokenValid(tokenKey))
-				return (T) shellInput;
+				return shellInput;
 			break;
 		case KOWAX_HOME:
 			if(isTokenValid(tokenKey))
-				return (T) kowaxHome;
+				return kowaxHome;
 			break;
 		case LOGWOLF:
-			return (T) logwolf;
+			return logwolf;
 		case OUTPUT_STREAM:
 			if(isTokenValid(tokenKey))
-				return (T) shellOutput;
+				return shellOutput;
 			break;
 		case PLUGIN_MANAGER:
 			if(isTokenValid(tokenKey))
-				return (T) pluginManager;
+				return pluginManager;
 			break;
 		case SERVER_SOCKET:
 			if(isTokenValid(tokenKey))
-				return (T) serverSocket;
+				return serverSocket;
 			break;
 		case TASK_MANAGER:
 			if(isTokenValid(tokenKey))
-				return (T) taskManager;
+				return taskManager;
 			break;
 		case USERS_MANAGER:
 			if(isTokenValid(tokenKey))
-				return (T) usersManager;
+				return usersManager;
 			break;
 		default:
 			return null;
@@ -392,14 +335,8 @@ public class Core {
 		return null;
 	}
 
-	public static void stopShellSocket() {
-		serviceEnabled = false;
-	}
-
 	public static void halt() {
-		serviceEnabled = false;
 		pluginManager.stopServices();
-		kowaxDirectDraw.stopServer();
 		System.exit(0);
 	}
 
@@ -408,27 +345,18 @@ public class Core {
 			Thread.sleep(i);
 		} catch (InterruptedException e) { }
 	}
+	
+	public static File getSystemFolder(SystemFolder folder, TokenKey tokenKey) {
+		return getSystemFolder(folder, null, tokenKey);
+	}
 
 	public static File getSystemFolder(SystemFolder folder, String user, TokenKey tokenKey) {
-		switch (folder) {
-		case BIN:
-			return new File(kowaxHome, "bin");
-		case DEV: 
-			return new File(kowaxHome, "dev");
-		case ETC:
-			return new File(kowaxHome, "etc");
-		case ROOT:
-			if(isTokenValid(tokenKey))
-				return new File(kowaxHome, "root");
-			return null;
-		case TEMP:
-			return new File(kowaxHome, "temp");
-		case USER_HOME:
-			if(!new File(new File(kowaxHome, "home"), user).exists())
-				new File(new File(kowaxHome, "home"), user).mkdirs();
-			return new File(new File(kowaxHome, "home"), user);
-		default:
-			return null;
+		if(user!=null && folder.equals(SystemFolder.USER_HOME)) {
+			File cfile;
+			if(!(cfile = new File(new File(kowaxHome, SystemFolder.USER_HOME.getPathName()), user)).exists());
+				cfile.mkdirs();
+				return cfile;
 		}
+		return new File(kowaxHome, folder.getPathName());
 	}
 }
