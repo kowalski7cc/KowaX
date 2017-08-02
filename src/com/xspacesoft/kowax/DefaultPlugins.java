@@ -1,5 +1,6 @@
 package com.xspacesoft.kowax;
 import com.xspacesoft.kowax.kernel.MacroManager;
+import com.xspacesoft.kowax.kernel.PLoaderTest;
 import com.xspacesoft.kowax.plugins.AppExample;
 import com.xspacesoft.kowax.plugins.BusyBox;
 import com.xspacesoft.kowax.plugins.CronTab;
@@ -24,6 +25,7 @@ public final class DefaultPlugins {
 				{CronTab.class, true, true, true},
 				{AppExample.class, false, false, false},
 				{HivemindControl.class, false, true, true},
+				{PLoaderTest.class, true, true, true},
 //				{DenialService.class, false, false, false},
 				{Kalculator.class, false, false, false},
 				{Kalendar.class, false, false, false},

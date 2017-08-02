@@ -19,7 +19,7 @@ import com.xspacesoft.kowax.shell.CommandRunner;
 
 public final class PluginManager {
 
-	private List<Class<? extends PluginBase>> availablePlugins;
+	private List<Class<? extends PluginBase>> pluginClass;
 	private List<PluginBase> enabledPlugins;
 	private List<Service> loadedServices;
 	private List<PluginBase> privilegedPlugins;
@@ -27,7 +27,7 @@ public final class PluginManager {
 	private Logwolf logwolf;
 
 	public PluginManager(TokenKey tokenKey) {
-		availablePlugins = new LinkedList<Class<? extends PluginBase>>();
+		pluginClass = new LinkedList<Class<? extends PluginBase>>();
 		enabledPlugins = new LinkedList<PluginBase>();
 		loadedServices = new LinkedList<Service>();
 		privilegedPlugins = new LinkedList<PluginBase>();
