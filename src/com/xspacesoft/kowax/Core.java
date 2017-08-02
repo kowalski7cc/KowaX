@@ -18,8 +18,8 @@ import com.xspacesoft.kowax.kernel.TaskManager;
 import com.xspacesoft.kowax.kernel.TokenKey;
 import com.xspacesoft.kowax.kernel.UsersManager;
 import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.Console;
-import com.xspacesoft.kowax.shell.ConsoleIO;
+import com.xspacesoft.kowax.shell.Konsole;
+import com.xspacesoft.kowax.shell.KonsoleIO;
 
 
 public class Core {
@@ -166,12 +166,13 @@ public class Core {
 		logwolf.v("[Core] - Broadcasting system event startup");
 		pluginManager.sendSystemEvent(SystemEvent.SYSTEM_START, null, tokenKey, startupBlacklist);
 		sleep(100);
-
+		
 		System.out.println();
+		
 		try {
-			ConsoleIO consoleIO = new ConsoleIO();
+			KonsoleIO consoleIO = new KonsoleIO();
 			Stdio stdio = new Stdio(consoleIO);
-			Console console = new Console(tokenKey, stdio);
+			Konsole console = new Konsole(tokenKey, stdio);
 			console.start();
 		} catch (IOException e) {
 			logwolf.e("[Core] - Error during console start: " + e.getMessage());

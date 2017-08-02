@@ -2,19 +2,17 @@ package com.xspacesoft.kowax.kernel.io;
 
 public interface InputReader {
 
-	public String next();
-	
-	public String nextLine();
+	public String readString();
 	
 	public boolean hasNextLine();
 	
-	public Integer nextInt();
+	public Integer readInt();
 	
-	public Float nextFloat();
+	public Float readFloat();
 	
-	public Long nextLong();
+	public Long readLong();
 	
-	public Double nextDouble();
+	public Double readDouble();
 	
-	public Character nextCharacter();
+	public Character readCharacter();
 }

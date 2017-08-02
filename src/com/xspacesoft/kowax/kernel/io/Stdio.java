@@ -62,8 +62,20 @@ public class Stdio {
 		outputWriter.print(message);
 	}
 
-	public String scan() {
-		return inputReader.next();
+	public String readString() {
+		return inputReader.readString();
+	}
+	
+	public int readInt() {
+		return inputReader.readInt();
+	}
+	
+	public float readFloat() {
+		return inputReader.readFloat();
+	}
+	
+	public char readCharacter() {
+		return inputReader.readCharacter();
 	}
 
 	public void clear() {
@@ -74,12 +86,10 @@ public class Stdio {
 		print("\u001B[7m");
 	}
 
-	
-
 	public void pause() throws IOException {
 		Pause pause = new Pause();
 		outputWriter.print(pause.showPause());
-		inputReader.next();
+		inputReader.readString();
 	}
 
 	public static boolean isNumber(char character) {
@@ -106,4 +116,6 @@ public class Stdio {
 			return 0;
 		}
 	}
+	
+	
 }

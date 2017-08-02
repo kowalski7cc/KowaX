@@ -76,14 +76,14 @@ public class TelegramServer extends PluginBase implements SystemEventsListener, 
 					return;
 				}
 				stdio.print("Insert new token: ");
-				String newToken = stdio.scan();
+				String newToken = stdio.readString();
 				if(!newToken.matches("([0-9])+(:{1})([A-Za-z0-9_-]{35})")) {
 					stdio.println("Invalid token");
 					return;
 				}
 				if(!new BotClient(newToken).isValid()) {
 					stdio.print("New API key seems invalid. Save anyway? (y/[n]): ");
-					String response = stdio.scan();
+					String response = stdio.readString();
 					if(!response.equalsIgnoreCase("y")) {
 						stdio.println("Token not saved");
 					}
@@ -107,7 +107,7 @@ public class TelegramServer extends PluginBase implements SystemEventsListener, 
 					stdio.println("You need to be superuser to do this");
 				} else {
 					stdio.print("Insert your token: ");
-					String response = stdio.scan();
+					String response = stdio.readString();
 					try {
 						this.telegramUsersManager.authorize(Integer.parseInt(response), commandRunner.getUsername());
 						JSONObject newUser = new JSONObject();
@@ -580,13 +580,7 @@ public class TelegramServer extends PluginBase implements SystemEventsListener, 
 	public class TelegramReader implements InputReader {
 
 		@Override
-		public String next() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public String nextLine() {
+		public String readString() {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -598,31 +592,31 @@ public class TelegramServer extends PluginBase implements SystemEventsListener, 
 		}
 
 		@Override
-		public Integer nextInt() {
+		public Integer readInt() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Float nextFloat() {
+		public Float readFloat() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Long nextLong() {
+		public Long readLong() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Double nextDouble() {
+		public Double readDouble() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Character nextCharacter() {
+		public Character readCharacter() {
 			// TODO Auto-generated method stub
 			return null;
 		}

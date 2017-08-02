@@ -12,7 +12,7 @@ import com.xspacesoft.kowax.kernel.UsersManager.InvalidUserException;
 import com.xspacesoft.kowax.kernel.io.Stdio;
 import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 
-public class Console {
+public class Konsole {
 	
 	//private ConsoleIO consoleIO;
 	private Stdio stdio;
@@ -21,7 +21,7 @@ public class Console {
 	private TokenKey tokenKey;
 	private UsersManager usersManager;
 
-	public Console(TokenKey tokenKey, Stdio stdio) throws IOException {
+	public Konsole(TokenKey tokenKey, Stdio stdio) throws IOException {
 		this.stdio = stdio;
 		session = new Session(stdio);
 		this.tokenKey = tokenKey;
@@ -35,9 +35,16 @@ public class Console {
 		stdio.println();
 		while(true) {
 			stdio.print("Username: ");
-			String username = stdio.scan();
+			String username = stdio.readString();
+			if(stdio.getInputReader() instanceof KonsoleIO)
+				if(!((KonsoleIO)stdio.getInputReader()).isConsoleAvailable()) {
+					stdio.println("Warning, password will be not hidden.");
+					stdio.readString();
+				}
+					
 			stdio.print("Password: ");
-			String password = stdio.scan();
+			String password = (stdio.getInputReader() instanceof KonsoleIO)?
+					((KonsoleIO)stdio.getInputReader()).readPassword():stdio.readString();
 			stdio.println();
 			
 			if(isUserValid(username, password)) {
@@ -52,7 +59,7 @@ public class Console {
 						stdio.print("root@kowax:-# ");
 					else
 						stdio.print(session.getUsername() + "@kowax:-$ ");
-					String userInput = stdio.scan();
+					String userInput = stdio.readString();
 					try {
 						commandRunner.run(userInput);
 					} catch (CommandNotFoundException e) {

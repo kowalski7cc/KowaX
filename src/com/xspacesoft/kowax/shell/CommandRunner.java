@@ -187,7 +187,7 @@ public final class CommandRunner {
 		if(!session.isSudo()) {
 			if(session.isSudoExpired()) {
 				stdio.print("[sudo] password for " + session.getUsername() +": ");
-				String response = session.getSockethelper().scan();
+				String response = session.getSockethelper().readString();
 				if (response.equalsIgnoreCase(""))
 					return;
 				try {
