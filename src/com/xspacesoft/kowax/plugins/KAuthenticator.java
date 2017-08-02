@@ -62,7 +62,7 @@ public class KAuthenticator extends PluginBase implements PrivilegedAcces, Syste
 	private void authenticate(String extraValue, CommandRunner commandRunner) {
 		Stdio stdio = commandRunner.getSocketHelper();
 		stdio.print("AUTHENTICATOR Insert your user: ");
-		String ans = stdio.scan();
+		String ans = stdio.readString();
 		if(ans.equals(commandRunner.getUsername())) {
 			stdio.println("OK");
 		} else {

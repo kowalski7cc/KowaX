@@ -87,7 +87,7 @@ public class ServiceManager extends PluginBase implements PrivilegedAcces {
 				stdio.println("Can't find requested service");
 			} else {
 				stdio.print("Insert service name: ");
-				String serviceName = stdio.scan();
+				String serviceName = stdio.readString();
 				try {
 					commandRunner.run(getAppletName() + " start " + serviceName);
 				} catch (IllegalArgumentException | CommandNotFoundException | MissingPluginCodeException e) {
@@ -126,7 +126,7 @@ public class ServiceManager extends PluginBase implements PrivilegedAcces {
 				stdio.println("Can't find requested service");
 			} else {
 				stdio.print("Insert service name: ");
-				String serviceName = stdio.scan();
+				String serviceName = stdio.readString();
 				try {
 					commandRunner.run(getAppletName() + " stop " + serviceName);
 				} catch (IllegalArgumentException | CommandNotFoundException | MissingPluginCodeException e) {

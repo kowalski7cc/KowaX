@@ -124,7 +124,7 @@ public class ShellIO implements OutputWriter, InputReader{
 	}
 
 	@Override
-	public String next() {
+	public String readString() {
 		if(in==null)
 			return null;
 		try {
@@ -149,11 +149,6 @@ public class ShellIO implements OutputWriter, InputReader{
 	}
 
 	@Override
-	public String nextLine() {
-		return next();
-	}
-
-	@Override
 	public boolean hasNextLine() {
 		try {
 			return in.ready();
@@ -170,8 +165,8 @@ public class ShellIO implements OutputWriter, InputReader{
 	}
 
 	@Override
-	public Integer nextInt() {
-		String s = next();
+	public Integer readInt() {
+		String s = readString();
 		try {
 			return Integer.parseInt(s);
 		} catch (NumberFormatException e) {
@@ -180,8 +175,8 @@ public class ShellIO implements OutputWriter, InputReader{
 	}
 
 	@Override
-	public Float nextFloat() {
-		String s = next();
+	public Float readFloat() {
+		String s = readString();
 		try {
 			return Float.parseFloat(s);
 		} catch (NumberFormatException e) {
@@ -190,8 +185,8 @@ public class ShellIO implements OutputWriter, InputReader{
 	}
 
 	@Override
-	public Long nextLong() {
-		String s = next();
+	public Long readLong() {
+		String s = readString();
 		try {
 			return Long.parseLong(s);
 		} catch (NumberFormatException e) {
@@ -200,8 +195,8 @@ public class ShellIO implements OutputWriter, InputReader{
 	}
 
 	@Override
-	public Double nextDouble() {
-		String s = next();
+	public Double readDouble() {
+		String s = readString();
 		try {
 			return Double.parseDouble(s);
 		} catch (NumberFormatException e) {
@@ -210,8 +205,8 @@ public class ShellIO implements OutputWriter, InputReader{
 	}
 
 	@Override
-	public Character nextCharacter() {
-		String s = next();
+	public Character readCharacter() {
+		String s = readString();
 		if(s.length()>0)
 			return s.charAt(0);
 		return null;

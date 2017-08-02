@@ -1,57 +1,63 @@
 package com.xspacesoft.kowax.shell;
 
 import java.io.Closeable;
+import java.io.Console;
 import java.io.IOException;
 import java.util.Scanner;
 
 import com.xspacesoft.kowax.kernel.io.InputReader;
 import com.xspacesoft.kowax.kernel.io.OutputWriter;
 
-public class ConsoleIO implements OutputWriter, InputReader, Closeable {
+public class KonsoleIO implements OutputWriter, InputReader, Closeable {
 	
 	private Scanner sc;
+	private Console console;
 
-	public ConsoleIO() {
-		sc = new Scanner(System.in);
+	public KonsoleIO() {
+		if((console = System.console())==null)
+			sc = new Scanner(System.in);
+	}
+	
+	public boolean isConsoleAvailable() {
+		return console!=null?true:false;
+	}
+	
+	public String readPassword() {
+		return console!=null?new String(console.readPassword()):sc.nextLine();
 	}
 
 	@Override
-	public String next() {
-		return sc.next();
-	}
-
-	@Override
-	public String nextLine() {
-		return sc.nextLine();
+	public String readString() {
+		return console!=null?console.readLine():sc.nextLine();
 	}
 
 	@Override
 	public boolean hasNextLine() {
-		return sc.hasNextLine();
+		return console!=null?true:sc.hasNextLine();
 	}
 
 	@Override
-	public Integer nextInt() {
+	public Integer readInt() {
 		return Integer.parseInt(sc.next());
 	}
 
 	@Override
-	public Float nextFloat() {
+	public Float readFloat() {
 		return Float.parseFloat(sc.next());
 	}
 
 	@Override
-	public Long nextLong() {
+	public Long readLong() {
 		return Long.parseLong(sc.next());
 	}
 
 	@Override
-	public Double nextDouble() {
+	public Double readDouble() {
 		return Double.parseDouble(sc.next());
 	}
 
 	@Override
-	public Character nextCharacter() {
+	public Character readCharacter() {
 		return sc.next().charAt(0);
 	}
 

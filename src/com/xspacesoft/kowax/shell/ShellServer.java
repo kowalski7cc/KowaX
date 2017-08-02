@@ -39,7 +39,6 @@ public class ShellServer extends Thread {
 
 	@Override
 	public void run() {
-		
 		pid = taskManager.newTask("unlogged", "Console (" + sockethelper.getRemoteAddress() + ")");
 		Core.getLogwolf().i(sockethelper.getRemoteAddress() + " connected");
 		stdio.printTitle("Kowax Shell");
@@ -49,7 +48,7 @@ public class ShellServer extends Thread {
 		int attempts = 0;
 		while(!session.isAuthenticated()) {
 			sockethelper.print("Username: ");
-			String username = stdio.scan();
+			String username = stdio.readString();
 			if(username==null) {
 				try {
 					sockethelper.getSocket().close();
@@ -57,7 +56,7 @@ public class ShellServer extends Thread {
 				return;
 			}
 			sockethelper.print("Password: ");
-			String password = stdio.scan();
+			String password = stdio.readString();
 			if(password==null) {
 				try {
 					sockethelper.getSocket().close();
@@ -101,7 +100,7 @@ public class ShellServer extends Thread {
 					stdio.print("root@kowax:-# ");
 				else
 					stdio.print(session.getUsername() + "@kowax:-$ ");
-				String userInput = stdio.scan();
+				String userInput = stdio.readString();
 				if(userInput==null) {
 					try {
 						sockethelper.getSocket().close();
