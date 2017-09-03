@@ -1,7 +1,7 @@
 package com.xspacesoft.kowax.apis;
 
-import com.xspacesoft.kowax.kernel.SystemEvent;
-import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.engine.SystemEvent;
+import com.xspacesoft.kowax.engine.shell.CommandRunner;
 
 /** Intent hooks for applications */
 public interface SystemEventsListener {

@@ -3,27 +3,30 @@ package com.xspacesoft.kowax.plugins;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 
 import com.xspacesoft.kowax.Core;
-import com.xspacesoft.kowax.apis.KernelAccess;
-import com.xspacesoft.kowax.kernel.AliasManager;
-import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.PluginManager;
-import com.xspacesoft.kowax.kernel.SystemApi;
-import com.xspacesoft.kowax.kernel.TaskManager;
-import com.xspacesoft.kowax.kernel.TaskManager.Task;
-import com.xspacesoft.kowax.kernel.TokenKey;
-import com.xspacesoft.kowax.kernel.io.OutputWriter;
-import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.CommandRunner;
-import com.xspacesoft.kowax.shell.ShellIO;
+import com.xspacesoft.kowax.PomParser;
+import com.xspacesoft.kowax.apis.PrivilegedAcces;
+import com.xspacesoft.kowax.engine.PluginBase;
+import com.xspacesoft.kowax.engine.PluginManager;
+import com.xspacesoft.kowax.engine.SystemApi;
+import com.xspacesoft.kowax.engine.TaskManager;
+import com.xspacesoft.kowax.engine.TaskManager.Task;
+import com.xspacesoft.kowax.engine.TokenKey;
+import com.xspacesoft.kowax.engine.io.OutputWriter;
+import com.xspacesoft.kowax.engine.io.Stdio;
+import com.xspacesoft.kowax.engine.shell.CommandRunner;
+import com.xspacesoft.kowax.engine.shell.ShellIO;
 
-public class KowaBox extends PluginBase implements KernelAccess {
-	
+public class KowaBox extends PluginBase implements PrivilegedAcces {
+
 	private static final String EULA = "eula.txt";
 	private TokenKey tokenKey;
+	private Properties systemProperties = PomParser.load();
 
 	@Override
 	public String getAppletName() {
@@ -41,12 +44,12 @@ public class KowaBox extends PluginBase implements KernelAccess {
 	}
 
 	@Override
-	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
+	protected void runApplet(String[] command, Stdio stdio, CommandRunner commandRunner) {
 		if(command==null) {
 			stdio.println("Hint");
 			return;
 		}
-		String[] job = command.split(" ");
+		String[] job = command;
 		if (job[0].equalsIgnoreCase("ps")) {
 			printTasks(commandRunner, stdio);
 		} else if (job[0].equalsIgnoreCase("hwinfo")) {
@@ -59,86 +62,29 @@ public class KowaBox extends PluginBase implements KernelAccess {
 			showEula(stdio);
 		} else if (job[0].equalsIgnoreCase("about")) {
 			showAbout(stdio);
-		} else if (job[0].equalsIgnoreCase("ls")) {
-			listApplets();
 		} else if (job[0].equalsIgnoreCase("sudo")) {
 			if(job.length>1)
-				commandRunner.sudo(command.substring(job[0].length() + 1));
+				commandRunner.sudo(Arrays.asList(command).subList(1, job.length).toArray(new String[0]));
 			else
-				commandRunner.sudo(null);
-		} else if (job[0].equalsIgnoreCase("alias")) {
-			if(job.length>1) {
-				Core.getLogwolf().i(command);
-				makeAlias(command.substring(job[0].length()+1), commandRunner);
-			} else
-				stdio.println("Usage: alias alias=command");
-		} else if (job[0].equalsIgnoreCase("run")) {
-			runExternalClass(command.substring(job[0].length()+1), commandRunner);
-		} else if (job[0].equalsIgnoreCase("load")) {
-			commandRunner.loadInternalClass(command.substring(job[0].length()+1));
+				commandRunner.sudo();
 		} else if (job[0].equalsIgnoreCase("whoami")){
 			stdio.println(commandRunner.getUsername());
 		} else if (job[0].equalsIgnoreCase("version")) {
-			stdio.println(Core.VERSION);
+			stdio.println(systemProperties.getProperty("version","test build"));
 		} else if (job[0].equalsIgnoreCase("clear")) {
 			stdio.clear();
-		} else if (job[0].equalsIgnoreCase("reverse")) {
-			stdio.reverse();
-		} else if (job[0].equalsIgnoreCase("oobexperience")) {
-			if(commandRunner.isSudo()) {
-				if(job.length>1) {
-					if(job[1].equalsIgnoreCase("reset")) {
-						if(Core.wizardReset(tokenKey))
-							stdio.println("KowaX Out-of-box Experience resetted.");
-						else
-							stdio.println("Unknown error.");
-					}
-				}
-			} else {
-				stdio.println("Must be root.");
-			}
-		} else if (job[0].equalsIgnoreCase("help")) {
-			PluginManager pluginManager = (PluginManager) Core.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey);
-			List<PluginBase> shellPlugins = pluginManager.getPlugins();
-			for(PluginBase shellPlugin : shellPlugins) {
-				stdio.print(shellPlugin.getAppletName().substring(0, 1).toUpperCase() + 
-						shellPlugin.getAppletName().substring(1) + "   ");
-			}
-			stdio.println();
-		} else if (job[0].equalsIgnoreCase("echo")) {
-			stdio.println(command.substring(job[0].length()+1));
 		}
-	}
-
-	private void runExternalClass(String command, CommandRunner commandRunner) {
-		if(command.split(" ").length<2) {
-			commandRunner.getSocketHelper().println("Usage: run \"classpath\" \"commands\".");
-		}
-		commandRunner.runExternalClass(command.split(" ")[0],
-				command.substring(command.split(" ")[0].length()));
-	}
-
-	private void makeAlias(String substring, CommandRunner commandRunner) {
-		if((substring.split("=").length<2)||(substring.split("=").length>3)) {
-			String[] a = substring.split("=");
-			Core.getLogwolf().i(substring);
-			((AliasManager) Core.getSystemApi(SystemApi.ALIAS_MANAGER, tokenKey)).newAlias(a[1], a[0]);
-			commandRunner.getSocketHelper().println("Alias created");
-		}
-	}
-
-	private void listApplets() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	private void showAbout(Stdio stdio) {
-		stdio.println(Core.SHELLNAME + " by Kowalski7cc. Copyright XSpaceSoft 2009-2015.");
+		stdio.println(systemProperties.getProperty("artifactId","KowaX")
+				+ " by Kowalski7cc. Copyright XSpaceSoft 2009-2017.");
 		stdio.println();
 	}
 
 	private void showEula(Stdio stdio) {
-		stdio.println("End-User License Agreement for " + Core.SHELLNAME);
+		stdio.println("End-User License Agreement for "
+				+ systemProperties.getProperty("artifactId","KowaX"));
 		try {
 			InputStream is = Core.class.getResourceAsStream(EULA);
 			Scanner scn = new Scanner(is);
@@ -147,7 +93,7 @@ public class KowaBox extends PluginBase implements KernelAccess {
 			}
 			scn.close();
 		} catch (Exception e) {
-			
+
 		}
 		stdio.println();
 	}
@@ -157,7 +103,7 @@ public class KowaBox extends PluginBase implements KernelAccess {
 			stdio.println("Must be root");
 		} else {
 			stdio.println("Shutting down");
-			Core.getLogwolf().i("Stopping " + Core.SHELLNAME);
+			Core.getLogwolf().i("Stopping " + systemProperties.getProperty("artifactId","KowaX"));
 			((PluginManager) Core.getSystemApi(SystemApi.PLUGIN_MANAGER, tokenKey)).stopServices();
 			Core.getLogwolf().i("Closing server socket");
 			try {
@@ -173,7 +119,7 @@ public class KowaBox extends PluginBase implements KernelAccess {
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("unused")
 	private void poweroff() {
 		Core.halt();

@@ -1,8 +1,10 @@
 package com.xspacesoft.kowax.plugins;
 
-import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.CommandRunner;
+import java.util.Arrays;
+
+import com.xspacesoft.kowax.engine.PluginBase;
+import com.xspacesoft.kowax.engine.io.Stdio;
+import com.xspacesoft.kowax.engine.shell.CommandRunner;
 
 public class Echo extends PluginBase {
 
@@ -22,8 +24,13 @@ public class Echo extends PluginBase {
 	}
 
 	@Override
-	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
-		stdio.println(command==null?"":command);
+	protected void runApplet(String[] command, Stdio stdio, CommandRunner commandRunner) {
+		StringBuilder stringBuilder = new StringBuilder();
+		if(command!=null)
+			Arrays.asList(command).forEach(s -> stringBuilder.append(s + " "));
+		stdio.println(stringBuilder.length()>0
+				?stringBuilder.toString().substring(0,stringBuilder.length())
+						:stringBuilder.toString());
 	}
 
 	@Override

@@ -7,24 +7,24 @@ import java.util.List;
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.PrivilegedAcces;
 import com.xspacesoft.kowax.apis.Service;
+import com.xspacesoft.kowax.engine.PluginBase;
+import com.xspacesoft.kowax.engine.PluginManager;
+import com.xspacesoft.kowax.engine.SystemApi;
+import com.xspacesoft.kowax.engine.TaskManager;
+import com.xspacesoft.kowax.engine.TokenKey;
+import com.xspacesoft.kowax.engine.TaskManager.Task;
+import com.xspacesoft.kowax.engine.io.Stdio;
+import com.xspacesoft.kowax.engine.shell.CommandRunner;
+import com.xspacesoft.kowax.engine.shell.CommandRunner.CommandNotFoundException;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
-import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.PluginManager;
-import com.xspacesoft.kowax.kernel.SystemApi;
-import com.xspacesoft.kowax.kernel.TaskManager;
-import com.xspacesoft.kowax.kernel.TaskManager.Task;
-import com.xspacesoft.kowax.kernel.TokenKey;
-import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.CommandRunner;
-import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 
-public class ServiceManager extends PluginBase implements PrivilegedAcces {
+public class UserServiceManager extends PluginBase implements PrivilegedAcces {
 
 	private TokenKey tokenKey;
 	private List<String> blacklist;
 
-	public ServiceManager() {
+	public UserServiceManager() {
 		blacklist = new ArrayList<String>();
 		blacklist.addAll(Arrays.asList(new String[] {
 				"KInit",
@@ -52,13 +52,12 @@ public class ServiceManager extends PluginBase implements PrivilegedAcces {
 	}
 
 	@Override
-	protected void runApplet(String command, Stdio stdio,
+	protected void runApplet(String[] commands, Stdio stdio,
 			CommandRunner commandRunner) {
-		if(command==null) {
+		if(commands==null) {
 			stdio.println(getHint());
 			return;
 		}
-		String[] commands = command.split(" ");
 		switch(commands[0].toLowerCase()) {
 		case "start":
 			if(commands.length>1) {

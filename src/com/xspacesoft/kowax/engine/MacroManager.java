@@ -1,7 +1,7 @@
-package com.xspacesoft.kowax.kernel;
+package com.xspacesoft.kowax.engine;
 
-import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.engine.io.Stdio;
+import com.xspacesoft.kowax.engine.shell.CommandRunner;
 
 public class MacroManager extends PluginBase {
 
@@ -21,7 +21,7 @@ public class MacroManager extends PluginBase {
 	}
 
 	@Override
-	protected void runApplet(String command, Stdio stdio,
+	protected void runApplet(String[] command, Stdio stdio,
 			CommandRunner commandRunner) {
 		// TODO Auto-generated method stub
 		

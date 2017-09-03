@@ -4,33 +4,23 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.prefs.Preferences;
 
-import com.xspacesoft.kowax.kernel.AliasManager;
-import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.PluginManager;
-import com.xspacesoft.kowax.kernel.SystemApi;
-import com.xspacesoft.kowax.kernel.SystemEvent;
-import com.xspacesoft.kowax.kernel.TaskManager;
-import com.xspacesoft.kowax.kernel.TokenKey;
-import com.xspacesoft.kowax.kernel.UsersManager;
-import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.Konsole;
-import com.xspacesoft.kowax.shell.KonsoleIO;
+import com.xspacesoft.kowax.Logwolf.LogLevel;
+import com.xspacesoft.kowax.engine.AliasManager;
+import com.xspacesoft.kowax.engine.PluginBase;
+import com.xspacesoft.kowax.engine.PluginManager;
+import com.xspacesoft.kowax.engine.SystemApi;
+import com.xspacesoft.kowax.engine.SystemEvent;
+import com.xspacesoft.kowax.engine.TaskManager;
+import com.xspacesoft.kowax.engine.TokenKey;
+import com.xspacesoft.kowax.engine.UsersManager;
+import com.xspacesoft.kowax.engine.io.Stdio;
+import com.xspacesoft.kowax.engine.shell.Konsole;
+import com.xspacesoft.kowax.engine.shell.KonsoleIO;
 
 
 public class Core {
-	public final static String SHELLNAME = BuildGet.getString("build.artifact").startsWith("$") ?
-			"KowaX" : BuildGet.getString("build.artifact"); //$NON-NLS-1$
-	public final static String VERSION = BuildGet.getString("build.version").startsWith("$") ?
-			"Test build" : BuildGet.getString("build.version"); //$NON-NLS-1$
-	public final static String BUILD = BuildGet.getString("build.number").startsWith("$") ? 
-			null : BuildGet.getString("build.number"); //$NON-NLS-1$
-	public final static int API = Stdio.parseInt(BuildGet.getString("build.apilevel"));
-
 	private static File kowaxHome;
 	private static InputStream shellInput;
 	private static PrintStream shellOutput;
@@ -40,171 +30,84 @@ public class Core {
 	private static PluginManager pluginManager;
 	private static TaskManager taskManager;
 	private static UsersManager usersManager;
-	private static ServerSocket serverSocket;
 
-	private static final Object[][] CORE_PLUGINS_DATA = DefaultPlugins.getDefaults();
+	//	private static final Object[][] CORE_PLUGINS_DATA = DefaultPlugins.getDefaults();
 
 	public Core(File home) {
 		kowaxHome = home;
 	}
+	
 
 	@SuppressWarnings("unchecked")
-	public void start() {
-		logwolf = new Logwolf(System.out);
-		logwolf.setDebug(true);
-		logwolf.setVerbose(true);
-		logwolf.i("[Core] - Initialization started");
+	public TokenKey setup() {
+		
+		logwolf = new Logwolf(LogLevel.WARNING);
+		logwolf.i("Initialization started");
+		
 
 		// TOKEN KEY GENERATION
-		logwolf.v("[Core] - Creating new Token");
+		logwolf.v("Creating new Token");
 		tokenKey = TokenKey.newKey();
 		sleep(100);
-
-		// TASK MANAGER LOAD-UP
-		logwolf.v("[Core] - Starting TaksManager");
-		taskManager = new TaskManager();
-		taskManager.newTask("system", "Core");
-		logwolf.i("[Core] - Task manager started");
-		sleep(100);
+		
 
 		// GET CURRENT WORK FOLDER AND FILE VARS
 		checkFolderTree();
-		sleep(100);
+		
+
+		// TASK MANAGER LOAD-UP
+		logwolf.v("Starting TaksManager");
+		taskManager = new TaskManager();
+		taskManager.newTask("system", "Core");
+		logwolf.i("Task manager started");
+
 
 		// User Manager
-		logwolf.v("[Core] - Loading UsersManager");
+		logwolf.v("Loading UsersManager");
 		usersManager = new UsersManager();
 		if(!usersManager.loadFromFile()) {
-			logwolf.f("[Core] - Can't load users from configuration");
+			logwolf.c("[Core] - Can't load users from configuration");
 		}
-		
 		logwolf.d("[Core] - UsersManager loaded");
-		logwolf.i("[Core] - Registred users: " + usersManager.getLoadedUsers());
+		logwolf.i("Registred users: " + usersManager.getLoadedUsers());
+		
+
 		// Alias Manager
-		logwolf.v("[Core] - Loading AliasManager");
+		logwolf.v("Loading AliasManager");
 		aliasManager = new AliasManager();
-		logwolf.v("[Core] - AliasManager loaded");
+		logwolf.v("AliasManager loaded");
 		aliasManager.loadDefaults();
-		logwolf.i("[Core] - " + aliasManager.getLoadedAliases() + " aliases loaded");
+		logwolf.i(aliasManager.getLoadedAliases() + " aliases loaded");
 
 
 		// START PLUGIN MANAGER AND LOAD PLUGINS
-		logwolf.v("[Core] - Starting PluginManager");
+		logwolf.v("Starting PluginManager");
 		pluginManager = new PluginManager(tokenKey);
-		logwolf.v("[Core] - PluginManager Started");
-		logwolf.v("[Core] - Loading default plugins");
-		List<Class<? extends PluginBase>> startupBlacklist = new ArrayList<Class<? extends PluginBase>>();
-		logwolf.d("-----------------------");
-		for (int i = 0; i < CORE_PLUGINS_DATA.length; i++) {
-			try {
-				if(CORE_PLUGINS_DATA[i][0].getClass().getSuperclass().isInstance(PluginBase.class)) {
-					pluginManager.loadPlugin((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0],
-							(boolean) CORE_PLUGINS_DATA[i][2], 
-							((boolean)CORE_PLUGINS_DATA[i][1] ? tokenKey : null));
-					if((boolean) CORE_PLUGINS_DATA[i][3])
-						startupBlacklist.add((Class<? extends PluginBase>) CORE_PLUGINS_DATA[i][0]);
-				} else {
-					logwolf.e(CORE_PLUGINS_DATA[i][0] + " is not a valid plugin entry");
-				}
-				//				splash.getProgressBar().setValue(p+=step);
-				Thread.sleep(50);
-			} catch (InstantiationException e) {
-				logwolf.e("[Core] - InstantiationException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
-			} catch (IllegalAccessException e) {
-				logwolf.e("[Core] - IllegalAccessException error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
-			} catch (InterruptedException e) {
+		logwolf.v("PluginManager Started");
+		logwolf.v("Loading default plugins");
 
-			} catch (NoClassDefFoundError e) {
-				logwolf.e("[Core] - NoClassDefFoundError error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
-			} catch (Exception e) {
-				logwolf.e("[Core] - Unknown error when loading " + CORE_PLUGINS_DATA[i][0] + ": " + e);
-			}
-		}
-		//		splash.getProgressBar().setValue(1);
-		//		splash.getProgressBar().setIndeterminate(true);
 		logwolf.d("-----------------------");
-		logwolf.d("[Core] - Default plugins load complete");
-		sleep(100);
+		pluginManager.loadPlugin((Class<? extends PluginBase>[]) DefaultPlugins.defaultPlugins, true, true);
 
-		// Server open
-//		serviceEnabled = true;
-//		logwolf.i("[Core] - Preparing shell server");
-//		try {
-//			serverSocket = new ServerSocket(23);
-//		} catch (BindException e) {
-//			if (e.getMessage().equalsIgnoreCase("Permission denied")){
-//				logwolf.e("[Core] - Is server running as root? " + e.toString());
-//				String backupPort = 23 + "" + 23;
-//				logwolf.i("[Core] - Trying to open server on port " + backupPort);
-//				try {
-//					serverSocket = new ServerSocket(Stdio.parseInt(backupPort));
-//				} catch (IOException e1) {
-//					logwolf.e("[Core] - Failed to open server on port " + backupPort + ": " + e1.toString());
-//				}
-//			} else if (e.getMessage().contains("Address already in use")) {
-//				logwolf.e("[Core] - Is already a server running on port " + 23 + "? " + e.toString());
-//				try {
-//					Thread.sleep(10);
-//				} catch (InterruptedException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//				System.exit(1);
-//			} else {
-//				logwolf.e(e.toString());
-//				System.exit(1);
-//			}
-//
-//		} catch (IOException e) {
-//			logwolf.e(e.toString());
-//			System.exit(1);
-//		}
-//		if (serverSocket == null) {
-//			System.exit(1);
-//		}
-		sleep(100);
-		logwolf.v("[Core] - Broadcasting system event startup");
-		pluginManager.sendSystemEvent(SystemEvent.SYSTEM_START, null, tokenKey, startupBlacklist);
-		sleep(100);
+		logwolf.d("-----------------------");
+		logwolf.d("Default plugins load complete");
 		
+		return tokenKey;
+	}
+	
+	public void start() {
+		logwolf.v("Broadcasting system event startup");
+		pluginManager.sendSystemEvent(SystemEvent.SYSTEM_START, null, null);
 		System.out.println();
-		
 		try {
 			KonsoleIO consoleIO = new KonsoleIO();
 			Stdio stdio = new Stdio(consoleIO);
 			Konsole console = new Konsole(tokenKey, stdio);
 			console.start();
 		} catch (IOException e) {
-			logwolf.e("[Core] - Error during console start: " + e.getMessage());
+			logwolf.e("Error during console start: " + e.getMessage());
+			System.exit(0);
 		}
-		
-		
-		
-//		try {
-//			serverSocket.setSoTimeout(1000);
-//			logwolf.i("Server ready!");
-//			while(serviceEnabled) {
-//				try {
-//					Socket socket = serverSocket.accept();
-//					if(socket!=null) {
-//						ShellServer shellServer = new ShellServer(socket, tokenKey);
-//						shellServer.start();
-//					}
-//				} catch (SocketTimeoutException e) {
-//					// Wait for it
-//				} catch (IOException e) {
-//					logwolf.e("Connection failed: " + e.toString());
-//				}
-//				Thread.sleep(1);
-//			}
-//		} catch (InterruptedException e) {
-//			// Stop service
-//			serviceEnabled = false;
-//		} catch (SocketException e) {
-//			logwolf.e(e.toString());
-//		}
-		logwolf.i("Server stopped");
-		System.exit(0);
 	}
 
 	private void checkFolderTree() {
@@ -318,10 +221,6 @@ public class Core {
 			if(isTokenValid(tokenKey))
 				return pluginManager;
 			break;
-		case SERVER_SOCKET:
-			if(isTokenValid(tokenKey))
-				return serverSocket;
-			break;
 		case TASK_MANAGER:
 			if(isTokenValid(tokenKey))
 				return taskManager;
@@ -346,7 +245,7 @@ public class Core {
 			Thread.sleep(i);
 		} catch (InterruptedException e) { }
 	}
-	
+
 	public static File getSystemFolder(SystemFolder folder, TokenKey tokenKey) {
 		return getSystemFolder(folder, null, tokenKey);
 	}
@@ -355,9 +254,10 @@ public class Core {
 		if(user!=null && folder.equals(SystemFolder.USER_HOME)) {
 			File cfile;
 			if(!(cfile = new File(new File(kowaxHome, SystemFolder.USER_HOME.getPathName()), user)).exists());
-				cfile.mkdirs();
-				return cfile;
+			cfile.mkdirs();
+			return cfile;
 		}
 		return new File(kowaxHome, folder.getPathName());
 	}
+	
 }

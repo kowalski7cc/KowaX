@@ -1,6 +1,6 @@
 package com.xspacesoft.kowax.exceptions;
 
-public class MissingPluginCodeException extends Exception {
+public class MissingPluginCodeException extends RuntimeException {
 
 	/**
 	 * 

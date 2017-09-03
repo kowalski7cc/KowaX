@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.apis.KWindow;
-import com.xspacesoft.kowax.kernel.TokenKey;
+import com.xspacesoft.kowax.engine.TokenKey;
 
 public class Window {
 	

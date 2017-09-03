@@ -1,7 +1,7 @@
-package com.xspacesoft.kowax.kernel;
+package com.xspacesoft.kowax.engine;
 
 import com.xspacesoft.kowax.apis.RegistrableComponent;
-import com.xspacesoft.kowax.kernel.io.Stdio;
+import com.xspacesoft.kowax.engine.io.Stdio;
 
 public class ApiManager {
 	

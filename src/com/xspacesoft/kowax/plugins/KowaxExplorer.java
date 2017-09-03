@@ -9,12 +9,12 @@ import com.xspacesoft.kowax.Core;
 import com.xspacesoft.kowax.SystemFolder;
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.PrivilegedAcces;
-import com.xspacesoft.kowax.kernel.ExplorerInterface;
-import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.TokenKey;
-import com.xspacesoft.kowax.kernel.UsersManager.User;
-import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.engine.ExplorerInterface;
+import com.xspacesoft.kowax.engine.PluginBase;
+import com.xspacesoft.kowax.engine.TokenKey;
+import com.xspacesoft.kowax.engine.UsersManager.User;
+import com.xspacesoft.kowax.engine.io.Stdio;
+import com.xspacesoft.kowax.engine.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.windows.Window;
 
 public class KowaxExplorer extends PluginBase implements PrivilegedAcces, ExplorerInterface, KWindow {
@@ -49,17 +49,16 @@ public class KowaxExplorer extends PluginBase implements PrivilegedAcces, Explor
 	}
 
 	@Override
-	protected void runApplet(String command, Stdio stdio,
+	protected void runApplet(String[] commands, Stdio stdio,
 			CommandRunner commandRunner) {
 		String user = commandRunner.getUsername();
 		UserExplorer userExpl = getCorretUser(user);
 		if(userExpl.currentPath==null) {
 			userExpl.currentPath = userExpl.userHome;
 		}
-		if (command==null) {
+		if (commands==null) {
 			
 		}
-		String commands[] = command.split(" ");
 		switch(commands[0]) {
 		case "info":
 			break;
@@ -174,6 +173,22 @@ public class KowaxExplorer extends PluginBase implements PrivilegedAcces, Explor
 			if(commands.length==2) {
 				stdio.println("Usage: [Exporer] cd <directory>");
 				return;
+			}
+			File newDir;
+			if(commands[3].equals(".")) {}
+			else if(commands[3].equals("..")) {
+				userExpl.currentPath = userExpl.userHome.toPath().getParent().toFile();
+			}
+			else if((newDir = new File(userExpl.currentPath, commands[3])).exists())
+				userExpl.currentPath = newDir;
+			else
+				stdio.println("Can't find folder " + commands[3]);
+			break;
+		case "pwd":
+			try {
+				stdio.println(userExpl.currentPath.getCanonicalPath().toString());
+			} catch (IOException e) {
+				stdio.println("Can't print information on folder");
 			}
 			break;
 		default:

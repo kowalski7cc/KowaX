@@ -1,9 +1,11 @@
 package com.xspacesoft.kowax.plugins;
 
+import java.util.Arrays;
+
 import com.xspacesoft.kowax.apis.KWindow;
-import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.engine.PluginBase;
+import com.xspacesoft.kowax.engine.io.Stdio;
+import com.xspacesoft.kowax.engine.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.windows.Window;
 
 public class Kalculator extends PluginBase implements KWindow{
@@ -26,22 +28,21 @@ public class Kalculator extends PluginBase implements KWindow{
 	}
 
 	@Override
-	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
+	protected void runApplet(String[] command, Stdio stdio, CommandRunner commandRunner) {
 		if(command==null) {
 			stdio.println(getHint());
 			return;
 		}
+		StringBuilder expression = new StringBuilder();
+		Arrays.asList(command).forEach(expression::append);
 		try {
-			stdio.println(String.valueOf(solve(command, stdio)));
+			stdio.println(String.valueOf(solve(expression.toString(), stdio)));
 		} catch (ArithmeticException e) {
 			if(e.getMessage()==null)
 				stdio.println("Error");
 			else
 				stdio.println("Error: " + e.getMessage());
 		}
-//		for (int i = 10; i < 100; i++) {
-//			stdio.println(i + ": '" + new String(Character.toChars(i)) + "'");
-//		}
 	}
 
 	private float solve(String expression, Stdio stdio) {

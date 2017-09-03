@@ -1,4 +1,4 @@
-package com.xspacesoft.kowax.kernel;
+package com.xspacesoft.kowax.engine;
 
 public class DisplayManager {
 	
