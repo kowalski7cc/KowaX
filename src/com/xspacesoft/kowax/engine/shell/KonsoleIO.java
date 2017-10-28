@@ -1,12 +1,12 @@
-package com.xspacesoft.kowax.shell;
+package com.xspacesoft.kowax.engine.shell;
 
 import java.io.Closeable;
 import java.io.Console;
 import java.io.IOException;
 import java.util.Scanner;
 
-import com.xspacesoft.kowax.kernel.io.InputReader;
-import com.xspacesoft.kowax.kernel.io.OutputWriter;
+import com.xspacesoft.kowax.engine.io.InputReader;
+import com.xspacesoft.kowax.engine.io.OutputWriter;
 
 public class KonsoleIO implements OutputWriter, InputReader, Closeable {
 	

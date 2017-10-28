@@ -1,8 +1,8 @@
-package com.xspacesoft.kowax.shell;
+package com.xspacesoft.kowax.engine.shell;
 
 import java.util.Locale;
 
-import com.xspacesoft.kowax.kernel.io.Stdio;
+import com.xspacesoft.kowax.engine.io.Stdio;
 
 public class Session {
 
@@ -94,7 +94,7 @@ public class Session {
 	/**
 	 * @return the sockethelper
 	 */
-	public Stdio getSockethelper() {
+	public Stdio getStdio() {
 		return stdio;
 	}
 

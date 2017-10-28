@@ -1,4 +1,4 @@
-package com.xspacesoft.kowax.shell;
+package com.xspacesoft.kowax.engine.shell;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import com.xspacesoft.kowax.kernel.io.InputReader;
-import com.xspacesoft.kowax.kernel.io.OutputWriter;
+import com.xspacesoft.kowax.engine.io.InputReader;
+import com.xspacesoft.kowax.engine.io.OutputWriter;
 
 public class ShellIO implements OutputWriter, InputReader{
 	

@@ -1,18 +1,18 @@
-package com.xspacesoft.kowax.shell;
+package com.xspacesoft.kowax.engine.shell;
 
 import java.io.IOException;
 import java.net.Socket;
 
 import com.xspacesoft.kowax.Core;
+import com.xspacesoft.kowax.engine.SystemApi;
+import com.xspacesoft.kowax.engine.SystemEvent;
+import com.xspacesoft.kowax.engine.TaskManager;
+import com.xspacesoft.kowax.engine.TokenKey;
+import com.xspacesoft.kowax.engine.UsersManager;
+import com.xspacesoft.kowax.engine.UsersManager.InvalidUserException;
+import com.xspacesoft.kowax.engine.io.Stdio;
+import com.xspacesoft.kowax.engine.shell.CommandRunner.CommandNotFoundException;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
-import com.xspacesoft.kowax.kernel.SystemApi;
-import com.xspacesoft.kowax.kernel.SystemEvent;
-import com.xspacesoft.kowax.kernel.TaskManager;
-import com.xspacesoft.kowax.kernel.TokenKey;
-import com.xspacesoft.kowax.kernel.UsersManager;
-import com.xspacesoft.kowax.kernel.UsersManager.InvalidUserException;
-import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.CommandRunner.CommandNotFoundException;
 
 public class ShellServer extends Thread {
 

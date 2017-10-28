@@ -1,4 +1,4 @@
-package com.xspacesoft.kowax.kernel.io;
+package com.xspacesoft.kowax.engine.io;
 
 public interface InputReader {
 

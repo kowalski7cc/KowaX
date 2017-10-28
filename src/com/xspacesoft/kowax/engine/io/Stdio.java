@@ -1,4 +1,4 @@
-package com.xspacesoft.kowax.kernel.io;
+package com.xspacesoft.kowax.engine.io;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ public class Stdio {
 		this.inputReader = (InputReader) t;
 		this.outputWriter = (OutputWriter) t;
 	}
-	
+
 	public Stdio(OutputWriter outputWriter, InputReader inputReader) throws IOException {
 		this.inputReader = inputReader;
 		this.outputWriter = outputWriter;
@@ -41,41 +41,54 @@ public class Stdio {
 	}
 
 	public void println(String message) {
-		outputWriter.println(message);
+		if(outputWriter!=null)
+			outputWriter.println(message);
 	}
 
 	public void printTitle(String title) {
-		println(title);
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < title.length(); i++) {
-			sb.append("-");
+		if(outputWriter!=null) {
+			println(title);
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < title.length(); i++) {
+				sb.append("-");
+			}
+			println(sb.toString());
 		}
-		println(sb.toString());
 	}
 
 
 	public void println() {
-		outputWriter.println();
+		if(outputWriter!=null)
+			outputWriter.println();
 	}
 
 	public void print(String message) {
-		outputWriter.print(message);
+		if(outputWriter!=null)
+			outputWriter.print(message);
 	}
 
 	public String readString() {
-		return inputReader.readString();
+		if(inputReader!=null)
+			return inputReader.readString();
+		return null;
 	}
-	
-	public int readInt() {
-		return inputReader.readInt();
+
+	public Integer readInt() {
+		if(inputReader!=null)
+			return inputReader.readInt();
+		return null;
 	}
-	
-	public float readFloat() {
-		return inputReader.readFloat();
+
+	public Float readFloat() {
+		if(inputReader!=null)
+			return inputReader.readFloat();
+		return null;
 	}
-	
-	public char readCharacter() {
-		return inputReader.readCharacter();
+
+	public Character readCharacter() {
+		if(inputReader!=null)
+			return inputReader.readCharacter();
+		return null;
 	}
 
 	public void clear() {
@@ -116,6 +129,6 @@ public class Stdio {
 			return 0;
 		}
 	}
-	
-	
+
+
 }

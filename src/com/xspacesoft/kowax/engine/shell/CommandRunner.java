@@ -1,21 +1,25 @@
-package com.xspacesoft.kowax.shell;
+package com.xspacesoft.kowax.engine.shell;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.xspacesoft.kowax.Core;
-import com.xspacesoft.kowax.exceptions.DuplicateElementException;
+import com.xspacesoft.kowax.engine.AliasManager;
+import com.xspacesoft.kowax.engine.PluginBase;
+import com.xspacesoft.kowax.engine.PluginManager;
+import com.xspacesoft.kowax.engine.SystemApi;
+import com.xspacesoft.kowax.engine.SystemEvent;
+import com.xspacesoft.kowax.engine.TaskManager;
+import com.xspacesoft.kowax.engine.TokenKey;
+import com.xspacesoft.kowax.engine.UsersManager;
+import com.xspacesoft.kowax.engine.UsersManager.InvalidUserException;
+import com.xspacesoft.kowax.engine.io.Stdio;
 import com.xspacesoft.kowax.exceptions.InsufficientPermissionsException;
 import com.xspacesoft.kowax.exceptions.MissingPluginCodeException;
-import com.xspacesoft.kowax.kernel.AliasManager;
-import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.PluginManager;
-import com.xspacesoft.kowax.kernel.SystemApi;
-import com.xspacesoft.kowax.kernel.SystemEvent;
-import com.xspacesoft.kowax.kernel.TaskManager;
-import com.xspacesoft.kowax.kernel.TokenKey;
-import com.xspacesoft.kowax.kernel.UsersManager;
-import com.xspacesoft.kowax.kernel.UsersManager.InvalidUserException;
-import com.xspacesoft.kowax.kernel.io.Stdio;
 
 /**
  * The Class CommandRunner handles the running of an applet.
@@ -28,7 +32,7 @@ public final class CommandRunner {
 	private TaskManager taskmanager;
 	private UsersManager usersManager;
 	private TokenKey tokenKey;
-	private Session session;	
+	private Session session;
 
 	public static class CommandNotFoundException extends Exception {
 
@@ -75,30 +79,26 @@ public final class CommandRunner {
 	/**
 	 * Runs the applet with commands
 	 *
-	 * @param command the command
+	 * @param userInput the command
 	 * @throws CommandNotFoundException When command is not found
 	 * @throws MissingPluginCodeException When plugin is missing code
 	 */
-	public void run(String command)
+	public void run(String userInput)
 			throws CommandNotFoundException, MissingPluginCodeException, IllegalArgumentException {
-		// Trim initial & Final spaces
-		if(command==null){
+		if(userInput==null){
 			session.setSessionActive(false);
 			return;
 		}
-		while(command.startsWith(" ")) {
-			command = command.substring(1);
+		userInput = puryfyInput(userInput);
+		if(userInput.equals("")) {
+			return;
 		}
-		while(command.endsWith(" ")) {
-			command = command.substring(0, command.length()-1);
+		
+		List<String> command = parseInput(userInput);
+		while (aliasManager.getCommandFromAlias(command.get(0))!=null) {
+			command.set(0, aliasManager.getCommandFromAlias(command.get(0)));
 		}
-		if(command.equals("")) {
-			throw new IllegalArgumentException("Empty");
-		}
-		while (aliasManager.getCommandFromAlias(command)!=null) {
-			command = aliasManager.getCommandFromAlias(command);
-		}
-		if(command.equalsIgnoreCase("exit")) {
+		if(command.get(0).equalsIgnoreCase("exit")) {
 			if(session.isSudo()) {
 				session.setSudo(false);
 				return;
@@ -107,74 +107,81 @@ public final class CommandRunner {
 				return;
 			}
 		}
-		String[] userCommand = command.split(" ");
 		for (PluginBase plugin : pluginmanager.getPlugins()) {
-			if (plugin.getAppletName().equalsIgnoreCase(userCommand[0])) {
-				if(userCommand.length>1)
-					startProcess(plugin, command.substring(userCommand[0].length() +1));
+			if (plugin.getAppletName().equalsIgnoreCase(command.get(0))) {
+				if(command.size()>1)
+					startProcess(plugin, command.subList(1, command.size()).toArray(new String[0]));
 				else
 					startProcess(plugin, null);
+				System.gc();
 				return;
 			}
 		}
-		throw new CommandNotFoundException(command);
+		throw new CommandNotFoundException(userInput);
+	}
+
+	private List<String> parseInput(String userInput) {
+		Matcher matcher = Pattern.compile("(\"[^\"]+\")|([^\\s\"]+)").matcher(userInput);
+		List<String> command = new LinkedList<String>();
+		while(matcher.find())
+			command.add(matcher.group(1)!=null?matcher.group(1).replaceAll("\"", ""):matcher.group(2));
+		return command;
+	}
+
+	private String puryfyInput(String command) {
+		while(command.startsWith(" ")) {
+			command = command.substring(1);
+		}
+		while(command.endsWith(" ")) {
+			command = command.substring(0, command.length()-1);
+		}
+		return command;
 	}
 
 	/**
 	 * Start process.
 	 *
 	 * @param plugin plugin to run
-	 * @param command the command
+	 * @param strings the command
 	 * @throws MissingPluginCodeException When plugin is missing code
 	 */
-	private void startProcess(PluginBase plugin, String command) throws MissingPluginCodeException {
+	private void startProcess(PluginBase plugin, String[] strings) throws MissingPluginCodeException {
 		int pid = 0;
 		String pName;
-		if(command==null||command.equals("")) {
+		if(strings==null||strings.equals("")) {
 			pName = plugin.getAppletName();
 		} else {
-			pName = plugin.getAppletName() + " " + command.split(" ")[0];
+			pName = plugin.getAppletName() + " " + strings[0];
 		}
 		pName = pName.substring(0, 1).toUpperCase() + pName.substring(1);
 		pid = taskmanager.newTask(session.isSudo() ? "root" : session.getUsername(), pName);
-		plugin.start(command, session.getSockethelper(), this);
+		try {
+			plugin.start(strings, session.getStdio(), this);
+		} catch (Exception e) {
+			session.getStdio().println("Sorry, " + plugin.getAppletName() + " stopped working:");
+			session.getStdio().println(e.toString());
+		}
 		taskmanager.removeTask(pid);
 	}
 
-	public void runExternalClass(String path, String command) {
+	public void runExternalClass(String path, String[] command) {
 		if (!session.isSudo()) {
-			session.getSockethelper().println("command runner: Operation not permitted");
+			session.getStdio().println("command runner: Operation not permitted");
 			return;
 		}
 		try {
 			PluginBase obj = (PluginBase) ClassLoader.getSystemClassLoader().loadClass(path).newInstance();
-			obj.start(command, session.getSockethelper(), this);
+			obj.start(command, session.getStdio(), this);
 		} catch (InstantiationException e) {
-			session.getSockethelper().println("Failed to load applet: " + e.toString());
+			session.getStdio().println("Failed to load applet: " + e.toString());
 		} catch (IllegalAccessException e) {
-			session.getSockethelper().println("Failed to load applet: " + e.toString());
+			session.getStdio().println("Failed to load applet: " + e.toString());
 		} catch (ClassNotFoundException e) {
-			session.getSockethelper().println("Failed to load applet: " + e.toString());
+			session.getStdio().println("Failed to load applet: " + e.toString());
 		} catch (MissingPluginCodeException e) {
-			session.getSockethelper().println("Failed to load applet: " + e.toString());
+			session.getStdio().println("Failed to load applet: " + e.toString());
 		} catch (Exception e) {
-			session.getSockethelper().println("Unhandled exception in applet: " + e.toString());
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void loadInternalClass(String path) {
-		if (!session.isSudo()) {
-			session.getSockethelper().println("command runner: Operation not permitted");
-			return;
-		}
-		try {
-			pluginmanager.loadPlugin((Class<? extends PluginBase>) ClassLoader.getSystemClassLoader().loadClass(path), null, null);
-			session.getSockethelper().println("Applet " + ClassLoader.getSystemClassLoader().loadClass(path) + " loaded");
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			session.getSockethelper().println("Failed to load applet: " + e.toString());
-		} catch (DuplicateElementException e) {
-			session.getSockethelper().println("Plugin already loaded: " + e.toString());
+			session.getStdio().println("Unhandled exception in applet: " + e.toString());
 		}
 	}
 	
@@ -182,12 +189,16 @@ public final class CommandRunner {
 		return session.isSudo();
 	}
 	
-	public void sudo(String command) {
-		Stdio stdio = session.getSockethelper();
+	public void sudo() {
+		runSudo(null);
+	}
+	
+	private void runSudo(String command) {
+		Stdio stdio = session.getStdio();
 		if(!session.isSudo()) {
 			if(session.isSudoExpired()) {
 				stdio.print("[sudo] password for " + session.getUsername() +": ");
-				String response = session.getSockethelper().readString();
+				String response = session.getStdio().readString();
 				if (response.equalsIgnoreCase(""))
 					return;
 				try {
@@ -225,6 +236,10 @@ public final class CommandRunner {
 			}
 			session.setSudo(false);
 		}
+	}
+	
+	public void sudo(String command) {
+		runSudo(command);
 	}	
 	
 	public TokenKey getTokenKey() {
@@ -248,7 +263,7 @@ public final class CommandRunner {
 	}
 	
 	public Stdio getSocketHelper() {
-		return session.getSockethelper();
+		return session.getStdio();
 	}
 	
 	public void sendSystemEvent(SystemEvent event, String extraValue, TokenKey tokenKey, boolean sudo) {
@@ -257,4 +272,12 @@ public final class CommandRunner {
 		pluginmanager.sendSystemEvent(event, extraValue, this, null);
 		
 	}
+
+	public void sudo(String[] array) {
+		StringBuilder stringBuilder = new StringBuilder();
+		Arrays.asList(array).forEach(s -> stringBuilder.append(s + " "));
+		sudo(stringBuilder.toString());
+	}
+	
+	
 }
