@@ -9,8 +9,5 @@
         <module name="KowaX" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="KowaX" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
