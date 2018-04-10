@@ -4,9 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.xspacesoft.kowax.apis.KWindow;
-import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.engine.PluginBase;
+import com.xspacesoft.kowax.engine.io.Stdio;
+import com.xspacesoft.kowax.engine.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.windows.Window;
 
 public class Kalendar extends PluginBase implements KWindow {
@@ -27,7 +27,7 @@ public class Kalendar extends PluginBase implements KWindow {
 	}
 
 	@Override
-	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
+	protected void runApplet(String[] command, Stdio stdio, CommandRunner commandRunner) {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat format1 = new SimpleDateFormat("EEE, d MMM yyyy hh 'o''clock' a, zzzz");
 		stdio.println("Today is " + format1.format(cal.getTime()));

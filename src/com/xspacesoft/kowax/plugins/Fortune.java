@@ -6,10 +6,10 @@ import java.util.Random;
 
 import com.xspacesoft.kowax.apis.KWindow;
 import com.xspacesoft.kowax.apis.SystemEventsListener;
-import com.xspacesoft.kowax.kernel.PluginBase;
-import com.xspacesoft.kowax.kernel.SystemEvent;
-import com.xspacesoft.kowax.kernel.io.Stdio;
-import com.xspacesoft.kowax.shell.CommandRunner;
+import com.xspacesoft.kowax.engine.PluginBase;
+import com.xspacesoft.kowax.engine.SystemEvent;
+import com.xspacesoft.kowax.engine.io.Stdio;
+import com.xspacesoft.kowax.engine.shell.CommandRunner;
 import com.xspacesoft.kowax.windowsystem.windows.Window;
 
 public class Fortune extends PluginBase implements SystemEventsListener , KWindow{
@@ -72,7 +72,7 @@ public class Fortune extends PluginBase implements SystemEventsListener , KWindo
 	}
 
 	@Override
-	protected void runApplet(String command, Stdio stdio, CommandRunner commandRunner) {
+	protected void runApplet(String[] command, Stdio stdio, CommandRunner commandRunner) {
 		if(command==null) {
 			showFortune(stdio);
 			return;
@@ -81,7 +81,7 @@ public class Fortune extends PluginBase implements SystemEventsListener , KWindo
 			// TODO Load blacklist form ./etc/Fortune/blacklist.cfg
 			usersBlacklist = new ArrayList<String>();
 		}	
-		switch (command) {
+		switch (command[0]) {
 		case "blacklist":
 			usersBlacklist.add(commandRunner.getUsername());
 			break;

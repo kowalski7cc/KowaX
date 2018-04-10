@@ -1,0 +1,15 @@
+package com.xspacesoft.kowax.engine;
+
+public enum SystemApi {
+	PLUGIN_MANAGER,
+	USERS_MANAGER,
+	TASK_MANAGER,
+	ALIAS_MANAGER,
+	HTTP_DISPLAY,
+	LOGWOLF,
+	INPUT_STREAM,
+	OUTPUT_STREAM,
+	SERVER_SOCKET,
+	KOWAX_HOME,
+	
+}
